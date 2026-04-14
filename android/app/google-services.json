@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "936622727644",
+    "project_id": "talkin-app-talkin",
+    "storage_bucket": "talkin-app-talkin.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:936622727644:android:2af3509e3dcf74700aef19",
+        "android_client_info": {
+          "package_name": "com.incodes.talkin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "936622727644-thvuc4qc5981ieo6lin7kgi7iudn58su.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.incodes.talkin",
+            "certificate_hash": "a856f8be99cce1591f00b781f68d6dc63de31f36"
+          }
+        },
+        {
+          "client_id": "936622727644-7hfqa4vt7m814rsd8io7ln3aifqc2vab.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvrE6QAC7Uhwww8rhx1KcOu2VhMWeEO18"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "936622727644-7hfqa4vt7m814rsd8io7ln3aifqc2vab.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "936622727644-li6s9at6u8s3lelum71ptcadec9krpd0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.incodes.talkin"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,6 @@
 abstract class Api {
   /// server url
-  static const baseUrl = "http://159.65.154.205:3000/";
+  static const baseUrl = "http://168.144.85.67/";
   static const secretKey = "mySecretKey123";
 
   // >>>>> >>>>> Login Page Api <<<<< <<<<<

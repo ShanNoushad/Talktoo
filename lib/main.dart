@@ -18,7 +18,6 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import 'localization/localizations_delegate.dart';
 import 'utils/utils.dart';
 import 'package:mobile_device_identifier/mobile_device_identifier.dart';
-
 AppLifecycleState? currentAppLifecycleState;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

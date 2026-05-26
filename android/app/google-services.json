@@ -7,6 +7,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:936622727644:android:76498d57fdef471d0aef19",
+        "android_client_info": {
+          "package_name": "com.devsnack.calm_ai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "936622727644-7hfqa4vt7m814rsd8io7ln3aifqc2vab.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvrE6QAC7Uhwww8rhx1KcOu2VhMWeEO18"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "936622727644-7hfqa4vt7m814rsd8io7ln3aifqc2vab.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "936622727644-7de0u7nrnkddu7coommhuu05glhtq4pg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.devsnack.calmAi"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:936622727644:android:2af3509e3dcf74700aef19",
         "android_client_info": {
           "package_name": "com.incodes.talkin"
@@ -39,10 +75,10 @@
               "client_type": 3
             },
             {
-              "client_id": "936622727644-li6s9at6u8s3lelum71ptcadec9krpd0.apps.googleusercontent.com",
+              "client_id": "936622727644-7de0u7nrnkddu7coommhuu05glhtq4pg.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.incodes.talkin"
+                "bundle_id": "com.devsnack.calmAi"
               }
             }
           ]

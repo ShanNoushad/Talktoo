@@ -9,6 +9,8 @@ import 'package:talk_in/utils/app_color.dart';
 import 'package:talk_in/utils/constant.dart';
 import 'package:talk_in/utils/utils.dart';
 
+import '../../all_listeners_in_home/all_listeners_in_home.dart';
+
 class HomeScreen extends GetView<HomeScreenController> {
   const HomeScreen({super.key});
 
@@ -50,6 +52,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                         children: [
                           FindMoreWidget(),
                           TopListenerWidget(),
+                          ListenersGridEmbedded()
                         ],
                       ),
                     ),

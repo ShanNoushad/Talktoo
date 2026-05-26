@@ -50,11 +50,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "936622727644-thvuc4qc5981ieo6lin7kgi7iudn58su.apps.googleusercontent.com",
+          "client_id": "936622727644-gjuo865f9som8ppmhnav14nu99i7nmt5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.incodes.talkin",
-            "certificate_hash": "a856f8be99cce1591f00b781f68d6dc63de31f36"
+            "certificate_hash": "1999be1d486f7b55845a4adc6c9a735c4d376044"
           }
         },
         {

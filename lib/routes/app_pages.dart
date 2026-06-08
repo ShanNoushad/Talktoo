@@ -104,12 +104,14 @@ import 'package:talk_in/ui/user_flow/top_listeners_view_all/binding/top_listener
 import 'package:talk_in/ui/user_flow/top_listeners_view_all/view/top_listeners_view_all_screen.dart';
 import 'package:talk_in/ui/user_flow/user_notification/binding/user_notification_binding.dart';
 import 'package:talk_in/ui/user_flow/user_notification/view/user_notification.dart';
-import 'package:talk_in/ui/user_flow/verify_otp_screen/binding/verify_otp_binding.dart';
-import 'package:talk_in/ui/user_flow/verify_otp_screen/view/verify_otp_screen.dart';
+
 import 'package:talk_in/ui/user_flow/video_call_screen/binding/video_call_binding.dart';
 import 'package:talk_in/ui/user_flow/video_call_screen/view/video_call_screen.dart';
 import 'package:talk_in/ui/user_flow/voice_call_screen/binding/voice_call_binding.dart';
 import 'package:talk_in/ui/user_flow/voice_call_screen/view/voice_call_screen.dart';
+
+import '../ui/user_flow/mobile_login/binding/otp_binding.dart';
+import '../ui/user_flow/mobile_login/view/otp_screen.dart';
 
 class AppPages {
   static List<GetPage> list = [
@@ -147,8 +149,8 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.verifyOtp,
-      page: () => const VerifyOtpScreen(),
-      binding: VerifyOtpBinding(),
+      page: () => const OtpScreen(),
+      binding: OtpBinding(), // wherever your new OtpController binding is
     ),
     GetPage(
       name: AppRoutes.bottomBar,

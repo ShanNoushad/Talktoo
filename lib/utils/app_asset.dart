@@ -4,6 +4,7 @@ class AppAsset {
 
   /// =================== Icons =================== ///
   static const icEye = "${getIconsPath}eye.png";
+  static const splashIcon = "${getImagesPath}img.png";
   static const icEyeCancel = "${getIconsPath}eye_cancelled.png";
   static const arrowUp = "${getIconsPath}arrow_up.png";
   static const googleIcon = "${getIconsPath}google_icon.png";

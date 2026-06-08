@@ -15,13 +15,11 @@ import 'package:talk_in/utils/utils.dart';
 import 'otp_controller.dart';
 
 class OtpController extends GetxController {
-  // 6 boxes
   final List<TextEditingController> otpControllers =
   List.generate(6, (_) => TextEditingController());
   final List<FocusNode> focusNodes =
   List.generate(6, (_) => FocusNode());
 
-  // Read args passed from MobileLoginController.onSendOtp()
   late final String phoneNumber;
   late final String dialCode;
   late final String verificationId;
@@ -30,11 +28,10 @@ class OtpController extends GetxController {
   void onInit() {
     super.onInit();
     final args = Get.arguments as List?;
-    phoneNumber   = args?[0] ?? '';
-    dialCode      = args?[1] ?? '+91';
+    phoneNumber    = args?[0] ?? '';
+    dialCode       = args?[1] ?? '+91';
     verificationId = args?[2] ?? '';
 
-    // Safety check — if verificationId is missing the flow is broken
     if (verificationId.isEmpty) {
       Utils.showToast(Get.context!, 'Session expired. Please try again.');
       Get.back();
@@ -48,7 +45,6 @@ class OtpController extends GetxController {
     super.onClose();
   }
 
-  // Called by the first OTP box listener to handle SMS autofill paste
   void onAutofillPaste(String value) {
     if (value.length == 6) {
       for (int i = 0; i < 6; i++) {
@@ -85,7 +81,7 @@ class OtpController extends GetxController {
       final userCredential =
       await FirebaseAuth.instance.signInWithCredential(credential);
 
-      // Step 2 — get device identity + FCM token
+      // Step 2 — device identity + FCM token
       final identity =
           (await MobileDeviceIdentifier().getDeviceId()) ?? '';
       final fcmToken =
@@ -94,7 +90,7 @@ class OtpController extends GetxController {
       Database.onSetIdentity(identity);
       Database.onSetFcmToken(fcmToken);
 
-      // Step 3 — call your login API
+      // Step 3 — call login API
       final loginModel = await LoginApi.callApi(
         countryCode: Database.selectedCountryCode,
         loginType: 3,
@@ -115,25 +111,24 @@ class OtpController extends GetxController {
 
       // Step 5 — fetch full profile
       await _fetchAndStoreProfile(userCredential.user!.uid);
-
       // Step 6 — route
+      // NEW USER (signUp == true): mark profile incomplete, go to home.
+      //   Home will show the "Complete your profile" banner.
+      // RETURNING USER: profile already complete, go straight to home.
+
       if (loginModel?.signUp == true) {
-        // New user — fill profile first
-        Database.onSetFillProfile(false);
-        Get.offAllNamed(AppRoutes.fillProfileScreen, arguments: [
-          Database.loginUserName,
-          Database.loginUserProfilePic,
-          Database.loginUserEmail,
-        ]);
+        Database.onSetFillProfile(false); // banner will show on home
       } else {
-        // Returning user — go to correct bottom bar
-        Database.onSetFillProfile(true);
-        if (Database.fetchLoginUserProfileModel?.user?.isListener == true) {
-          Get.offAllNamed(AppRoutes.hostBottomBar);
-        } else {
-          Get.offAllNamed(AppRoutes.bottomBar);
-        }
+        Database.onSetFillProfile(true);  // banner hidden
       }
+
+      // Always land on home — banner handles profile completion
+      if (Database.fetchLoginUserProfileModel?.user?.isListener == true) {
+        Get.offAllNamed(AppRoutes.hostBottomBar);
+      } else {
+        Get.offAllNamed(AppRoutes.bottomBar);
+      }
+
     } on FirebaseAuthException catch (e) {
       Utils.showToast(Get.context!, e.message ?? 'Invalid OTP');
     } catch (e) {
@@ -169,7 +164,6 @@ class OtpController extends GetxController {
     Database.onSetLoginUserPhoneNumber(user.phoneNumber ?? '');
     Database.onSetIsNewUser(false);
 
-    // If listener, also fetch listener profile
     if (user.isListener == true) {
       final listenerProfile = await FetchListenerProfileAPi.callApi(
         loginListenerId: profile.user?.listenerId ?? '',
@@ -181,9 +175,7 @@ class OtpController extends GetxController {
     }
   }
 
-  // Called by the Resend button on OTP screen
   Future<void> onResendOtp() async {
-    // Delegate back to MobileLoginController which owns the phone number
     await Get.find<MobileLoginController>().onSendOtp();
   }
 }

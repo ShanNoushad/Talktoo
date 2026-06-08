@@ -34,7 +34,7 @@ class SplashScreenView extends GetView<SplashScreenController> {
                   child: Image.asset(
                     width: 170,
                     height: 170,
-                    AppAsset.splashLogo,
+                    AppAsset.splashIcon,
                   ),
                 ),
                 Spacer(),

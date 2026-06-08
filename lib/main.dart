@@ -24,9 +24,14 @@ void main() async {
   await 500.milliseconds.delay();
 
   await Firebase.initializeApp();
+
+  // ✅ Move here — must be right after Firebase.initializeApp()
+  FirebaseMessaging.onBackgroundMessage(backgroundNotification);
+
   await GetStorage.init();
   WakelockPlus.enable();
   await RingtoneService.init();
+
   final identity = (await MobileDeviceIdentifier().getDeviceId())!;
   final fcmToken = await FirebaseMessaging.instance.getToken();
 
@@ -36,15 +41,16 @@ void main() async {
   if (fcmToken != null) {
     await Database.init(identity, fcmToken);
   }
-  NotificationServices.init();
 
-  // Set up Awesome Notifications listeners
-  AwesomeNotifications().setListeners(
-    onActionReceivedMethod: NotificationServices.onAwesomeNotificationActionReceived,
-  );
+  await NotificationServices.init(); // ✅ add await
+
+  // ✅ REMOVE this — setListeners is already called inside NotificationServices.init()
+  // Calling it twice overrides the first registration
+  // AwesomeNotifications().setListeners(
+  //   onActionReceivedMethod: NotificationServices.onAwesomeNotificationActionReceived,
+  // );
 
   NotificationServices.firebaseInit();
-  FirebaseMessaging.onBackgroundMessage(backgroundNotification);
 
   runApp(const MyApp());
 }

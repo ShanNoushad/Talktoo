@@ -133,7 +133,6 @@ class SplashScreenController extends GetxController {
 
 Future<void> splashScreen() async {
   Timer(Duration(seconds: 2), () async {
-    // Check User Is Login Or Not...
     final token = await FirebaseAccessToken.onGet();
 
     log("isLogin :: ${Database.isLogin}");
@@ -199,7 +198,7 @@ Future<void> splashScreen() async {
               ]);
             }
           } else {
-            Get.offAllNamed(AppRoutes.main);
+            Get.offAllNamed(AppRoutes.mobileLogIn);
           }
         } else {
           Get.offAllNamed(AppRoutes.onBoarding);

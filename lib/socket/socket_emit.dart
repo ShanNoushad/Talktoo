@@ -82,25 +82,31 @@ class SocketEmit {
     required String callerName,
     required String callerImage,
   }) {
+    final data = {
+      SocketParams.callerId: callerId,
+      SocketParams.receiverId: receiverId,
+      SocketParams.callType: callType,
+      SocketParams.callerRole: callerRole,
+      SocketParams.receiverRole: receiverRole,
+      SocketParams.callId: callId,
+      SocketParams.receiverName: receiverName,
+      SocketParams.receiverImage: receiverImage,
+      SocketParams.callerName: callerName,
+      SocketParams.callerImage: callerImage,
+      SocketParams.isAccept: isAccept,
+      SocketParams.callMode: callMode,
+    };
+
     if (socket != null && socket!.connected) {
-      final data = {
-        SocketParams.callerId: callerId,
-        SocketParams.receiverId: receiverId,
-        SocketParams.callType: callType,
-        SocketParams.callerRole: callerRole,
-        SocketParams.receiverRole: receiverRole,
-        SocketParams.callId: callId,
-        SocketParams.receiverName: receiverName,
-        SocketParams.receiverImage: receiverImage,
-        SocketParams.callerName: callerName,
-        SocketParams.callerImage: callerImage,
-        SocketParams.isAccept: isAccept,
-        SocketParams.callMode: callMode,
-      };
       socket!.emit(SocketEvents.callResponseProcessed, data);
-      Utils.showLog("Socket Emit => callResponseProcessed: $data");
+      Utils.showLog("✅ Socket Emit => callResponseProcessed: $data");
     } else {
-      Utils.showLog("Socket Not Connected!!");
+      // Queue the emit — fires as soon as socket connects
+      Utils.showLog("⚠️ Socket not connected — queuing callResponseProcessed");
+      socket?.once('connect', (_) {
+        socket!.emit(SocketEvents.callResponseProcessed, data);
+        Utils.showLog("✅ Queued callResponseProcessed fired after reconnect");
+      });
     }
   }
 
@@ -188,6 +194,14 @@ class SocketEmit {
     } else {
       Utils.showLog("Socket Not Connected!!");
     }
+  }
+
+  static bool isConnected() {
+    return socket != null && socket!.connected;
+  }
+
+  static Future<void> connect() async {
+    await SocketService.socketConnect();
   }
 
   /// random call ringing

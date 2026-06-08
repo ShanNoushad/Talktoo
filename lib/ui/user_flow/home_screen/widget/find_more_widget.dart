@@ -17,7 +17,7 @@ class FindMoreWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Image.asset(AppAsset.homeCallPerson, height: 112, width: 334).paddingOnly(top: 28, left: 20, right: 20),
+        Image.asset(AppAsset.homeCallPerson, height: 230, width: 450),
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(

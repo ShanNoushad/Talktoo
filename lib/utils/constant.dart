@@ -17,6 +17,7 @@ class Constant {
   static var idSwitchOn = 'idSwitchOn';
   static var idResendOtp = 'idResendOtp';
   static var idVerifyOtp = 'idVerifyOtp';
+  static const String idProfileBanner = 'idProfileBanner';
   static var idGetListener = 'idGetListener';
   static var idPaginationListener = 'idPaginationListener';
   static var idCallingHistory = 'idCallingHistory';

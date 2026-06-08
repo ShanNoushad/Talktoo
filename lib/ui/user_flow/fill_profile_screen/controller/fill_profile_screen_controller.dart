@@ -37,8 +37,7 @@ class FillProfileScreenController extends GetxController {
 
   EditProfileModel? editProfileModel;
   FetchLoginUserProfileModel? fetchLoginUserProfileModel;
-  // MainScreenController mainScreenController = Get.put(MainScreenController());
-  int selectedIndex = 0; // Already hase
+  int selectedIndex = 0;
   String? dialCode;
 
   final ImagePicker imagePicker = ImagePicker();
@@ -46,23 +45,24 @@ class FillProfileScreenController extends GetxController {
 
   @override
   void onInit() async {
-    // await getDataFromArgs();
-    // await setDataFromArgs();
-
-    // Set default gender if not stored
     if (Database.loginUserGender.isEmpty) {
       selectedIndex = 0;
       final defaultGender = EnumLocale.txtMale.name.tr;
       genderController.text = defaultGender;
       Database.onSetLoginUserGender(defaultGender);
     } else {
-      // Set textfield value from database
       genderController.text = Database.loginUserGender;
-      selectedIndex = Database.loginUserGender.toLowerCase() == EnumLocale.txtFemale.name.tr.toLowerCase() ? 1 : 0;
+      selectedIndex = Database.loginUserGender.toLowerCase() ==
+          EnumLocale.txtFemale.name.tr.toLowerCase()
+          ? 1
+          : 0;
     }
-    nameController.text = Database.fetchLoginUserProfileModel?.user?.fullName ?? '';
-    emailController.text = Database.fetchLoginUserProfileModel?.user?.email ?? '';
-    numberController.text = Database.fetchLoginUserProfileModel?.user?.phoneNumber ?? '';
+    nameController.text =
+        Database.fetchLoginUserProfileModel?.user?.fullName ?? '';
+    emailController.text =
+        Database.fetchLoginUserProfileModel?.user?.email ?? '';
+    numberController.text =
+        Database.fetchLoginUserProfileModel?.user?.phoneNumber ?? '';
     photo = Database.fetchLoginUserProfileModel?.user?.profilePic ?? '';
     dialCode = Database.dialCode;
 
@@ -70,14 +70,8 @@ class FillProfileScreenController extends GetxController {
   }
 
   List<Map<String, dynamic>> gender = [
-    {
-      "txt": EnumLocale.txtMale.name.tr,
-      "image": AppAsset.maleImage,
-    },
-    {
-      "txt": EnumLocale.txtFemale.name.tr,
-      "image": AppAsset.femaleImage,
-    },
+    {"txt": EnumLocale.txtMale.name.tr, "image": AppAsset.maleImage},
+    {"txt": EnumLocale.txtFemale.name.tr, "image": AppAsset.femaleImage},
   ];
 
   /// select gender
@@ -85,21 +79,17 @@ class FillProfileScreenController extends GetxController {
     selectedIndex = index;
     final selectedGenderText = gender[selectedIndex]['txt'] ?? 'Male';
     genderController.text = selectedGenderText;
-
-    // Save selected gender locally
     Database.onSetLoginUserGender(selectedGenderText ?? 'Male');
-
     log("Database.loginUserGender :: ${Database.loginUserGender}");
-
     update([Constant.idGenderSelect]);
-    // update();
   }
 
   /// select date
   Future<void> selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now().subtract(const Duration(days: 3650)),
+      initialDate:
+      DateTime.now().subtract(const Duration(days: 3650)),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
       builder: (context, child) {
@@ -127,14 +117,16 @@ class FillProfileScreenController extends GetxController {
     );
 
     if (picked != null) {
-      dateController.text = "${picked.day.toString().padLeft(2, '0')} / ${picked.month.toString().padLeft(2, '0')} / ${picked.year}";
-      update(); // For GetBuilder to update
+      dateController.text =
+      "${picked.day.toString().padLeft(2, '0')} / ${picked.month.toString().padLeft(2, '0')} / ${picked.year}";
+      update();
     }
   }
 
   /// Get image from gallery
   getImageFromGallery() async {
-    xFiles = await imagePicker.pickImage(source: ImageSource.gallery, imageQuality: 100);
+    xFiles = await imagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 100);
     if (xFiles != null) {
       pickImage = xFiles!.path;
       log("Gallery Image Path ::: $pickImage");
@@ -144,7 +136,8 @@ class FillProfileScreenController extends GetxController {
 
   /// Get image from camera
   takePhoto() async {
-    xFiles = await imagePicker.pickImage(source: ImageSource.camera, imageQuality: 100);
+    xFiles = await imagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 100);
     if (xFiles != null) {
       pickImage = xFiles!.path;
       log("Camera Image Path ::: $pickImage");
@@ -154,20 +147,28 @@ class FillProfileScreenController extends GetxController {
 
   /// save profile button on tap
   Future<void> onSaveProfile() async {
-    Utils.showLog("Click On Save Profile => ${Database.loginUserId}");
+    Utils.showLog(
+        "Click On Save Profile => ${Database.loginUserId}");
 
     if (photo == "" && pickImage == null) {
-      Utils.showToast(Get.context!, EnumLocale.txtPleaseSelectProfileImage.name.tr);
+      Utils.showToast(Get.context!,
+          EnumLocale.txtPleaseSelectProfileImage.name.tr);
     } else if (nickNameController.text.trim().isEmpty) {
-      Utils.showToast(Get.context!, EnumLocale.txtPleaseEnterNickName.name.tr);
+      Utils.showToast(
+          Get.context!, EnumLocale.txtPleaseEnterNickName.name.tr);
     } else if (dateController.text.trim().isEmpty) {
-      Utils.showToast(Get.context!, EnumLocale.txtPleaseSelectBirthDate.name.tr);
+      Utils.showToast(Get.context!,
+          EnumLocale.txtPleaseSelectBirthDate.name.tr);
     } else if (numberController.text.trim().isEmpty) {
-      Utils.showToast(Get.context!, EnumLocale.txtPleaseEnterMobileNumber.name.tr);
+      Utils.showToast(Get.context!,
+          EnumLocale.txtPleaseEnterMobileNumber.name.tr);
     } else {
-      Get.dialog(const LoadingWidget(), barrierDismissible: false); // Start Loading...
+      Get.dialog(const LoadingWidget(),
+          barrierDismissible: false);
 
       await callEditApi();
+
+      // Mark profile as complete
       Database.onSetFillProfile(true);
     }
   }
@@ -192,35 +193,65 @@ class FillProfileScreenController extends GetxController {
     );
 
     if (editProfileModel?.status == true) {
-      Database.fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(loginUserId: Database.loginUserFirebaseId, token: token ?? '');
-      Database.onSetLoginUserProfilePic(Database.fetchLoginUserProfileModel?.user?.profilePic ?? "");
-      Database.onSetLoginUserName(Database.fetchLoginUserProfileModel!.user!.fullName!);
-      Database.onSetLoginUserNickName(Database.fetchLoginUserProfileModel?.user?.nickName ?? "");
-      Database.onSetLoginUserEmail(Database.fetchLoginUserProfileModel!.user!.email!);
-      Database.onSetLoginUserCountry(Database.fetchLoginUserProfileModel!.user!.country!);
-      Database.onSetLoginUserCountryFlag(Database.fetchLoginUserProfileModel!.user!.countryFlag!);
-      Database.onSetLoginUserBirthDate(Database.fetchLoginUserProfileModel?.user?.birthDate ?? "");
-      Database.onSetLoginUserGender(Database.fetchLoginUserProfileModel?.user?.gender ?? "Male");
-      Database.onSetLoginUserPhoneNumber(Database.fetchLoginUserProfileModel?.user?.phoneNumber ?? "");
-      Database.fetchLoginUserProfileModel = fetchLoginUserProfileModel;
+      // Re-fetch updated profile
+      fetchLoginUserProfileModel =
+      await FetchLoginUserProfileApi.callApi(
+        loginUserId: Database.loginUserFirebaseId,
+        token: token ?? '',
+      );
+      Database.fetchLoginUserProfileModel =
+          fetchLoginUserProfileModel;
+
+      // Update all local database fields
+      Database.onSetLoginUserProfilePic(
+          fetchLoginUserProfileModel?.user?.profilePic ?? "");
+      Database.onSetLoginUserName(
+          fetchLoginUserProfileModel!.user!.fullName!);
+      Database.onSetLoginUserNickName(
+          fetchLoginUserProfileModel?.user?.nickName ?? "");
+      Database.onSetLoginUserEmail(
+          fetchLoginUserProfileModel!.user!.email!);
+      Database.onSetLoginUserCountry(
+          fetchLoginUserProfileModel!.user!.country!);
+      Database.onSetLoginUserCountryFlag(
+          fetchLoginUserProfileModel!.user!.countryFlag!);
+      Database.onSetLoginUserBirthDate(
+          fetchLoginUserProfileModel?.user?.birthDate ?? "");
+      Database.onSetLoginUserGender(
+          fetchLoginUserProfileModel?.user?.gender ?? "Male");
+      Database.onSetLoginUserPhoneNumber(
+          fetchLoginUserProfileModel?.user?.phoneNumber ?? "");
+
+      // Mark profile complete so banner disappears on home
+      Database.onSetFillProfile(true);
 
       log(" loginUserProfilePic ::: ${Database.loginUserProfilePic}");
+      log("${Database.fetchLoginUserProfileModel?.user}");
 
       update([Constant.idProfile]);
-
-      log("${Database.fetchLoginUserProfileModel?.user}");
-      fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(loginUserId: Database.loginUserFirebaseId, token: token ?? '');
-      Database.fetchLoginUserProfileModel = fetchLoginUserProfileModel;
-
       update();
 
-      if (Database.fetchLoginUserProfileModel?.user?.isListener == true) {
-        Get.toNamed(AppRoutes.hostBottomBar);
+      if (Get.isDialogOpen ?? false) Get.back(); // close loader
+
+      // ── Routing ──────────────────────────────────────────────────────
+      // If the user came here from the home banner (stack still has home),
+      // just pop back so home refreshes via the .then() callback.
+      // If they were pushed here from OTP (no home in stack), go to home.
+      if (Get.previousRoute == AppRoutes.bottomBar ||
+          Get.previousRoute == AppRoutes.hostBottomBar) {
+        Get.back(); // return to home; the .then() in HomeScreen triggers update
       } else {
-        Get.toNamed(AppRoutes.bottomBar);
+        if (Database.fetchLoginUserProfileModel?.user?.isListener ==
+            true) {
+          Get.offAllNamed(AppRoutes.hostBottomBar);
+        } else {
+          Get.offAllNamed(AppRoutes.bottomBar);
+        }
       }
     } else {
-      Utils.showToast(Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
+      if (Get.isDialogOpen ?? false) Get.back();
+      Utils.showToast(
+          Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
     }
   }
 
@@ -231,12 +262,14 @@ class FillProfileScreenController extends GetxController {
     CustomCountryPicker.pickCountry(
       context,
       false,
-      (country) {
+          (country) {
         flagController.text = country.flagEmoji;
         countryController.text = country.name;
         update([Constant.idChangeCountry]);
-        debugPrint("Country selected: ${country.name}, Flag: ${country.flagEmoji}");
-        Utils.showLog("Selected Country => Flag: ${flagController.text}, Name: ${countryController.text}");
+        debugPrint(
+            "Country selected: ${country.name}, Flag: ${country.flagEmoji}");
+        Utils.showLog(
+            "Selected Country => Flag: ${flagController.text}, Name: ${countryController.text}");
       },
     );
 

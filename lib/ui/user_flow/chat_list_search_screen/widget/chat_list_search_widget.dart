@@ -6,7 +6,6 @@ import 'package:talk_in/ui/user_flow/chat_screen/widget/chat_screen_widget.dart'
 import 'package:talk_in/utils/app_asset.dart';
 import 'package:talk_in/utils/app_color.dart';
 import 'package:talk_in/utils/enums.dart';
-import 'package:talk_in/utils/utils.dart';
 
 class ChatListSearchWidget extends StatelessWidget {
   const ChatListSearchWidget({super.key});
@@ -14,144 +13,200 @@ class ChatListSearchWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backGroundColor,
       body: SafeArea(
         child: Column(
           children: [
+            // ── Search bar row ──────────────────────────────────────────
             GetBuilder<ChatListSearchController>(
               builder: (controller) {
-                return Row(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Get.back();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(22),
-                        child: Image.asset(
-                          height: 16,
-                          AppAsset.backArrowIcon,
-                          color: AppColors.black,
+                return Container(
+                  color: AppColors.backGroundColor,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10, horizontal: 4),
+                  child: Row(
+                    children: [
+                      InkWell(
+                        onTap: () => Get.back(),
+                        borderRadius: BorderRadius.circular(50),
+                        child: Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: Image.asset(
+                            AppAsset.backArrowIcon,
+                            height: 16,
+                            color: AppColors.appColor,
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          children: [
-                            Image.asset(
-                              AppAsset.searchIcon,
-                              height: 18,
-                              width: 18,
-                              color: controller.hasText ? AppColors.black : AppColors.otpScreenGrey,
+
+                      // Search field
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: AppColors.lightPurple1,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: AppColors.borderColor,
+                              width: 0.8,
                             ),
-                            const SizedBox(width: 12),
-                            Container(
-                              height: 15,
-                              width: 1,
-                              color: AppColors.grey.withValues(alpha: 0.4),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: TextField(
-                                controller: controller.searchController,
-                                decoration: InputDecoration(
-                                  hintText: EnumLocale.txtSearchPeople.name.tr,
-                                  border: InputBorder.none,
-                                ),
-                                textInputAction: TextInputAction.done,
-                                style: const TextStyle(fontSize: 16),
+                          ),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                AppAsset.searchIcon,
+                                height: 18,
+                                width: 18,
+                                color: controller.hasText
+                                    ? AppColors.appColor
+                                    : AppColors.otpScreenGrey,
                               ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                if (controller.hasText) {
-                                  controller.clearText();
-                                }
-                              },
-                              child: controller.hasText
-                                  ? Image.asset(
+                              const SizedBox(width: 10),
+
+                              // Divider
+                              Container(
+                                height: 16,
+                                width: 0.8,
+                                color: AppColors.grey
+                                    .withValues(alpha: 0.35),
+                              ),
+                              const SizedBox(width: 10),
+
+                              // Text field
+                              Expanded(
+                                child: TextField(
+                                  controller: controller.searchController,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: AppColors.appColor,
+                                  ),
+                                  cursorColor: AppColors.primary,
+                                  decoration: InputDecoration(
+                                    hintText:
+                                    EnumLocale.txtSearchPeople.name.tr,
+                                    hintStyle: TextStyle(
+                                      color: AppColors.otpScreenGrey,
+                                      fontSize: 15,
+                                    ),
+                                    border: InputBorder.none,
+                                    isDense: true,
+                                    contentPadding:
+                                    const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                  ),
+                                  textInputAction: TextInputAction.done,
+                                ),
+                              ),
+
+                              // Clear button
+                              if (controller.hasText)
+                                GestureDetector(
+                                  onTap: controller.clearText,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 6),
+                                    child: Image.asset(
                                       AppAsset.closeFillIcon,
-                                      height: 22,
-                                      width: 22,
-                                      color: controller.hasText ? AppColors.profileLanguage.withValues(alpha: 0.5) : AppColors.otpScreenGrey,
-                                    )
-                                  : SizedBox.shrink(),
-                            ),
-                          ],
-                        ),
-                      ).paddingOnly(right: 16),
-                    ),
-                  ],
+                                      height: 20,
+                                      width: 20,
+                                      color: AppColors.profileLanguage
+                                          .withValues(alpha: 0.6),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ).paddingOnly(right: 14),
+                      ),
+                    ],
+                  ),
                 );
               },
             ),
-            8.height,
+
+            // Subtle divider below search bar
+            Divider(
+              color: AppColors.historyDivider,
+              height: 0,
+              thickness: 0.6,
+            ),
+
+            // ── Results list ────────────────────────────────────────────
             Expanded(
               child: Container(
-                color: AppColors.white,
+                color: AppColors.backGroundColor,
                 child: GetBuilder<ChatListSearchController>(
                   builder: (controller) {
-                    return controller.displayedListeners.isEmpty
-                        ? SizedBox(
-                            height: Get.height,
-                            child: Center(
-                              child: Image.asset(
+                    if (controller.displayedListeners.isEmpty) {
+                      return SizedBox(
+                        height: Get.height,
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(
                                 AppAsset.noChatFound,
-                                height: 250,
+                                height: 200,
+                                color: AppColors.grey.withValues(alpha: 0.5),
                               ),
-                            ),
-                          )
-                        : ListView.builder(
-                            itemCount: controller.displayedListeners.length,
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            padding: EdgeInsets.zero,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  SearchChatViewItem(
-                                    onTap: () {
-                                      Get.toNamed(
-                                        AppRoutes.personalChatScreen,
-                                        arguments: [
-                                          controller.displayedListeners[index].chatUserId,
-                                          controller.displayedListeners[index].name,
-                                          controller.displayedListeners[index].isOnline,
-                                          controller.displayedListeners[index].image,
-                                          controller.displayedListeners[index].ratePrivateAudioCall,
-                                          controller.displayedListeners[index].ratePrivateVideoCall,
-                                          controller.displayedListeners[index].isFake,
-                                          controller.displayedListeners[index].video,
-                                          controller.displayedListeners[index].isAvailableForPrivateVideoCall,
-                                          controller.displayedListeners[index].isAvailableForPrivateAudioCall,
-                                        ],
-                                      );
-                                    },
-                                    isOnline: controller.displayedListeners[index].isOnline ?? false,
-                                    lastMsgTime: controller.displayedListeners[index].messageTime.toString(),
-                                    lastMsg: controller.displayedListeners[index].lastMessage ?? '',
-                                    index: index,
-                                    name: controller.displayedListeners[index].name ?? '',
-                                    image: controller.displayedListeners[index].image ?? '',
-                                  ).paddingOnly(left: 14, right: 14),
-                                  controller.displayedListeners.length == 1
-                                      ? SizedBox.shrink()
-                                      : Divider(
-                                          color: AppColors.lightGrey,
-                                          height: 0,
-                                        ),
-                                ],
-                              );
-                            },
-                          );
+                              const SizedBox(height: 16),
+                              Text(
+                                'No results found',
+                                style: TextStyle(
+                                  color: AppColors.otpScreenGrey,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
+                    return ListView.separated(
+                      itemCount: controller.displayedListeners.length,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      separatorBuilder: (_, __) => Divider(
+                        color: AppColors.historyDivider,
+                        height: 0,
+                        thickness: 0.6,
+                        indent: 76,
+                        endIndent: 16,
+                      ),
+                      itemBuilder: (context, index) {
+                        final user =
+                        controller.displayedListeners[index];
+                        return SearchChatViewItem(
+                          onTap: () {
+                            Get.toNamed(
+                              AppRoutes.personalChatScreen,
+                              arguments: [
+                                user.chatUserId,
+                                user.name,
+                                user.isOnline,
+                                user.image,
+                                user.ratePrivateAudioCall,
+                                user.ratePrivateVideoCall,
+                                user.isFake,
+                                user.video,
+                                user.isAvailableForPrivateVideoCall,
+                                user.isAvailableForPrivateAudioCall,
+                              ],
+                            );
+                          },
+                          isOnline: user.isOnline ?? false,
+                          lastMsgTime: user.messageTime.toString(),
+                          lastMsg: user.lastMessage ?? '',
+                          index: index,
+                          name: user.name ?? '',
+                          image: user.image ?? '',
+                        ).paddingOnly(left: 14, right: 14, top: 4, bottom: 4);
+                      },
+                    );
                   },
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

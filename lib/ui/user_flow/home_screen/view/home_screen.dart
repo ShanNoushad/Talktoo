@@ -6,28 +6,28 @@ import 'package:talk_in/ui/user_flow/home_screen/controller/home_screen_controll
 import 'package:talk_in/ui/user_flow/home_screen/widget/find_more_widget.dart';
 import 'package:talk_in/ui/user_flow/home_screen/widget/home_app_bar_widget.dart';
 import 'package:talk_in/ui/user_flow/home_screen/widget/top_listener_widget.dart';
-import 'package:talk_in/utils/app_color.dart';
 import 'package:talk_in/utils/constant.dart';
 import 'package:talk_in/utils/database.dart';
 import 'package:talk_in/utils/font_style.dart';
 import 'package:talk_in/utils/utils.dart';
 
 import '../../all_listeners_in_home/all_listeners_in_home.dart';
+import '../../previous_call/previous_call.dart';
 
 class HomeScreen extends GetView<HomeScreenController> {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Utils.onChangeStatusBar(brightness: Brightness.dark);
+    Utils.onChangeStatusBar(brightness: Brightness.light); // light icons on dark bg
 
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         Get.dialog(
-          barrierColor: AppColors.black.withValues(alpha: 0.8),
+          barrierColor: Colors.black.withValues(alpha: 0.9),
           Dialog(
-            backgroundColor: AppColors.transparent,
+            backgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
             surfaceTintColor: Colors.transparent,
             elevation: 0,
@@ -37,19 +37,19 @@ class HomeScreen extends GetView<HomeScreenController> {
         if (didPop) return;
       },
       child: Scaffold(
-        backgroundColor: AppColors.backGroundColor,
+        backgroundColor: const Color(0xFF0D0D14), // dark background
         body: GetBuilder<HomeScreenController>(
           id: Constant.idGetListener,
           builder: (controller) {
             return RefreshIndicator(
+              color: const Color(0xFF7B5FCC),
+              backgroundColor: const Color(0xFF1A1A2E),
               onRefresh: () async => controller.onRefresh(),
               child: Column(
                 children: [
-                  HomeAppBarWidget().paddingSymmetric(horizontal: 16),
+                  HomeAppBarWidget(),
 
                   // ── Incomplete profile banner ──────────────────────────
-                  // Uses idProfileBanner so HomeScreenController.update()
-                  // can trigger it independently.
                   GetBuilder<HomeScreenController>(
                     id: Constant.idProfileBanner,
                     builder: (ctrl) {
@@ -67,8 +67,6 @@ class HomeScreen extends GetView<HomeScreenController> {
                               Database.loginUserEmail,
                             ],
                           )?.then((_) {
-                            // When user returns from fill profile screen,
-                            // re-check and hide the banner if now complete.
                             ctrl.update([Constant.idProfileBanner]);
                           });
                         },
@@ -80,18 +78,21 @@ class HomeScreen extends GetView<HomeScreenController> {
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               colors: [
-                                Color(0xFF7B5FCC),
-                                Color(0xFF9C7FE8)
+                                Color(0xFF3D2080), // deeper dark purple
+                                Color(0xFF5A3FCC),
                               ],
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
                             ),
                             borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: const Color(0xFF6B46F6).withValues(alpha: 0.4),
+                              width: 1,
+                            ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF7B5FCC)
-                                    .withValues(alpha: 0.3),
-                                blurRadius: 10,
+                                color: const Color(0xFF5A3FCC).withValues(alpha: 0.25),
+                                blurRadius: 12,
                                 offset: const Offset(0, 4),
                               ),
                             ],
@@ -101,8 +102,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: Colors.white
-                                      .withValues(alpha: 0.2),
+                                  color: Colors.white.withValues(alpha: 0.12),
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
@@ -114,8 +114,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       "Complete your profile",
@@ -129,8 +128,7 @@ class HomeScreen extends GetView<HomeScreenController> {
                                       "Add your name, photo & details to get started.",
                                       style: AppFontStyle.fontStyleW400(
                                         fontSize: 12,
-                                        fontColor: Colors.white
-                                            .withValues(alpha: 0.85),
+                                        fontColor: Colors.white.withValues(alpha: 0.65),
                                       ),
                                     ),
                                   ],
@@ -141,15 +139,18 @@ class HomeScreen extends GetView<HomeScreenController> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 14, vertical: 7),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                  BorderRadius.circular(20),
+                                  color: const Color(0xFF6B46F6),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    width: 1,
+                                  ),
                                 ),
                                 child: Text(
                                   "Set up",
                                   style: AppFontStyle.fontStyleW600(
                                     fontSize: 12,
-                                    fontColor: const Color(0xFF7B5FCC),
+                                    fontColor: Colors.white,
                                   ),
                                 ),
                               ),
@@ -160,7 +161,6 @@ class HomeScreen extends GetView<HomeScreenController> {
                     },
                   ),
 
-                  // ── Main scrollable content ────────────────────────────
                   Expanded(
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -168,6 +168,11 @@ class HomeScreen extends GetView<HomeScreenController> {
                         children: [
                           FindMoreWidget(),
                           TopListenerWidget(),
+                           Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ContinueConversationCard(),
+                           ),
+
                           ListenersGridEmbedded(),
                         ],
                       ),

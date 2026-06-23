@@ -19,9 +19,10 @@ class ListenersAppBarView extends StatelessWidget {
     return PreferredSize(
       preferredSize: Size.fromHeight(120),
       child: CustomAppBar(
-        appBarColor: AppColors.lightPurple1,
+        appBarColor: AppColors.lightPurple,         // ✅ #12131A deep dark bg
         showBoxShadow: false,
         title: EnumLocale.txtAllListeners.name.tr,
+        textColor: AppColors.white,
         showLeadingIcon: false,
         action: [
           GestureDetector(
@@ -32,7 +33,7 @@ class ListenersAppBarView extends StatelessWidget {
               height: 42,
               width: 42,
               decoration: BoxDecoration(
-                color: AppColors.lightGrey.withValues(alpha: 0.5),
+                color: AppColors.lightPurple,           // ✅ #1E2030 dark card surface
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
@@ -40,6 +41,7 @@ class ListenersAppBarView extends StatelessWidget {
                   AppAsset.searchIcon,
                   height: 18,
                   width: 18,
+                  color: AppColors.appColor,            // ✅ #EDEFF5 near-white icon
                 ),
               ),
             ).paddingOnly(right: 18),
@@ -61,8 +63,8 @@ class ListenersTopButtonView extends StatelessWidget {
           builder: (controller) {
             return Expanded(
               child: PrimaryAppButton(
-                borderColor: AppColors.border,
-                color: AppColors.white,
+                borderColor: AppColors.borderColor,     // ✅ #252840 dark border
+                color: AppColors.lightPurple,           // ✅ #1E2030 dark card surface
                 onTap: () {
                   Get.bottomSheet(
                     AppLanguageBottomSheet(),
@@ -77,11 +79,14 @@ class ListenersTopButtonView extends StatelessWidget {
                       AppAsset.speakingBoy,
                       height: 25,
                       width: 25,
-                      color: AppColors.darkOrange,
+                      color: AppColors.darkOrange,      // ✅ #FF6D00 stays vivid on dark
                     ).paddingSymmetric(vertical: 10),
                     Text(
                       EnumLocale.txtLanguage.name.tr,
-                      style: AppFontStyle.fontStyleW500(fontSize: 14, fontColor: AppColors.black),
+                      style: AppFontStyle.fontStyleW500(
+                        fontSize: 14,
+                        fontColor: AppColors.appColor,  // ✅ #EDEFF5 near-white text
+                      ),
                     ),
                     RotatedBox(
                       quarterTurns: 3,
@@ -89,7 +94,7 @@ class ListenersTopButtonView extends StatelessWidget {
                         AppAsset.backArrowIcon,
                         height: 16,
                         width: 16,
-                        color: AppColors.darkGrey.withValues(alpha: 0.5),
+                        color: AppColors.grey,          // ✅ #6B6E82 muted arrow
                       ),
                     ),
                   ],
@@ -98,13 +103,11 @@ class ListenersTopButtonView extends StatelessWidget {
             );
           },
         ),
-        SizedBox(
-          width: 16,
-        ),
+        SizedBox(width: 16),
         Expanded(
           child: PrimaryAppButton(
-            borderColor: AppColors.border,
-            color: AppColors.white,
+            borderColor: AppColors.borderColor,         // ✅ #252840 dark border
+            color: AppColors.lightPurple,               // ✅ #1E2030 dark card surface
             onTap: () {
               Get.bottomSheet(
                 TalkAboutBottomSheet(),
@@ -119,11 +122,14 @@ class ListenersTopButtonView extends StatelessWidget {
                   AppAsset.talkAboutIcon,
                   height: 25,
                   width: 25,
-                  color: AppColors.blue,
+                  color: AppColors.blue,                // ✅ #40C4FF bright blue on dark
                 ).paddingSymmetric(vertical: 10),
                 Text(
                   EnumLocale.txtTalkAbout.name.tr,
-                  style: AppFontStyle.fontStyleW500(fontSize: 14, fontColor: AppColors.black),
+                  style: AppFontStyle.fontStyleW500(
+                    fontSize: 14,
+                    fontColor: AppColors.appColor,      // ✅ #EDEFF5 near-white text
+                  ),
                 ),
                 RotatedBox(
                   quarterTurns: 3,
@@ -131,7 +137,7 @@ class ListenersTopButtonView extends StatelessWidget {
                     AppAsset.backArrowIcon,
                     height: 16,
                     width: 16,
-                    color: AppColors.darkGrey.withValues(alpha: 0.5),
+                    color: AppColors.grey,              // ✅ #6B6E82 muted arrow
                   ),
                 ),
               ],

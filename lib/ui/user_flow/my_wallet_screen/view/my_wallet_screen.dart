@@ -11,7 +11,7 @@ class MyWalletScreen extends GetView<MyWalletController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.black,
       body: GetBuilder<MyWalletController>(builder: (controller) {
         return Column(
           children: [
@@ -27,8 +27,6 @@ class MyWalletScreen extends GetView<MyWalletController> {
                     children: [
                       CoinPlanWidget(),
                       WalletGuideView(),
-
-                      // AddCoinBalanceView(),
                     ],
                   ),
                 ),

@@ -5,22 +5,42 @@ import 'package:talk_in/ui/user_flow/home_screen/shimmer/top_listener_shimmer.da
 import 'package:talk_in/ui/user_flow/listener_screen/controller/listeners_screen_controller.dart';
 import 'package:talk_in/utils/app_asset.dart';
 import 'package:talk_in/utils/constant.dart';
-import 'package:talk_in/utils/database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../utils/app_color.dart';
+import '../../../utils/database.dart';
+
+// class _C {
+//   static const bg = Color(0xFFF4F6FB);
+//   static const card = Colors.white;
+//   static const title = Color(0xFF181C2E);
+//   static const subtitle = Color(0xFF6B7280);
+//   static const primary = Color(0xFF5B5EF4);
+//   static const green = Color(0xFF22C55E);
+//   static const orange = Color(0xFFFF9500);
+//   static const red = Color(0xFFEF4444);
+//   static const grey = Color(0xFFB0B8C1);
+//   static const starActive = Color(0xFFFACC15);
+//   static const starInactive = Color(0xFFE5E7EB);
+//   static const shadow = Color(0x0F000000);
+//   static const shadowDeep = Color(0x18000000);
+// }
 
 class _C {
-  static const bg = Color(0xFFF4F6FB);
-  static const card = Colors.white;
-  static const title = Color(0xFF181C2E);
-  static const subtitle = Color(0xFF6B7280);
-  static const primary = Color(0xFF5B5EF4);
+  static const bg = Color(0xFF0F111A); // Deep dark background
+  static const card = Color(0xFF1E2235); // Dark surface card color
+  static const title = Color(0xFFFFFFFF); // White for high contrast readability
+  static const subtitle = Color(0xFF9CA3AF); // Muted gray for secondary details
+  static const primary = Color(
+      0xFF7C7EFA); // Slightly lighter primary blue for dark mode brilliance
   static const green = Color(0xFF22C55E);
   static const orange = Color(0xFFFF9500);
   static const red = Color(0xFFEF4444);
-  static const grey = Color(0xFFB0B8C1);
+  static const grey = Color(0xFF6B7280);
   static const starActive = Color(0xFFFACC15);
-  static const starInactive = Color(0xFFE5E7EB);
-  static const shadow = Color(0x0F000000);
-  static const shadowDeep = Color(0x18000000);
+  static const shadow =
+      Color(0x33000000); // Darker shadow footprint for dark UI
+  static const shadowDeep = Color(0x55000000);
 }
 
 class ListenersGridEmbedded extends StatelessWidget {
@@ -44,33 +64,39 @@ class ListenersGridEmbedded extends StatelessWidget {
         }
 
         return Container(
-          color: _C.bg,
+          color: Colors.black,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ── Section Header ────────────────────────────────────────
               Padding(
                 padding: const EdgeInsets.fromLTRB(18, 18, 18, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     Text(
                       'All Listeners',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 22,
                         fontWeight: FontWeight.w800,
-                        color: _C.title,
+                        color: Colors.white,
                         letterSpacing: -0.5,
                       ),
                     ),
-                    SizedBox(height: 3),
-                    Text(
-                      'Choose someone to talk to',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: _C.subtitle,
-                        fontWeight: FontWeight.w400,
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Filter',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: _C.primary,
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Icon(Icons.tune_rounded, size: 18, color: _C.primary),
+                      ],
                     ),
                   ],
                 ),
@@ -80,62 +106,50 @@ class ListenersGridEmbedded extends StatelessWidget {
               ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 14, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
                 itemCount: controller.allListener.length,
-                separatorBuilder: (_, __) =>
-                const SizedBox(height: 10),
+                separatorBuilder: (_, __) => const SizedBox(height: 10),
                 itemBuilder: (context, index) {
                   final listener = controller.allListener[index];
 
-                  final bool isAvailable =
-                      listener.statusLabel == "Available";
-                  final bool isOnCall =
-                      listener.statusLabel == "On Call";
-                  final bool isOffline = !isAvailable && !isOnCall;
+                  final bool isAvailable = listener.statusLabel == "Available";
+                  final bool isOnCall = listener.statusLabel == "On Call";
 
                   // Status color — green / orange / grey
                   final Color statusColor = isAvailable
                       ? _C.green
                       : isOnCall
-                      ? _C.orange
-                      : _C.grey;
+                          ? _C.orange
+                          : _C.grey;
 
                   final String statusLabel = isAvailable
                       ? "Online"
                       : isOnCall
-                      ? "On Call"
-                      : "Offline";
+                          ? "On Call"
+                          : "Offline";
 
-                  final double rating = listener.callCount != null &&
-                      listener.callCount! > 0
-                      ? (3.5 + (listener.callCount! % 15) / 10.0)
-                      .clamp(3.5, 5.0)
-                      : 4.0;
+                  final double rating =
+                      listener.callCount != null && listener.callCount! > 0
+                          ? (3.5 + (listener.callCount! % 15) / 10.0)
+                              .clamp(3.5, 5.0)
+                          : 4.0;
 
                   final bool callerIsUser =
-                      Database.fetchLoginUserProfileModel?.user
-                          ?.isListener ==
+                      Database.fetchLoginUserProfileModel?.user?.isListener ==
                           false;
                   final String callerId = callerIsUser
-                      ? Database.fetchLoginUserProfileModel?.user
-                      ?.id ??
-                      ''
-                      : Database.fetchLoginUserProfileModel?.user
-                      ?.listenerId ??
-                      '';
+                      ? Database.fetchLoginUserProfileModel?.user?.id ?? ''
+                      : Database.fetchLoginUserProfileModel?.user?.listenerId ??
+                          '';
                   final String callerName =
-                      Database.fetchLoginUserProfileModel?.user
-                          ?.fullName ??
-                          '';
+                      Database.fetchLoginUserProfileModel?.user?.fullName ?? '';
                   final String callerImage =
-                      Database.fetchLoginUserProfileModel?.user
-                          ?.profilePic ??
+                      Database.fetchLoginUserProfileModel?.user?.profilePic ??
                           '';
-                  final String callerRole =
-                  callerIsUser ? 'user' : 'listener';
+                  final String callerRole = callerIsUser ? 'user' : 'listener';
                   final String receiverRole =
-                  callerIsUser ? 'listener' : 'user';
+                      callerIsUser ? 'listener' : 'user';
 
                   return GestureDetector(
                     onTap: () => Get.toNamed(
@@ -163,51 +177,41 @@ class ListenersGridEmbedded extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 13, vertical: 12),
                         child: Row(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             // ── Avatar ──────────────────────────────
                             Stack(
                               children: [
                                 Container(
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(15),
-                                    // colored border matching status
-                                    border: Border.all(
-                                      color: statusColor,
-                                      width: 2,
-                                    ),
+                                    borderRadius: BorderRadius.circular(15),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: statusColor
-                                            .withValues(alpha: 0.18),
+                                        color: Colors.black
+                                            .withValues(alpha: 0.08),
                                         blurRadius: 8,
                                         offset: const Offset(0, 2),
                                       ),
                                     ],
                                   ),
                                   child: ClipRRect(
-                                    borderRadius:
-                                    BorderRadius.circular(13),
+                                    borderRadius: BorderRadius.circular(15),
                                     child: listener.image != null &&
-                                        listener.image!.isNotEmpty
+                                            listener.image!.isNotEmpty
                                         ? Image.network(
-                                      listener.image!,
-                                      height: 70,
-                                      width: 70,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (_, __, ___) =>
-                                          _placeholder(),
-                                    )
+                                            listener.image!,
+                                            height: 74,
+                                            width: 74,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (_, __, ___) =>
+                                                _placeholder(),
+                                          )
                                         : _placeholder(),
                                   ),
                                 ),
-                                // status dot
                                 Positioned(
-                                  bottom: 2,
-                                  right: 2,
+                                  top: 4,
+                                  right: 4,
                                   child: Container(
                                     width: 12,
                                     height: 12,
@@ -215,8 +219,7 @@ class ListenersGridEmbedded extends StatelessWidget {
                                       color: statusColor,
                                       shape: BoxShape.circle,
                                       border: Border.all(
-                                          color: Colors.white,
-                                          width: 2),
+                                          color: Colors.white, width: 2),
                                     ),
                                   ),
                                 ),
@@ -225,90 +228,135 @@ class ListenersGridEmbedded extends StatelessWidget {
 
                             const SizedBox(width: 12),
 
-                            // ── Info column ──────────────────────────
                             Expanded(
                               child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  // Name + status label inline
                                   Row(
                                     children: [
                                       Flexible(
                                         child: Text(
-                                          listener.age != null
-                                              ? '${listener.name ?? ''}'
-                                              : listener.name ?? '',
+                                          listener.name ?? '',
                                           style: const TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 15,
                                             fontWeight: FontWeight.w800,
                                             color: _C.title,
                                             letterSpacing: -0.2,
                                           ),
                                           maxLines: 1,
-                                          overflow:
-                                          TextOverflow.ellipsis,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                      const SizedBox(width: 6),
-                                      // ● Status label
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Container(
-                                            width: 7,
-                                            height: 7,
-                                            decoration: BoxDecoration(
-                                              color: statusColor,
-                                              shape: BoxShape.circle,
-                                            ),
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: statusColor.withValues(
+                                              alpha: 0.12),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: Text(
+                                          statusLabel,
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                            color: statusColor,
                                           ),
-                                          const SizedBox(width: 3),
-                                          Text(
-                                            statusLabel,
-                                            style: TextStyle(
-                                              fontSize: 11,
-                                              fontWeight:
-                                              FontWeight.w600,
-                                              color: statusColor,
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
                                     ],
                                   ),
 
-                                  const SizedBox(height: 3),
+                                  const SizedBox(height: 6),
 
-                                  // Gender + age
-
-
-                                  const SizedBox(height: 4),
-
-                                  // Language chip
-                                  if (listener.language != null &&
-                                      listener.language!.isNotEmpty)
-                                    _LanguageChip(
-                                      language: listener.language![0]
-                                          .toString(),
-                                    ),
-
-                                  const SizedBox(height: 4),
-
-                                  // Stars + call count
-                                  Row(
-                                    children: [
-                                      _StarRating(rating: rating),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        '${listener.callCount ?? 0} calls',
+                                  if (listener.talkTopics != null &&
+                                      listener.talkTopics!.isNotEmpty)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            _C.primary.withValues(alpha: 0.10),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Text(
+                                        listener.talkTopics.toString(),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
-                                          fontSize: 10,
-                                          color: _C.subtitle,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                          color: _C.primary,
                                         ),
                                       ),
+                                    ),
+
+                                  const SizedBox(height: 6),
+
+                                  // Language + Stars + call count
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          if (listener.language != null &&
+                                              listener.language!.isNotEmpty) ...[
+                                            const Icon(Icons.language_rounded,
+                                                size: 13, color: _C.subtitle),
+                                            const SizedBox(width: 4),
+                                            Flexible(
+                                              child: Text(
+                                                listener.language!.join(', '),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontSize: 11,
+                                                  color: _C.subtitle,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 6),
+                                          ],
+
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                        ],
+                                      ),
+                                      SizedBox(height: 4,),
+                                      Row(children: [
+                                        Image.asset(AppAsset.starCoin,width: 15,),Text("/Sec",style: TextStyle(color: AppColors.white,fontSize: 10),),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '|',
+                                          style: const TextStyle(
+                                            fontSize: 11,
+                                            color: _C.subtitle,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+
+
+
+                                        const Icon(Icons.star_rounded,
+                                            size: 14, color: _C.starActive),
+                                        const SizedBox(width: 2),
+                                        Text(
+                                          rating.toStringAsFixed(1),
+                                          style: const TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w700,
+                                            color: _C.title,
+                                          ),
+                                        ),
+
+
+
+                                      ],)
                                     ],
                                   ),
                                 ],
@@ -318,105 +366,90 @@ class ListenersGridEmbedded extends StatelessWidget {
                             const SizedBox(width: 8),
 
                             // ── Action buttons ───────────────────────
-                            if (isOffline || isOnCall)
-                            // Offline / On Call → chat only
-                              _ActionButton(
-                                icon: Icons.chat_bubble_rounded,
-                                color: statusColor,
-                                filled: false,
-                                onTap: () => Get.toNamed(
-                                  AppRoutes.personalChatScreen,
-                                  arguments: [
-                                    listener.id,
-                                    listener.name,
-                                    listener.statusLabel,
-                                    listener.image,
-                                    listener.ratePrivateAudioCall,
-                                    listener.ratePrivateVideoCall,
-                                    listener.isFake,
-                                    listener.video,
-                                    listener
-                                        .isAvailableForPrivateVideoCall,
-                                    listener
-                                        .isAvailableForPrivateAudioCall,
-                                  ],
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _ActionButton(
+                                  icon: Icons.videocam_rounded,
+                                  color: _C.green,
+                                  onTap: () {
+                                    final isFake = listener.isFake ?? false;
+                                    if (isFake) {
+                                      Get.toNamed(
+                                        AppRoutes.outgoingAudioCallScreen,
+                                        arguments: [
+                                          listener.name ?? '',
+                                          listener.image ?? '',
+                                          listener.video ?? [],
+                                          listener.audio ?? '',
+                                          'video',
+                                        ],
+                                      );
+                                    } else {
+                                      saveLastCalledListener(
+                                        id: listener.id ?? '',
+                                        name: listener.name ?? '',
+                                        image: listener.image ?? '',
+                                      );
+                                      Get.toNamed(
+
+                                        AppRoutes.outgoingAudioCallScreen,
+                                        arguments: {
+                                          'callerId': callerId,
+                                          'receiverId': listener.id ?? '',
+                                          'receiverName': listener.name ?? '',
+                                          'receiverImage': listener.image ?? '',
+                                          'callerImage': callerImage,
+                                          'callerfullName': callerName,
+                                          'callerRole': callerRole,
+                                          'receiverRole': receiverRole,
+                                          'callType': 'private',
+                                          'callMode': 'video',
+                                          'callId': '',
+                                        },
+                                      );
+                                    }
+                                  },
                                 ),
-                              )
-                            else
-                            // Available → chat (outline) + call (filled green)
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  _ActionButton(
-                                    icon: Icons.chat_bubble_rounded,
-                                    color: _C.green,
-                                    filled: false,
-                                    onTap: () => Get.toNamed(
-                                      AppRoutes.personalChatScreen,
-                                      arguments: [
-                                        listener.id,
-                                        listener.name,
-                                        listener.statusLabel,
-                                        listener.image,
-                                        listener.ratePrivateAudioCall,
-                                        listener.ratePrivateVideoCall,
-                                        listener.isFake,
-                                        listener.video,
-                                        listener
-                                            .isAvailableForPrivateVideoCall,
-                                        listener
-                                            .isAvailableForPrivateAudioCall,
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  _ActionButton(
-                                    icon: Icons.call_rounded,
-                                    color: _C.green,
-                                    filled: true,
-                                    onTap: () {
-                                      final isFake =
-                                          listener.isFake ?? false;
-                                      if (isFake) {
-                                        Get.toNamed(
-                                          AppRoutes
-                                              .outgoingAudioCallScreen,
-                                          arguments: [
-                                            listener.name ?? '',
-                                            listener.image ?? '',
-                                            listener.video ?? [],
-                                            listener.audio ?? '',
-                                            'audio',
-                                          ],
-                                        );
-                                      } else {
-                                        Get.toNamed(
-                                          AppRoutes
-                                              .outgoingAudioCallScreen,
-                                          arguments: {
-                                            'callerId': callerId,
-                                            'receiverId':
-                                            listener.id ?? '',
-                                            'receiverName':
-                                            listener.name ?? '',
-                                            'receiverImage':
-                                            listener.image ?? '',
-                                            'callerImage': callerImage,
-                                            'callerfullName':
-                                            callerName,
-                                            'callerRole': callerRole,
-                                            'receiverRole':
-                                            receiverRole,
-                                            'callType': 'private',
-                                            'callMode': 'audio',
-                                            'callId': '',
-                                          },
-                                        );
-                                      }
-                                    },
-                                  ),
-                                ],
-                              ),
+                                const SizedBox(width: 8),
+                                _ActionButton(
+                                  icon: Icons.call_rounded,
+                                  color: _C.green,
+                                  onTap: () {
+                                    final isFake = listener.isFake ?? false;
+                                    if (isFake) {
+                                      Get.toNamed(
+                                        AppRoutes.outgoingAudioCallScreen,
+                                        arguments: [
+                                          listener.name ?? '',
+                                          listener.image ?? '',
+                                          listener.video ?? [],
+                                          listener.audio ?? '',
+                                          'audio',
+                                        ],
+                                      );
+                                    } else {
+                                      Get.toNamed(
+                                        AppRoutes.outgoingAudioCallScreen,
+                                        arguments: {
+                                          'callerId': callerId,
+                                          'receiverId': listener.id ?? '',
+                                          'receiverName': listener.name ?? '',
+                                          'receiverImage': listener.image ?? '',
+                                          'callerImage': callerImage,
+                                          'callerfullName': callerName,
+                                          'callerRole': callerRole,
+                                          'receiverRole': receiverRole,
+                                          'callType': 'private',
+                                          'callMode': 'audio',
+                                          'callId': '',
+                                        },
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
@@ -433,8 +466,7 @@ class ListenersGridEmbedded extends StatelessWidget {
                   child: const Padding(
                     padding: EdgeInsets.symmetric(vertical: 16),
                     child: Center(
-                      child: CircularProgressIndicator(
-                          color: _C.primary),
+                      child: CircularProgressIndicator(color: _C.primary),
                     ),
                   ),
                 ),
@@ -456,23 +488,19 @@ class ListenersGridEmbedded extends StatelessWidget {
         color: _C.primary.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(13),
       ),
-      child: const Icon(Icons.person_rounded,
-          size: 34, color: _C.primary),
+      child: const Icon(Icons.person_rounded, size: 34, color: _C.primary),
     );
   }
 }
 
-// ── Action button (outline or filled) ────────────────────────────────────────
 class _ActionButton extends StatelessWidget {
   final IconData icon;
   final Color color;
-  final bool filled;
   final VoidCallback onTap;
 
   const _ActionButton({
     required this.icon,
     required this.color,
-    required this.filled,
     required this.onTap,
   });
 
@@ -481,106 +509,29 @@ class _ActionButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 46,
-        height: 46,
+        width: 48,
+        height: 48,
         decoration: BoxDecoration(
-          color: filled ? color : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: color, width: 1.5),
-          boxShadow: filled
-              ? [
-            BoxShadow(
-              color: color.withValues(alpha: 0.30),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
-            ),
-          ]
-              : [],
+          color: color.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(
           icon,
-          color: filled ? Colors.white : color,
-          size: 20,
+          color: color,
+          size: 22,
         ),
       ),
     );
   }
 }
-
-// ── Language chip ─────────────────────────────────────────────────────────────
-class _LanguageChip extends StatelessWidget {
-  final String language;
-  const _LanguageChip({required this.language});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding:
-      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: _C.primary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-            color: _C.primary.withValues(alpha: 0.15), width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.language_rounded, size: 11, color: _C.primary),
-          const SizedBox(width: 4),
-          Text(
-            language,
-            style: const TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: _C.primary,
-              letterSpacing: 0.1,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Star rating ───────────────────────────────────────────────────────────────
-class _StarRating extends StatelessWidget {
-  final double rating;
-  const _StarRating({required this.rating});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ...List.generate(5, (i) {
-          final full = i < rating.floor();
-          final half = !full && (rating - i) >= 0.5;
-          return Padding(
-            padding: const EdgeInsets.only(right: 1),
-            child: Icon(
-              full
-                  ? Icons.star_rounded
-                  : half
-                  ? Icons.star_half_rounded
-                  : Icons.star_outline_rounded,
-              size: 13,
-              color: (full || half)
-                  ? _C.starActive
-                  : _C.starInactive,
-            ),
-          );
-        }),
-        const SizedBox(width: 4),
-        Text(
-          rating.toStringAsFixed(1),
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: _C.subtitle,
-          ),
-        ),
-      ],
-    );
-  }
+Future<void> saveLastCalledListener({
+  required String id,
+  required String name,
+  required String image,
+}) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('last_listener_id', id);
+  await prefs.setString('last_listener_name', name);
+  await prefs.setString('last_listener_image', image);
+  await prefs.setString('last_listener_time', DateTime.now().toIso8601String());
 }

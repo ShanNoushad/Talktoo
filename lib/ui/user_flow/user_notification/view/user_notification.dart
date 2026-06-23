@@ -13,7 +13,7 @@ class UserNotificationScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         flexibleSpace: const UserNotificationAppBar(),
       ),
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.black,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -29,7 +29,7 @@ class SearchTopView extends StatelessWidget {
                 child: Image.asset(
                   height: 16,
                   AppAsset.backArrowIcon,
-                  color: AppColors.black,
+                  color: AppColors.white,
                 ),
               ),
             ),
@@ -37,7 +37,7 @@ class SearchTopView extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
-                  color: AppColors.white,
+                  color: AppColors.black,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -46,7 +46,7 @@ class SearchTopView extends StatelessWidget {
                       AppAsset.searchIcon,
                       height: 18,
                       width: 18,
-                      color: searchController.hasText ? AppColors.black : AppColors.otpScreenGrey,
+                      color: searchController.hasText ? AppColors.darkGrey : AppColors.otpScreenGrey,
                     ),
                     const SizedBox(width: 12),
                     Container(
@@ -102,7 +102,7 @@ class RecentListenersSearchView extends StatelessWidget {
       builder: (controller) {
         return Container(
           width: Get.width,
-          decoration: BoxDecoration(color: AppColors.white),
+          decoration: BoxDecoration(color: AppColors.black),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

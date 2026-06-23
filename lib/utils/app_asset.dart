@@ -85,9 +85,11 @@ class AppAsset {
   static const rematchIcon = "${getIconsPath}ic_rematch.png";
 
   /// =================== Images =================== ///
-  static const onBoarding1 = "${getImagesPath}onBoarding1.png";
-  static const onBoarding2 = "${getImagesPath}onBoarding2.png";
-  static const onBoarding3 = "${getImagesPath}onBoarding3.png";
+  static const otpImage = "${getImagesPath}otp_image.png";
+  static const mainScreenImage = "${getImagesPath}main_image.png";
+  static const onBoarding1 = "${getImagesPath}ob1.png";
+  static const onBoarding2 = "${getImagesPath}ob2.png";
+  static const onBoarding3 = "${getImagesPath}ob3.png";
   static const mobile = "${getImagesPath}mobile.png";
   static const homeCallPerson = "${getImagesPath}homeCallPerson.png";
   static const dimondCoin = "${getImagesPath}dimondCoin.png";

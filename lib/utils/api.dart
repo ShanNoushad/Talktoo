@@ -1,15 +1,13 @@
 abstract class Api {
-  /// server url
-  static const baseUrl = "http://168.144.85.67/";
+  static const String baseUrl = "http://168.144.85.67:3000/";
   static const secretKey = "mySecretKey123";
 
-  // >>>>> >>>>> Login Page Api <<<<< <<<<<
   static const checkUserExit = "${baseUrl}api/user/verifyUserExistence?";
   static const login = "${baseUrl}api/user/authenticateOrRegisterUser";
-
+  static const String otpUrl = "${baseUrl}api/otp";
   static const getFirebaseUidByDeviceUuid = "${baseUrl}api/user/getfirebaseIdByDeviceId";
   static const getFirebaseCustomToken = "${baseUrl}api/user/generateFirebaseCustomToken";
-
+  static const updateFcmToken = "${baseUrl}api/user/updateFcmToken";
   // >>>>> >>>>> Login User Profile Api <<<<< <<<<<
   static const loginUserProfile = "${baseUrl}api/user/getUserProfile";
   // >>>>> >>>>>  User  Api <<<<< <<<<<

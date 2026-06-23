@@ -15,14 +15,14 @@ import 'package:url_launcher/url_launcher.dart';
 class HelpCenterScreen extends StatelessWidget {
   const HelpCenterScreen({super.key});
 
-  // final controller = Get.put(HelpCenterScreenController());
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backGroundColor, // Changed from hardcoded AppColors.black to semantic main background
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        backgroundColor: AppColors.backGroundColor, // Ensures the app bar blend is seamless
+        elevation: 0,
         flexibleSpace: const HelpCenterAppBar(),
       ),
       body: SafeArea(
@@ -69,7 +69,7 @@ class HelpCenterScreen extends StatelessWidget {
                   EnumLocale.txtFrequentlyAskedQuestions.name.tr,
                   style: AppFontStyle.fontStyleW700(
                     fontSize: 16,
-                    fontColor: AppColors.black,
+                    fontColor: AppColors.appDarkColor, // Lightened: changed from black to brightest text
                   ),
                 ).paddingSymmetric(horizontal: 16),
                 GetBuilder<HelpCenterScreenController>(
@@ -78,26 +78,20 @@ class HelpCenterScreen extends StatelessWidget {
                     return controller.isLoading
                         ? HelpCenterShimmer()
                         : Column(
-                            children: List.generate(controller.faqList.length, (index) {
-                              final faq = controller.faqList[index];
-                              final isExpanded = controller.expandedIndex == index;
+                      children: List.generate(controller.faqList.length, (index) {
+                        final faq = controller.faqList[index];
+                        final isExpanded = controller.expandedIndex == index;
 
-                              return SettingMainMenuListTile(
-                                title: faq.question ?? '',
-                                subTitle: faq.answer ?? '',
-                                isExpanded: isExpanded,
-                                onTap: () => controller.toggleExpansion(index),
-                              ).paddingOnly(top: 22, bottom: 16);
-                            }),
-                          );
+                        return SettingMainMenuListTile(
+                          title: faq.question ?? '',
+                          subTitle: faq.answer ?? '',
+                          isExpanded: isExpanded,
+                          onTap: () => controller.toggleExpansion(index),
+                        ).paddingOnly(top: 14, bottom: 4); // Adjusted padding for smoother list rhythm
+                      }),
+                    );
                   },
                 )
-
-                // SettingMainMenuListTile(title: "What is Listener?").paddingOnly(top: 22, bottom: 16),
-                // SettingMainMenuListTile(title: "Who are Listeners?").paddingOnly(bottom: 16),
-                // SettingMainMenuListTile(title: "How can i call a Listener?").paddingOnly(bottom: 16),
-                // SettingMainMenuListTile(title: "When can i talk to a Listener?").paddingOnly(bottom: 16),
-                // SettingMainMenuListTile(title: "Is it safe to talk to a Listener?").paddingOnly(bottom: 16),
               ],
             ),
           );

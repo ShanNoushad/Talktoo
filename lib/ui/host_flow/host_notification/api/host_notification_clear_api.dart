@@ -11,7 +11,6 @@ import 'package:talk_in/utils/utils.dart';
 
 class HostNotificationClearApi {
   static Future<HostNotificationClearModel?> callApi() async {
-    final token = await FirebaseAccessToken.onGet() ?? "";
 
     Utils.showLog("Host Notification clear Api Calling...");
 
@@ -26,8 +25,8 @@ class HostNotificationClearApi {
     final uri = Uri.parse("${Api.clearNotificationListener}${ApiParams.listenerId}=${Database.fetchListenerProfileModel?.data?.id}");
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      "x-auth-token": "Bearer ${Api.secretKey}",
+      "x-auth-uid": Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     log("Host Notification clear Api URL ::$uri");

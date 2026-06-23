@@ -8,7 +8,7 @@ class HostCoinHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.black,
       appBar: AppBar(
         backgroundColor: AppColors.lightPurple,
         automaticallyImplyLeading: false,

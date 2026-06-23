@@ -14,7 +14,6 @@ class UserNotificationApi {
   static int limitPagination = 20;
 
   static Future<UserNotificationModel?> callApi() async {
-    final token = await FirebaseAccessToken.onGet() ?? "";
 
     Utils.showLog("User Notification Api Calling...");
     final Map<String, dynamic> queryParameters = {
@@ -35,8 +34,8 @@ class UserNotificationApi {
 
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.authToken: "Bearer ${Api.secretKey}",
+      ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
 

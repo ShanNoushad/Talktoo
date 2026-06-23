@@ -32,12 +32,12 @@ class HostListenersDetailTopView extends StatelessWidget {
               width: Get.width,
               child: localImagePath != null
                   ? Image.file(
-                      File(localImagePath),
-                      fit: BoxFit.cover,
-                    )
+                File(localImagePath),
+                fit: BoxFit.cover,
+              )
                   : CustomProfileImage(
-                      image: Database.fetchListenerProfileModel?.data?.image ?? '',
-                    ),
+                image: Database.fetchListenerProfileModel?.data?.image ?? '',
+              ),
             ).paddingOnly(bottom: 10);
           },
         ),
@@ -48,10 +48,10 @@ class HostListenersDetailTopView extends StatelessWidget {
           child: GestureDetector(
             onTap: () {
               Get.defaultDialog(
-                  backgroundColor: AppColors.white,
+                  backgroundColor: AppColors.lightPurple, // Changed from pure white to deep dark card container
                   title: EnumLocale.changeYourImage.name.tr,
                   titlePadding: const EdgeInsets.only(top: 30),
-                  titleStyle: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.appColor),
+                  titleStyle: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.appDarkColor), // High contrast theme white
                   content: GetBuilder<HostListenersDetailController>(
                     builder: (controller) {
                       return Column(
@@ -60,7 +60,7 @@ class HostListenersDetailTopView extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             child: Divider(
                               thickness: 1,
-                              color: Colors.grey.shade100,
+                              color: AppColors.borderColor, // Structural dark mode divider lines
                             ),
                           ),
                           GestureDetector(
@@ -76,14 +76,14 @@ class HostListenersDetailTopView extends StatelessWidget {
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 20),
                                     child: Image(
-                                      color: AppColors.appColor,
+                                      color: AppColors.appDarkColor, // Re-mapped option icon tints
                                       image: const AssetImage(AppAsset.cameraFlipIcon),
                                       height: 20,
                                     ),
                                   ),
                                   Text(
                                     EnumLocale.txtTakeAphoto.name.tr,
-                                    style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.appColor),
+                                    style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.appDarkColor),
                                   )
                                 ],
                               ),
@@ -106,14 +106,14 @@ class HostListenersDetailTopView extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 20),
                                       child: Image(
-                                        color: AppColors.appColor,
+                                        color: AppColors.appDarkColor,
                                         image: const AssetImage(AppAsset.chatImageIcon),
                                         height: 20,
                                       ),
                                     ),
                                     Text(
                                       EnumLocale.txtChooseFromYourFile.name.tr,
-                                      style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.appColor),
+                                      style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.appDarkColor),
                                     )
                                   ],
                                 ),
@@ -126,17 +126,17 @@ class HostListenersDetailTopView extends StatelessWidget {
                   ));
             },
             child: Container(
-              padding: EdgeInsets.only(top: 6, bottom: 6, left: 9, right: 9),
+              padding: const EdgeInsets.only(top: 6, bottom: 6, left: 9, right: 9),
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.white.withValues(alpha: 0.30),
-                    offset: Offset(0, 0),
+                    color: AppColors.black.withValues(alpha: 0.30),
+                    offset: const Offset(0, 0),
                     spreadRadius: 0,
                     blurRadius: 12.7,
                   ),
                 ],
-                color: AppColors.black.withValues(alpha: 0.40),
+                color: AppColors.black.withValues(alpha: 0.60), // Slightly raised opacity track over dynamic covers
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: AppColors.white.withValues(alpha: 0.20),
@@ -180,7 +180,7 @@ class HostListenersDetailView extends StatelessWidget {
           children: [
             Container(
               width: Get.width,
-              color: AppColors.white,
+              color: AppColors.backGroundColor, // Changed block backdrop to primary deep dark layout base
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -188,7 +188,7 @@ class HostListenersDetailView extends StatelessWidget {
                     EnumLocale.txtListenerDetails.name.tr,
                     style: AppFontStyle.fontStyleW700(
                       fontSize: 17,
-                      fontColor: Colors.black,
+                      fontColor: AppColors.appDarkColor, // Fixed hardcoded header blacks to white theme profiles
                     ),
                   ).paddingOnly(top: 16, bottom: 16),
                   CustomTitle(
@@ -201,9 +201,9 @@ class HostListenersDetailView extends StatelessWidget {
                       filled: true,
                       borderColor: AppColors.appTextColor.withValues(alpha: 0.18),
                       controller: controller.nameCnt,
-                      fillColor: AppColors.white,
-                      cursorColor: AppColors.black,
-                      fontColor: AppColors.black,
+                      fillColor: AppColors.lightPurple, // Shifted inner forms from solid light white over to dark panels
+                      cursorColor: AppColors.appDarkColor,
+                      fontColor: AppColors.appDarkColor,
                       fontSize: 15,
                       textInputAction: TextInputAction.next,
                       maxLines: 1,
@@ -219,9 +219,9 @@ class HostListenersDetailView extends StatelessWidget {
                       filled: true,
                       borderColor: AppColors.appTextColor.withValues(alpha: 0.18),
                       controller: controller.nickNameCnt,
-                      fillColor: AppColors.white,
-                      cursorColor: AppColors.black,
-                      fontColor: AppColors.black,
+                      fillColor: AppColors.lightPurple,
+                      cursorColor: AppColors.appDarkColor,
+                      fontColor: AppColors.appDarkColor,
                       fontSize: 15,
                       textInputAction: TextInputAction.next,
                       maxLines: 1,
@@ -237,9 +237,9 @@ class HostListenersDetailView extends StatelessWidget {
                       filled: true,
                       borderColor: AppColors.appTextColor.withValues(alpha: 0.18),
                       controller: controller.introCnt,
-                      fillColor: AppColors.white,
-                      cursorColor: AppColors.black,
-                      fontColor: AppColors.black,
+                      fillColor: AppColors.lightPurple,
+                      cursorColor: AppColors.appDarkColor,
+                      fontColor: AppColors.appDarkColor,
                       fontSize: 12,
                       textInputAction: TextInputAction.next,
                       maxLines: 5,
@@ -250,7 +250,7 @@ class HostListenersDetailView extends StatelessWidget {
             ).paddingOnly(bottom: 10),
             Container(
               width: Get.width,
-              color: AppColors.white,
+              color: AppColors.backGroundColor, // Changed from white to primary deep background
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -258,7 +258,7 @@ class HostListenersDetailView extends StatelessWidget {
                     EnumLocale.txtTalkLanguages.name.tr,
                     style: AppFontStyle.fontStyleW700(
                       fontSize: 17,
-                      fontColor: Colors.black,
+                      fontColor: AppColors.appDarkColor, // Swapped black fonts
                     ),
                   ).paddingOnly(top: 16, bottom: 4),
                   Text(
@@ -275,7 +275,7 @@ class HostListenersDetailView extends StatelessWidget {
                         EnumLocale.txtSelectLanguage.name.tr,
                         style: AppFontStyle.fontStyleW600(
                           fontSize: 16,
-                          fontColor: AppColors.onBoardingTxt,
+                          fontColor: AppColors.appDarkColor, // Corrected label contrast visibility
                         ),
                       ),
                       GestureDetector(
@@ -287,18 +287,18 @@ class HostListenersDetailView extends StatelessWidget {
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                          decoration: BoxDecoration(color: AppColors.lightGrey, borderRadius: BorderRadius.circular(6)),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                          decoration: BoxDecoration(color: AppColors.lightPurple, borderRadius: BorderRadius.circular(6)), // Tuned label actions backgrounds
                           child: Text(
                             EnumLocale.txtViewAll.name.tr,
-                            style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.onBoardingTxt),
+                            style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.appDarkColor),
                           ),
                         ),
                       )
                     ],
                   ).paddingOnly(bottom: 12),
                   GetBuilder<HostListenersDetailController>(
-                    id: Constant.idLanguageSection, // ⬅ ID used to trigger rebuild
+                    id: Constant.idLanguageSection,
                     builder: (controller) {
                       return Wrap(
                         spacing: 12,
@@ -310,8 +310,9 @@ class HostListenersDetailView extends StatelessWidget {
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                               decoration: BoxDecoration(
+                                color: isSelected ? AppColors.appColor.withValues(alpha: 0.15) : AppColors.lightPurple, // Wrapped selector shapes inside premium backdrops
                                 border: Border.all(
-                                  color: isSelected ? AppColors.appColor : AppColors.grey.withValues(alpha: 0.2),
+                                  color: isSelected ? AppColors.appColor : AppColors.borderColor,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -333,7 +334,7 @@ class HostListenersDetailView extends StatelessWidget {
             ).paddingOnly(bottom: 10),
             Container(
               width: Get.width,
-              color: AppColors.white,
+              color: AppColors.backGroundColor, // Changed from white to primary deep background
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -341,7 +342,7 @@ class HostListenersDetailView extends StatelessWidget {
                     "${EnumLocale.txtTalkAbout.name.tr} :-",
                     style: AppFontStyle.fontStyleW700(
                       fontSize: 17,
-                      fontColor: Colors.black,
+                      fontColor: AppColors.appDarkColor,
                     ),
                   ).paddingOnly(top: 16, bottom: 4),
                   Text(
@@ -357,21 +358,21 @@ class HostListenersDetailView extends StatelessWidget {
                       return ListView.builder(
                         itemCount: controller.talkTopic.length,
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           final topic = controller.talkTopic[index];
-                          // bool isSelected = controller.selectedTopic == index;
                           bool isSelected = controller.selectedTopics.contains(index);
 
                           return GestureDetector(
                             onTap: () => controller.selectTopic(index),
                             child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
                               width: Get.width,
                               decoration: BoxDecoration(
+                                color: AppColors.lightPurple, // Soft elevated container surface base
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: isSelected ? AppColors.appColor : AppColors.grey.withValues(alpha: 0.2),
+                                  color: isSelected ? AppColors.appColor : AppColors.borderColor,
                                 ),
                               ),
                               child: Row(
@@ -380,39 +381,39 @@ class HostListenersDetailView extends StatelessWidget {
                                     topic.name.toString(),
                                     style: isSelected
                                         ? AppFontStyle.fontStyleW600(
-                                            fontSize: 14,
-                                            fontColor: AppColors.appColor,
-                                          )
+                                      fontSize: 14,
+                                      fontColor: AppColors.appColor,
+                                    )
                                         : AppFontStyle.fontStyleW500(
-                                            fontSize: 14,
-                                            fontColor: AppColors.appTextColor,
-                                          ),
+                                      fontSize: 14,
+                                      fontColor: AppColors.appTextColor,
+                                    ),
                                   ),
-                                  Spacer(),
+                                  const Spacer(),
                                   Container(
                                     height: 22,
                                     width: 22,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      border: Border.all(color: isSelected ? AppColors.transparent : AppColors.grey),
-                                      color: isSelected ? Colors.black : AppColors.white,
+                                      border: Border.all(color: isSelected ? AppColors.transparent : AppColors.borderColor),
+                                      color: isSelected ? AppColors.lightPurple1 : AppColors.backGroundColor, // Inverted radio configurations to track cleanly
                                     ),
                                     child: isSelected
                                         ? Container(
-                                            decoration: BoxDecoration(
-                                              color: AppColors.appColor,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Container(
-                                              height: 22,
-                                              width: 22,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(color: AppColors.white),
-                                                color: AppColors.appColor,
-                                              ),
-                                            ).paddingAll(0.5),
-                                          )
+                                      decoration: BoxDecoration(
+                                        color: AppColors.appColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Container(
+                                        height: 22,
+                                        width: 22,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(color: AppColors.lightPurple),
+                                          color: AppColors.appColor,
+                                        ),
+                                      ).paddingAll(0.5),
+                                    )
                                         : null,
                                   ),
                                 ],
@@ -436,9 +437,9 @@ class HostListenersDetailView extends StatelessWidget {
                             filled: true,
                             borderColor: AppColors.appTextColor.withValues(alpha: 0.18),
                             controller: controller.ratePrivateVideoCallCnt,
-                            fillColor: AppColors.white,
-                            cursorColor: AppColors.black,
-                            fontColor: AppColors.black,
+                            fillColor: AppColors.lightPurple,
+                            cursorColor: AppColors.appDarkColor,
+                            fontColor: AppColors.appDarkColor,
                             fontSize: 15,
                             textInputAction: TextInputAction.next,
                             maxLines: 1,
@@ -449,7 +450,7 @@ class HostListenersDetailView extends StatelessWidget {
                           ),
                         ).paddingOnly(bottom: 18),
                       ),
-                      8.width,
+                      const SizedBox(width: 8),
                       Expanded(
                         child: CustomTitle(
                           title: EnumLocale.txtPrivateAudioCallRate.name.tr,
@@ -461,9 +462,9 @@ class HostListenersDetailView extends StatelessWidget {
                             filled: true,
                             borderColor: AppColors.appTextColor.withValues(alpha: 0.18),
                             controller: controller.ratePrivateAudioCallCnt,
-                            fillColor: AppColors.white,
-                            cursorColor: AppColors.black,
-                            fontColor: AppColors.black,
+                            fillColor: AppColors.lightPurple,
+                            cursorColor: AppColors.appDarkColor,
+                            fontColor: AppColors.appDarkColor,
                             fontSize: 15,
                             textInputAction: TextInputAction.next,
                             textInputType: TextInputType.number,
@@ -489,9 +490,9 @@ class HostListenersDetailView extends StatelessWidget {
                             filled: true,
                             borderColor: AppColors.appTextColor.withValues(alpha: 0.18),
                             controller: controller.rateRandomVideoCallCnt,
-                            fillColor: AppColors.white,
-                            cursorColor: AppColors.black,
-                            fontColor: AppColors.black,
+                            fillColor: AppColors.lightPurple,
+                            cursorColor: AppColors.appDarkColor,
+                            fontColor: AppColors.appDarkColor,
                             fontSize: 15,
                             textInputAction: TextInputAction.next,
                             maxLines: 1,
@@ -502,7 +503,7 @@ class HostListenersDetailView extends StatelessWidget {
                           ),
                         ).paddingOnly(bottom: 18),
                       ),
-                      8.width,
+                      const SizedBox(width: 8),
                       Expanded(
                         child: CustomTitle(
                           title: EnumLocale.txtRandomAudioCallRate.name.tr,
@@ -514,9 +515,9 @@ class HostListenersDetailView extends StatelessWidget {
                             filled: true,
                             borderColor: AppColors.appTextColor.withValues(alpha: 0.18),
                             controller: controller.rateRandomAudioCallCnt,
-                            fillColor: AppColors.white,
-                            cursorColor: AppColors.black,
-                            fontColor: AppColors.black,
+                            fillColor: AppColors.lightPurple,
+                            cursorColor: AppColors.appDarkColor,
+                            fontColor: AppColors.appDarkColor,
                             fontSize: 15,
                             textInputAction: TextInputAction.next,
                             maxLines: 1,
@@ -547,13 +548,13 @@ class HostListenersDetailBottomButton extends StatelessWidget {
     return GetBuilder<HostListenersDetailController>(
       builder: (controller) {
         return Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: AppColors.backGroundColor, // Changed from white to primary background slat
             boxShadow: [
               BoxShadow(
-                color: AppColors.black.withValues(alpha: 0.10),
-                offset: Offset(0, 0),
+                color: AppColors.black.withValues(alpha: 0.20),
+                offset: const Offset(0, -2),
                 blurRadius: 8,
                 spreadRadius: 0,
               ),
@@ -591,9 +592,9 @@ class AllLanguageBottomSheet extends StatelessWidget {
     return Container(
       height: Get.height * 0.6,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: AppColors.lightPurple, // Changed from white to deep bottom sheet background card
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: GetBuilder<HostListenersDetailController>(
         id: Constant.idLanguageSection,
@@ -608,20 +609,20 @@ class AllLanguageBottomSheet extends StatelessWidget {
                     EnumLocale.txtSelectLanguage.name.tr,
                     style: AppFontStyle.fontStyleW600(
                       fontSize: 16,
-                      fontColor: AppColors.onBoardingTxt,
+                      fontColor: AppColors.appDarkColor, // Replaced light-theme black configurations
                     ),
                   ).paddingOnly(bottom: 20, top: 20),
                   GestureDetector(
                     onTap: () => Get.back(),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColors.lightGrey,
+                        color: AppColors.lightPurple1, // Mapped button tracks
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         "Done",
-                        style: AppFontStyle.fontStyleW500(fontSize: 14, fontColor: AppColors.onBoardingTxt),
+                        style: AppFontStyle.fontStyleW500(fontSize: 14, fontColor: AppColors.appDarkColor),
                       ),
                     ),
                   )
@@ -639,8 +640,9 @@ class AllLanguageBottomSheet extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                           decoration: BoxDecoration(
+                            color: isSelected ? AppColors.appColor.withValues(alpha: 0.15) : AppColors.backGroundColor, // Wrapped layout selectors inside polished tints
                             border: Border.all(
-                              color: isSelected ? AppColors.appColor : AppColors.grey.withAlpha(50),
+                              color: isSelected ? AppColors.appColor : AppColors.borderColor,
                             ),
                             borderRadius: BorderRadius.circular(8),
                           ),

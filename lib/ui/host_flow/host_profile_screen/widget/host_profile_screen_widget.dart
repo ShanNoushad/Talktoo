@@ -18,7 +18,7 @@ class HostProfileTopView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(left: 16, right: 16),
-      decoration: BoxDecoration(color: AppColors.appColor),
+      decoration: BoxDecoration(color: AppColors.lightPurple),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -185,7 +185,7 @@ class TopItem extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 10, top: 15),
           decoration: BoxDecoration(
             border: Border.all(color: AppColors.borderColor.withValues(alpha: 0.6)),
-            color: AppColors.white,
+            color: AppColors.lightPurple,
             borderRadius: BorderRadius.circular(24),
           ),
           child: Column(
@@ -199,7 +199,7 @@ class TopItem extends StatelessWidget {
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: AppFontStyle.fontStyleW600(fontSize: 14, fontColor: AppColors.black),
+                style: AppFontStyle.fontStyleW600(fontSize: 14, fontColor: AppColors.white),
               ).paddingOnly(top: 8),
             ],
           ),
@@ -252,7 +252,7 @@ class CenterOption extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: AppFontStyle.fontStyleW800(fontSize: 18, fontColor: AppColors.black),
+                        style: AppFontStyle.fontStyleW800(fontSize: 18, fontColor: AppColors.white),
                       ),
                       if (badgeText != null)
                         Container(

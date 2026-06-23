@@ -20,7 +20,7 @@ class _UserProfileDetailScreenState extends State<UserProfileDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightPurple,
+      backgroundColor: AppColors.black,
       bottomNavigationBar: UserProfileBottomButtonView(),
       body: SafeArea(
         child: GetBuilder<UserProfileDetailController>(

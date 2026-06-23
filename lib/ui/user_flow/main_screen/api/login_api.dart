@@ -5,7 +5,6 @@ import 'package:talk_in/ui/user_flow/main_screen/model/login_model.dart';
 import 'package:talk_in/utils/api.dart';
 import 'package:talk_in/utils/api_params.dart';
 import 'package:talk_in/utils/database.dart';
-import 'package:talk_in/utils/firebse_access_token.dart';
 import 'package:talk_in/utils/utils.dart';
 
 class LoginApi {
@@ -24,62 +23,57 @@ class LoginApi {
   }) async {
     Utils.showLog("Login Api Calling...");
 
-    final token = await FirebaseAccessToken.onGet();
-    Utils.showLog("Login Api Token :: $token");
-
     final uri = Uri.parse(Api.login);
     Utils.showLog("Login Api URL :: $uri");
 
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
+      ApiParams.authToken: "Bearer ${Api.secretKey}",
       ApiParams.contentType: "application/json",
     };
     Utils.showLog("Login Api Headers :: $headers");
 
     final body = loginType == 4
         ? json.encode(
-            Database.userExist == false
-                ? {
-                    ApiParams.loginType: loginType,
-                    ApiParams.email: email,
-                    ApiParams.identity: identity,
-                    ApiParams.fcmToken: fcmToken,
-                    ApiParams.fullName: userName,
-                    // ApiParams.password: password,
-                    ApiParams.confirmPassword: confirmPassword,
-                    ApiParams.countryCode: countryCode,
-                  }
-                : {
-                    ApiParams.loginType: loginType,
-                    ApiParams.email: email,
-                    ApiParams.identity: identity,
-                    ApiParams.fcmToken: fcmToken,
-                    // ApiParams.password: password,
-                    ApiParams.countryCode: countryCode,
-                  },
-          )
+      Database.userExist == false
+          ? {
+        ApiParams.loginType: loginType,
+        ApiParams.email: email,
+        ApiParams.identity: identity,
+        ApiParams.fcmToken: fcmToken,
+        ApiParams.fullName: userName,
+        ApiParams.confirmPassword: confirmPassword,
+        ApiParams.countryCode: countryCode,
+      }
+          : {
+        ApiParams.loginType: loginType,
+        ApiParams.email: email,
+        ApiParams.identity: identity,
+        ApiParams.fcmToken: fcmToken,
+        ApiParams.countryCode: countryCode,
+      },
+    )
         : loginType == 3
-            ? json.encode(
-                {
-                  ApiParams.loginType: loginType,
-                  ApiParams.phoneNumber: mobileNumber,
-                  ApiParams.identity: identity,
-                  ApiParams.fcmToken: fcmToken,
-                  ApiParams.countryCode: countryCode,
-                },
-              )
-            : json.encode(
-                {
-                  ApiParams.loginType: loginType,
-                  ApiParams.email: email,
-                  ApiParams.identity: identity,
-                  ApiParams.fcmToken: fcmToken,
-                  ApiParams.profilePic: profilePic,
-                  ApiParams.fullName: userName,
-                  ApiParams.countryCode: countryCode,
-                },
-              );
+        ? json.encode(
+      {
+        ApiParams.loginType: loginType,
+        ApiParams.phoneNumber: mobileNumber,
+        ApiParams.identity: identity,
+        ApiParams.fcmToken: fcmToken,
+        ApiParams.countryCode: countryCode,
+      },
+    )
+        : json.encode(
+      {
+        ApiParams.loginType: loginType,
+        ApiParams.email: email,
+        ApiParams.identity: identity,
+        ApiParams.fcmToken: fcmToken,
+        ApiParams.profilePic: profilePic,
+        ApiParams.fullName: userName,
+        ApiParams.countryCode: countryCode,
+      },
+    );
     Utils.showLog("Login Api Body :: $body");
 
     try {

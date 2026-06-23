@@ -40,7 +40,7 @@ class Utils {
       toastLength: toastLength,
       gravity: gravity,
       backgroundColor: AppColors.appColor,
-      textColor: AppColors.white,
+      textColor: AppColors.black,
       fontSize: 15,
     );
   }

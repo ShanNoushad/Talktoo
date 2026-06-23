@@ -22,10 +22,10 @@ import 'package:talk_in/ui/user_flow/splash_screen_page/api/fetch_listener_profi
 import 'package:talk_in/ui/user_flow/splash_screen_page/api/fetch_login_user_profile_api.dart';
 import 'package:talk_in/ui/user_flow/splash_screen_page/model/fetch_listener_profile_model.dart';
 import 'package:talk_in/ui/user_flow/splash_screen_page/model/fetch_login_user_profile_model.dart';
+import 'package:talk_in/utils/api.dart';
 import 'package:talk_in/utils/constant.dart';
 import 'package:talk_in/utils/database.dart';
 import 'package:talk_in/utils/enums.dart';
-import 'package:talk_in/utils/firebse_access_token.dart';
 import 'package:talk_in/utils/utils.dart';
 
 class MainScreenController extends GetxController {
@@ -41,7 +41,6 @@ class MainScreenController extends GetxController {
   FetchListenerProfileModel? fetchListenerProfileModel;
   CheckUserExistModel? checkUserExistModel;
 
-  // Kept for backward-compat (email/password/quick-login flows still use these)
   TextEditingController emailController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -55,7 +54,6 @@ class MainScreenController extends GetxController {
     super.onInit();
   }
 
-  // ── Privacy policy toggle ──────────────────────────────────────────────────
   void toggleValue(int value) {
     if (selectedValue == value) {
       selectedValue = null;
@@ -69,31 +67,28 @@ class MainScreenController extends GetxController {
     final String privacyPolicyUrl =
         Database.appConfigurationModel?.data?.userPrivacyPolicyUrl ?? '';
     if (privacyPolicyUrl.isNotEmpty) {
-      Get.to(() =>
-          WebViewScreen(url: privacyPolicyUrl, screen: "Privacy Policy"));
+      Get.to(() => WebViewScreen(url: privacyPolicyUrl, screen: "Privacy Policy"));
     } else {
       log('Invalid privacy policy URL');
     }
   }
 
-  // ── Shared: fetch & store full user profile ────────────────────────────────
-  Future<void> onGetProfile(
-      {required String loginUserId, required int loginType}) async {
-    final token = await FirebaseAccessToken.onGet();
-
+  // ── Fetch & store full user profile ───────────────────────────────────────
+  Future<void> onGetProfile({
+    required String loginUserId,
+    required int loginType,
+  }) async {
     fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(
-        loginUserId: loginUserId, token: token ?? '');
+      loginUserId: loginUserId,
+      token: Api.secretKey,
+    );
     Database.fetchLoginUserProfileModel = fetchLoginUserProfileModel;
 
-    log("fetchLoginUserProfileModel?.user?.id${fetchLoginUserProfileModel?.user?.id}");
-    if (loginUserId.trim().isNotEmpty && token!.trim().isNotEmpty) {
+    if (loginUserId.trim().isNotEmpty && Api.secretKey.trim().isNotEmpty) {
       if (fetchLoginUserProfileModel?.user?.loginType != null) {
         Database.onSetIsNewUser(false);
-        log("fetchLoginUserProfileModel?.user?.Email${fetchLoginUserProfileModel?.user?.email}");
 
         Database.onSetLoginUserId(fetchLoginUserProfileModel!.user!.id!);
-        Database.onSetLoginUserFirebaseId(
-            fetchLoginUserProfileModel!.user!.firebaseId!);
         Database.onSetLoginUserProfilePic(
             fetchLoginUserProfileModel?.user?.profilePic ?? "");
         Database.onSetLoginUserName(fetchLoginUserProfileModel!.user!.fullName!);
@@ -111,10 +106,6 @@ class MainScreenController extends GetxController {
         Database.onSetLoginUserPhoneNumber(
             fetchLoginUserProfileModel?.user?.phoneNumber ?? "");
         Database.fetchLoginUserProfileModel = fetchLoginUserProfileModel;
-        log("Database.loginUserId  ${Database.loginUserId}");
-        log("Database.loginUserEmail  ${Database.loginUserEmail}");
-        log("Database.loginUserFirebaseId  ${Database.loginUserFirebaseId}");
-        log("Database.image  ${Database.loginUserProfilePic}");
 
         if (fetchLoginUserProfileModel?.user?.isListener == true) {
           fetchListenerProfileModel = await FetchListenerProfileAPi.callApi(
@@ -128,22 +119,19 @@ class MainScreenController extends GetxController {
           Database.fetchListenerProfileModel = fetchListenerProfileModel;
         }
       } else {
-        Utils.showToast(
-            Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
-        Utils.showLog("Get Profile Api Calling Failed !!");
+        Utils.showToast(Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
       }
     } else {
       Database.onLogOut();
     }
   }
 
-  // ── Quick Login (device-based anonymous) ──────────────────────────────────
+  // ── Quick Login ────────────────────────────────────────────────────────────
   GetFirebaseUidByDeviceUUidModel? getFirebaseUidByDeviceUUidModel;
   GetFirebaseCustomTokenModel? getFirebaseCustomTokenModel;
 
   void onQuickLogin1() async {
-    final identity =
-        (await MobileDeviceIdentifier().getDeviceId()) ?? "";
+    final identity = (await MobileDeviceIdentifier().getDeviceId()) ?? "";
     Database.onSetIdentity(identity);
 
     final fcmToken = await FirebaseMessaging.instance.getToken();
@@ -151,84 +139,64 @@ class MainScreenController extends GetxController {
     Database.onSetDemoListener(false);
 
     if (selectedValue != 1) {
-      Utils.showToast(Get.context!,
-          "Please agree to the Privacy Policy to proceed.");
+      Utils.showToast(Get.context!, "Please agree to the Privacy Policy to proceed.");
       return;
     }
 
     Get.dialog(const LoadingWidget(), barrierDismissible: false);
 
-    print("Database.identity>>>>>>>>>>>>>>>>>>${Database.identity}");
     try {
-      getFirebaseUidByDeviceUUidModel =
-      await GetFirebaseUidByDeviceApi.callApi(
+      getFirebaseUidByDeviceUUidModel = await GetFirebaseUidByDeviceApi.callApi(
         loginType: 2,
         deviceUuid: Database.identity,
       );
 
       if (getFirebaseUidByDeviceUUidModel?.status == true) {
-        Utils.showLog("Existing device found!");
-        Utils.showLog(
-            "Firebase UID => ${getFirebaseUidByDeviceUUidModel?.firebaseId}");
-
-        final getFirebaseCustomTokenModel =
-        await GetFirebaseCustomTokenApi.callApi(
-          firebaseUid:
-          getFirebaseUidByDeviceUUidModel?.firebaseId ?? "",
+        final getFirebaseCustomTokenModel = await GetFirebaseCustomTokenApi.callApi(
+          firebaseUid: getFirebaseUidByDeviceUUidModel?.firebaseId ?? "",
         );
 
         if (getFirebaseCustomTokenModel?.status == true) {
-          final String customToken =
-              getFirebaseCustomTokenModel?.customToken ?? "";
-          Utils.showLog("Firebase Custom Token => $customToken");
-
-          final UserCredential userCredential = await FirebaseAuth.instance
-              .signInWithCustomToken(customToken);
-
-          Utils.showLog(
-              "Signed in with existing Firebase user: ${userCredential.user?.uid}");
-
-          String? fcmToken =
-          await FirebaseMessaging.instance.getToken();
-
-          final uid = userCredential.user?.uid ?? "";
-          final token = await FirebaseAccessToken.onGet();
-
-          await _completeLoginFlow(uid, token, fcmToken,
-              isNewUser: false);
+          final String customToken = getFirebaseCustomTokenModel?.customToken ?? "";
+          final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCustomToken(customToken);
+          final fcmToken = await FirebaseMessaging.instance.getToken();
+          await _completeLoginFlow(
+            userCredential.user?.uid ?? "",
+            Api.secretKey,
+            fcmToken,
+            isNewUser: false,
+          );
         } else {
           Get.back();
-          Utils.showToast(
-              Get.context!, "Failed to get custom token");
+          Utils.showToast(Get.context!, "Failed to get custom token");
         }
       } else {
-        Utils.showLog(
-            "New device detected - creating new anonymous user");
-
         final UserCredential userCredential =
         await FirebaseAuth.instance.signInAnonymously();
-
-        final String firebaseUid = userCredential.user?.uid ?? "";
-        Utils.showLog("New Firebase UID created => $firebaseUid");
-
-        String? fcmToken =
-        await FirebaseMessaging.instance.getToken();
-        final token = await FirebaseAccessToken.onGet();
-
-        await _completeLoginFlow(firebaseUid, token, fcmToken,
-            isNewUser: true);
+        final fcmToken = await FirebaseMessaging.instance.getToken();
+        await _completeLoginFlow(
+          userCredential.user?.uid ?? "",
+          Api.secretKey,
+          fcmToken,
+          isNewUser: true,
+        );
       }
     } catch (e) {
       Get.back();
       Utils.showLog("Login error: $e");
-      Utils.showToast(
-          Get.context!, "Login failed. Please try again.");
+      Utils.showToast(Get.context!, "Login failed. Please try again.");
     }
   }
 
   Future<void> _completeLoginFlow(
-      String uid, String? token, String? fcmToken,
-      {required bool isNewUser}) async {
+      String uid,
+      String? token,
+      String? fcmToken, {
+        required bool isNewUser,
+      }) async {
+
+
     loginModel = await LoginApi.callApi(
       countryCode: Database.selectedCountryCode,
       loginType: 2,
@@ -245,26 +213,22 @@ class MainScreenController extends GetxController {
       Database.onSetSeenOnboarding(true);
       Database.onSetFillProfile(true);
 
-      await onGetProfile(loginUserId: uid, loginType: 2);
+      await onGetProfile(
+        loginUserId: loginModel?.user?.id ?? '',
+        loginType: 2,
+      );
 
       if (loginModel?.signUp == true) {
         Database.onSetFillProfile(false);
-
-        log("Database.loginUserName  ${Database.loginUserName}");
-        log("Database.loginUserProfilePic  ${Database.loginUserProfilePic}");
-        log("Database.loginUserEmail  ${Database.loginUserEmail}");
-
         Get.offAllNamed(AppRoutes.fillProfileScreen, arguments: [
           Database.loginUserName,
           Database.loginUserProfilePic,
-          Database.loginUserEmail
+          Database.loginUserEmail,
         ]);
       } else {
         Database.onSetFillProfile(true);
-        await onGetProfile(
-            loginUserId: Database.loginUserFirebaseId, loginType: 2);
-        if (Database.fetchLoginUserProfileModel?.user?.isListener ==
-            true) {
+        await onGetProfile(loginUserId: Database.loginUserId, loginType: 2);
+        if (Database.fetchLoginUserProfileModel?.user?.isListener == true) {
           Get.toNamed(AppRoutes.hostBottomBar);
         } else {
           Get.toNamed(AppRoutes.bottomBar);
@@ -272,13 +236,11 @@ class MainScreenController extends GetxController {
       }
     } else {
       Utils.showLog(loginModel?.message ?? "");
-      Utils.showLog(" login Api Calling Failed !!");
     }
   }
 
-  // ── Email / Password sign-in (kept, not shown in UI) ──────────────────────
+  // ── Email / Password ───────────────────────────────────────────────────────
   onClickObscure() {
-    log("isObscure :: $isObscure");
     isObscure = !isObscure;
     update();
   }
@@ -291,7 +253,6 @@ class MainScreenController extends GetxController {
   bool validateLogin() {
     final email = emailController.text.trim();
     final password = passwordController.text;
-
     if (email.isEmpty) {
       Utils.showToast(Get.context!, "Please enter your email");
       return false;
@@ -309,8 +270,7 @@ class MainScreenController extends GetxController {
 
   Future<void> onClickSignIn() async {
     if (selectedValue != 1) {
-      Utils.showToast(Get.context!,
-          "Please agree to the Privacy Policy to proceed.");
+      Utils.showToast(Get.context!, "Please agree to the Privacy Policy to proceed.");
       return;
     }
     try {
@@ -323,10 +283,7 @@ class MainScreenController extends GetxController {
       Database.onSetIsLogin(true);
       Database.onSetSeenOnboarding(true);
       Database.onSetFillProfile(true);
-      Database.onSetLoginUserFirebaseId(
-          userCredential.user?.uid ?? "");
       if (Get.isDialogOpen ?? false) Get.back();
-      log("API BYPASSED: Moving to Home Screen");
       Get.offAllNamed(AppRoutes.bottomBar);
     } on FirebaseAuthException catch (e) {
       if (Get.isDialogOpen ?? false) Get.back();
@@ -337,33 +294,27 @@ class MainScreenController extends GetxController {
     }
   }
 
-  // ── Google Login (kept, not shown in UI) ──────────────────────────────────
+  // ── Google Login ───────────────────────────────────────────────────────────
   Future<void> onGoogleLogin() async {
     try {
       if (selectedValue != 1) {
-        Utils.showToast(Get.context!,
-            "Please agree to the Privacy Policy to proceed.");
+        Utils.showToast(Get.context!, "Please agree to the Privacy Policy to proceed.");
         return;
       }
 
-      final identity =
-      (await MobileDeviceIdentifier().getDeviceId())!;
-      final fcmToken =
-      await FirebaseMessaging.instance.getToken();
+      final identity = (await MobileDeviceIdentifier().getDeviceId())!;
+      final fcmToken = await FirebaseMessaging.instance.getToken();
       Database.onSetFcmToken(fcmToken ?? "");
       Database.onSetIdentity(identity);
 
       UserCredential? userCredential = await signInWithGoogle();
 
       String? email = userCredential?.user?.email ??
-          (userCredential?.additionalUserInfo?.profile?['email']
-          as String?);
+          (userCredential?.additionalUserInfo?.profile?['email'] as String?);
       String? displayName = userCredential?.user?.displayName ??
-          (userCredential?.additionalUserInfo?.profile?['name']
-          as String?);
+          (userCredential?.additionalUserInfo?.profile?['name'] as String?);
       String? photoUrl = userCredential?.user?.photoURL ??
-          (userCredential?.additionalUserInfo?.profile?['picture']
-          as String?);
+          (userCredential?.additionalUserInfo?.profile?['picture'] as String?);
 
       if (email != null) {
         Get.dialog(LoadingWidget(), barrierDismissible: false);
@@ -384,11 +335,11 @@ class MainScreenController extends GetxController {
           Database.onSetIsLogin(true);
           Database.onSetLoginType(loginModel?.user?.loginType ?? 0);
           Database.onSetSeenOnboarding(true);
-          Database.onSetFillProfile(true);
 
           await onGetProfile(
-              loginUserId: userCredential!.user!.uid,
-              loginType: 1);
+            loginUserId: loginModel?.user?.id ?? '',
+            loginType: 1,
+          );
 
           if (loginModel?.signUp == true) {
             Database.onSetFillProfile(false);
@@ -399,74 +350,44 @@ class MainScreenController extends GetxController {
             ]);
           } else {
             Database.onSetFillProfile(true);
-            await onGetProfile(
-                loginUserId: userCredential.user!.uid,
-                loginType: 1);
-            if (Database.fetchLoginUserProfileModel?.user
-                ?.isListener ==
-                true) {
+            if (Database.fetchLoginUserProfileModel?.user?.isListener == true) {
               Get.toNamed(AppRoutes.hostBottomBar);
             } else {
               Get.toNamed(AppRoutes.bottomBar);
             }
           }
         } else {
-          Utils.showToast(
-              Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
+          Utils.showToast(Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
         }
       } else {
-        Utils.showToast(Get.context!,
-            "Google Login Failed: No email found.");
+        Utils.showToast(Get.context!, "Google Login Failed: No email found.");
       }
     } catch (e) {
-      Utils.showToast(
-          Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
-      Utils.showLog("Google Login Failed !! Error => $e");
+      Utils.showToast(Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
     }
   }
 
   Future<UserCredential?> signInWithGoogle() async {
     Get.dialog(LoadingWidget(), barrierDismissible: false);
     try {
-      final GoogleSignInAccount? googleUser =
-      await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        Utils.showToast(
-            Get.context!, "Google sign-in was canceled.");
+        Utils.showToast(Get.context!, "Google sign-in was canceled.");
         return null;
       }
       final googleAuth = await googleUser.authentication;
-      if (googleAuth.accessToken == null ||
-          googleAuth.idToken == null) {
-        Utils.showToast(Get.context!,
-            "Google sign-in failed: missing tokens.");
+      if (googleAuth.accessToken == null || googleAuth.idToken == null) {
+        Utils.showToast(Get.context!, "Google sign-in failed: missing tokens.");
         return null;
       }
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      try {
-        final result = await FirebaseAuth.instance
-            .signInWithCredential(credential);
-        return result;
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'invalid-credential') {
-          Utils.showToast(Get.context!,
-              "Sign-in failed: invalid or expired credential.");
-        } else if (e.code ==
-            'account-exists-with-different-credential') {
-          Utils.showToast(Get.context!,
-              "This email is linked with a different sign-in method.");
-        } else if (e.code == 'network-request-failed') {
-          Utils.showToast(Get.context!,
-              "Network error. Please check your internet connection.");
-        } else {
-          Utils.showToast(
-              Get.context!, "Sign-in failed: ${e.message}");
-        }
-        return null;
-      }
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      Utils.showToast(Get.context!, "Sign-in failed: ${e.message}");
+      return null;
     } catch (e) {
       Utils.showToast(Get.context!, "Google sign-in error: $e");
       return null;
@@ -475,24 +396,18 @@ class MainScreenController extends GetxController {
     }
   }
 
-  // ── Apple Login (kept, not shown in UI) ───────────────────────────────────
+  // ── Apple Login ────────────────────────────────────────────────────────────
   Future<void> onAppleLogin() async {
     if (selectedValue != 1) {
-      Utils.showToast(Get.context!,
-          "Please agree to the Privacy Policy to proceed.");
+      Utils.showToast(Get.context!, "Please agree to the Privacy Policy to proceed.");
       return;
     }
 
     Get.dialog(const LoadingWidget(), barrierDismissible: false);
+    UserCredential? userCredential = await AppleAuthentication.signInWithApple();
+    bool isNewUser = userCredential?.additionalUserInfo?.isNewUser ?? true;
 
-    UserCredential? userCredential =
-    await AppleAuthentication.signInWithApple();
-
-    bool isNewUser =
-        userCredential?.additionalUserInfo?.isNewUser ?? true;
-
-    if (userCredential?.additionalUserInfo?.profile?["email"] !=
-        null) {
+    if (userCredential?.additionalUserInfo?.profile?["email"] != null) {
       String displayName = userCredential?.additionalUserInfo
           ?.profile?["email"]
           ?.split('@')
@@ -504,8 +419,7 @@ class MainScreenController extends GetxController {
       loginModel = await LoginApi.callApi(
         countryCode: Database.selectedCountryCode,
         loginType: 5,
-        email: userCredential?.additionalUserInfo?.profile?["email"] ??
-            "",
+        email: userCredential?.additionalUserInfo?.profile?["email"] ?? "",
         identity: Database.identity,
         fcmToken: Database.fcmToken,
         userName: isNewUser ? displayName : null,
@@ -520,10 +434,11 @@ class MainScreenController extends GetxController {
         Database.onSetIsLogin(true);
         Database.onSetLoginType(loginModel?.user?.loginType ?? 0);
         Database.onSetSeenOnboarding(true);
-        Database.onSetFillProfile(true);
 
         await onGetProfile(
-            loginUserId: userCredential!.user!.uid, loginType: 5);
+          loginUserId: loginModel?.user?.id ?? '',
+          loginType: 5,
+        );
 
         if (loginModel?.signUp == true) {
           Database.onSetFillProfile(false);
@@ -534,46 +449,38 @@ class MainScreenController extends GetxController {
           ]);
         } else {
           Database.onSetFillProfile(true);
-          await onGetProfile(
-              loginUserId: userCredential.user!.uid, loginType: 5);
-          if (Database.fetchLoginUserProfileModel?.user?.isListener ==
-              true) {
+          if (Database.fetchLoginUserProfileModel?.user?.isListener == true) {
             Get.toNamed(AppRoutes.hostBottomBar);
           } else {
             Get.toNamed(AppRoutes.bottomBar);
           }
         }
       } else {
-        Utils.showToast(
-            Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
+        Utils.showToast(Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
       }
     } else {
-      Utils.showToast(
-          Get.context!, "Apple Login Failed: No email found.");
+      Utils.showToast(Get.context!, "Apple Login Failed: No email found.");
     }
   }
 }
 
-// ── Apple auth helper (unchanged) ─────────────────────────────────────────────
+// ── Apple auth helper ──────────────────────────────────────────────────────────
 class AppleAuthentication {
   static Future<UserCredential?> signInWithApple() async {
     try {
       final appleCredential = await SignInWithApple.getAppleIDCredential(
           scopes: [
             AppleIDAuthorizationScopes.email,
-            AppleIDAuthorizationScopes.fullName
+            AppleIDAuthorizationScopes.fullName,
           ]);
       final oauthCredential = OAuthProvider("apple.com").credential(
-          idToken: appleCredential.identityToken,
-          accessToken: appleCredential.authorizationCode);
-      final response = await FirebaseAuth.instance
-          .signInWithCredential(oauthCredential);
-      Utils.showLog(
-          "✅ Apple Login isNewUser => ${response.additionalUserInfo?.isNewUser} Email => ${response.additionalUserInfo?.profile?["email"] ?? ""}");
-      return response;
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+      return await FirebaseAuth.instance.signInWithCredential(oauthCredential);
     } catch (error) {
       Utils.showLog("❌ Apple Login Error => $error");
+      return null;
     }
-    return null;
   }
 }

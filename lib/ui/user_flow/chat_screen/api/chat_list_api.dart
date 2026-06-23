@@ -14,7 +14,6 @@ class ChatListApi {
   static int limitPagination = 20;
 
   static Future<ChatListResponseModel?> callApi() async {
-    final token = await FirebaseAccessToken.onGet();
 
     Utils.showLog("Chat List Api Calling...");
 
@@ -32,8 +31,8 @@ class ChatListApi {
 
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      "x-auth-token": "Bearer ${Api.secretKey}",
+      "x-auth-uid": Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     Utils.showLog("Chat List  Api uri :: $uri");

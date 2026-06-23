@@ -18,7 +18,6 @@
 //     String? filePath,
 //     String? imagePath, // full file path of image
 //   }) async {
-//     final token = await FirebaseAccessToken.onGet();
 //
 //     Utils.showLog("Listener Send Image or Audio Api Calling...");
 //
@@ -30,7 +29,6 @@
 //
 //       final headers = {
 //         ApiParams.key: Api.secretKey,
-//         ApiParams.authToken: 'Bearer $token',
 //         ApiParams.authUid: Database.loginUserFirebaseId,
 //       };
 //
@@ -83,7 +81,6 @@ import 'package:talk_in/ui/host_flow/host_personal_chat_screen/model/host_send_i
 import 'package:talk_in/utils/api.dart';
 import 'package:talk_in/utils/api_params.dart';
 import 'package:talk_in/utils/database.dart';
-import 'package:talk_in/utils/firebse_access_token.dart';
 import 'package:talk_in/utils/utils.dart';
 
 class HostSendImageAudioApi {
@@ -97,7 +94,6 @@ class HostSendImageAudioApi {
     String? filePath,
     String? imagePath,
   }) async {
-    final token = await FirebaseAccessToken.onGet();
     Utils.showLog("Host Send Image or Audio API Calling...");
 
     try {
@@ -106,8 +102,8 @@ class HostSendImageAudioApi {
 
       final headers = {
         ApiParams.key: Api.secretKey,
-        ApiParams.authToken: 'Bearer $token',
-        ApiParams.authUid: Database.loginUserFirebaseId,
+        ApiParams.authToken: 'Bearer ${Api.secretKey}',
+        ApiParams.authUid: Database.loginUserId,
       };
       request.headers.addAll(headers);
 

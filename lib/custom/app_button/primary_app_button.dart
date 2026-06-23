@@ -44,9 +44,14 @@ class PrimaryAppButton extends StatelessWidget {
         height: height,
         width: width ?? Get.width,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(borderRadius ?? 12),
+          borderRadius: BorderRadius.circular(borderRadius ?? 14), // Tweaked default curve to match form elements
           gradient: LinearGradient(
-            colors: gradientColor ?? [color ?? AppColors.appColor, color ?? AppColors.appColor],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: gradientColor ??
+                (color != null
+                    ? [color!, color!]
+                    : [Color(0xff7B2FBE), Color(0xffA855F7)]), // 🔥 purple gradient// Dynamic premium dark gradient fallback
           ),
           border: Border.all(
             color: borderColor ?? AppColors.transparent,
@@ -57,16 +62,14 @@ class PrimaryAppButton extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Center(
-                  child: Text(
-                    text ?? "",
-                    overflow: overflow,
-                    style: textStyle,
-                  ),
+                Text(
+                  text ?? "",
+                  overflow: overflow,
+                  style: textStyle,
                 ),
                 if (widget != null) ...[
-                  SizedBox(width: 8),
-                  widget ?? const SizedBox.shrink(),
+                  SizedBox(width: iconPadding ?? 8), // Made icon padding customizable or safely falls back to 8
+                  widget!,
                 ],
               ],
             ),

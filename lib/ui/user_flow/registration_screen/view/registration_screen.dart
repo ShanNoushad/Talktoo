@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:talk_in/custom/app_background/app_background.dart';
 import 'package:talk_in/ui/user_flow/registration_screen/widget/registration_screen_widget.dart';
 
+import '../../../../utils/app_color.dart';
+
 class RegistrationScreen extends StatelessWidget {
   const RegistrationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: AppColors.lightPurple,
+      backgroundColor: AppColors.lightPurple,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         automaticallyImplyLeading: false,

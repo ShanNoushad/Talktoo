@@ -18,12 +18,14 @@ class BecomeHostScreenAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(120),
+      preferredSize: const Size.fromHeight(120),
       child: CustomAppBar(
         title: EnumLocale.txtBecomeListener.name.tr,
+        textColor: AppColors.appDarkColor, // Swapped from white to adaptive light text color
+        appBarColor: AppColors.backGroundColor, // Seamless integration with dark background theme canvas
         showLeadingIcon: true,
         onTap: () {
-          Utils.onChangeStatusBar(brightness: Brightness.light);
+          Utils.onChangeStatusBar(brightness: Brightness.dark); // Maintain proper system bar contrast matching your flow
           Get.back();
         },
       ),
@@ -68,30 +70,30 @@ class BecomeHostScreenView extends StatelessWidget {
           EnumLocale.txtFrequentlyAskedQuestions.name.tr,
           style: AppFontStyle.fontStyleW700(
             fontSize: 16,
-            fontColor: AppColors.black,
+            fontColor: AppColors.appDarkColor, // Fixed: Changed from AppColors.black to readable white-gray text
           ),
         ).paddingSymmetric(horizontal: 16),
         GetBuilder<BecomeHostScreenController>(
           id: Constant.idFAQListeners,
           builder: (controller) {
             return controller.isLoading == true
-                ? HelpCenterShimmer()
+                ? const HelpCenterShimmer()
                 : Column(
-                    children: List.generate(
-                      controller.faqModel?.data?.length ?? 0,
-                      (index) {
-                        final isExpanded = controller.expandedIndex == index;
+              children: List.generate(
+                controller.faqModel?.data?.length ?? 0,
+                    (index) {
+                  final isExpanded = controller.expandedIndex == index;
+                  final faqData = controller.faqList[index];
 
-                        final faqData = controller.faqList[index];
-                        return SettingMainMenuListTile(
-                          isExpanded: isExpanded,
-                          onTap: () => controller.toggleExpanded(index),
-                          title: "${faqData.question}",
-                          subTitle: "${faqData.answer}",
-                        ).paddingOnly(top: 22, bottom: 16);
-                      },
-                    ),
-                  );
+                  return SettingMainMenuListTile(
+                    isExpanded: isExpanded,
+                    onTap: () => controller.toggleExpanded(index),
+                    title: "${faqData.question}",
+                    subTitle: "${faqData.answer}",
+                  ).paddingOnly(top: 12); // Cleaned layout rhythm to rely on native structural component spacing
+                },
+              ),
+            ).paddingOnly(bottom: 16);
           },
         ),
       ],

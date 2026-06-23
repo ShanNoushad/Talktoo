@@ -182,8 +182,7 @@ class TalkNowButtonBottomSheet extends StatelessWidget {
             ],
           );
         } else {
-          if (callerRole == "user" && (int.parse(Database.userCoin.toString()) < int.parse(audioCallRatePrivate))) {
-            log("<<<<<<<<<<<<<<<<<<<<<<  ${Database.userCoin.toString()}");
+          if (callerRole == "user" && (int.tryParse(Database.userCoin.toString()) ?? 0) < (int.tryParse(audioCallRatePrivate) ?? 0)) {            log("<<<<<<<<<<<<<<<<<<<<<<  ${Database.userCoin.toString()}");
             Get.back();
 
             Get.toNamed(AppRoutes.myWalletScreen);

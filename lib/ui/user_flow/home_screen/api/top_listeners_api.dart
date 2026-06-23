@@ -28,7 +28,7 @@ class TopListenersApi {
 
     Utils.showLog("Top Listeners Api url => $uri");
 
-    final headers = {ApiParams.key: Api.secretKey, ApiParams.authToken: ApiParams.tokenStartPoint + token, ApiParams.authUid: Database.loginUserFirebaseId};
+    final headers = {ApiParams.key: Api.secretKey, ApiParams.authToken: ApiParams.tokenStartPoint + token, ApiParams.authUid: Database.loginUserId};
 
     try {
       final response = await http.get(uri, headers: headers);

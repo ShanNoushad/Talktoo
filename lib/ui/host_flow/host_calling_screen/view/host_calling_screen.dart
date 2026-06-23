@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:talk_in/custom/bottom_sheet/talk_now_button_bottom_sheet.dart';
 import 'package:talk_in/custom/dialog/exit_app_dialog.dart';
-import 'package:talk_in/routes/app_routes.dart';
 import 'package:talk_in/ui/host_flow/host_calling_screen/controller/host_calling_screen_controller.dart';
 import 'package:talk_in/ui/host_flow/host_calling_screen/widget/host_calling_screen_widget.dart';
 import 'package:talk_in/ui/user_flow/calling_screen/shimmer/calling_history_shimmer.dart';
 import 'package:talk_in/utils/app_asset.dart';
 import 'package:talk_in/utils/app_color.dart';
 import 'package:talk_in/utils/constant.dart';
-import 'package:talk_in/utils/database.dart';
 
 class HostCallingScreen extends StatelessWidget {
   const HostCallingScreen({super.key});
@@ -34,7 +31,7 @@ class HostCallingScreen extends StatelessWidget {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.black,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           flexibleSpace: const HostCallingScreenAppBar(),

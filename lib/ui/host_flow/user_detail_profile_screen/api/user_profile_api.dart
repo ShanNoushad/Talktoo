@@ -13,15 +13,14 @@ class UserProfileApi {
   static Future<UserProfileModel?> callApi({
     required String userId,
   }) async {
-    final token = await FirebaseAccessToken.onGet();
 
     Utils.showLog("User profile Api Calling...");
 
     final uri = Uri.parse("${Api.userProfileApi}${ApiParams.userId}=$userId");
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.authToken: 'Bearer ${Api.secretKey}',
+      ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     Utils.showLog("User profile Api uri :: $uri");

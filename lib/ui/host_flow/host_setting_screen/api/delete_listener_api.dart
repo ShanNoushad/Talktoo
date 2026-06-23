@@ -11,7 +11,6 @@ import 'package:talk_in/utils/utils.dart';
 
 class DeleteListenerApi {
   static Future<DeleteListenerResponseModel?> callApi() async {
-    final token = await FirebaseAccessToken.onGet() ?? "";
 
     Utils.showLog("listener delete account Api Calling...");
 
@@ -26,8 +25,8 @@ class DeleteListenerApi {
     final uri = Uri.parse("${Api.deleteListenerAccount}${ApiParams.listenerId}=${Database.fetchListenerProfileModel?.data?.id}");
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.authToken: 'Bearer ${Api.secretKey}',
+      ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     log("listener delete account Api URL ::$uri");

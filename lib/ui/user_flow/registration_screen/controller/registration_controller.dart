@@ -10,6 +10,7 @@ import 'package:talk_in/ui/user_flow/main_screen/api/login_api.dart';
 import 'package:talk_in/ui/user_flow/main_screen/model/login_model.dart';
 import 'package:talk_in/ui/user_flow/splash_screen_page/api/fetch_login_user_profile_api.dart';
 import 'package:talk_in/ui/user_flow/splash_screen_page/model/fetch_login_user_profile_model.dart';
+import 'package:talk_in/utils/api.dart';
 import 'package:talk_in/utils/constant.dart';
 import 'package:talk_in/utils/database.dart';
 import 'package:talk_in/utils/enums.dart';
@@ -287,14 +288,13 @@ class RegistrationController extends GetxController {
   }
 
   Future<void> onGetProfile({required String loginUserId, required int loginType}) async {
-    final token = await FirebaseAccessToken.onGet();
 
     // Get.dialog(const LoadingUi(), barrierDismissible: false); // Start Loading...
-    fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(loginUserId: loginUserId, token: token ?? '');
+    fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(loginUserId: loginUserId, token: Api.secretKey ?? '');
 
     log("fetchLoginUserProfileModel?.user?.id  :: ${fetchLoginUserProfileModel?.user?.id}");
 
-    if (loginUserId.trim().isNotEmpty && token!.trim().isNotEmpty) {
+    if (loginUserId.trim().isNotEmpty && Api.secretKey.trim().isNotEmpty) {
       if (fetchLoginUserProfileModel?.user?.loginType != null) {
         Database.onSetIsNewUser(false);
         log("fetchLoginUserProfileModel?.user?.Email  :: ${fetchLoginUserProfileModel?.user?.email}");

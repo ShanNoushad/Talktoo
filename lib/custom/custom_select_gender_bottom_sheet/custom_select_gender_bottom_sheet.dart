@@ -16,7 +16,7 @@ class CustomSelectGenderBottomSheet extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.black,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
@@ -29,7 +29,7 @@ class CustomSelectGenderBottomSheet extends StatelessWidget {
                 EnumLocale.txtSelectYourGender.name.tr,
                 style: AppFontStyle.fontStyleW700(
                   fontSize: 24,
-                  fontColor: AppColors.black,
+                  fontColor: AppColors.white,
                 ),
               ).paddingOnly(bottom: 2, top: 18),
               Text(
@@ -58,8 +58,7 @@ class CustomSelectGenderBottomSheet extends StatelessWidget {
                                   end: Alignment.bottomCenter,
                                   begin: Alignment.topCenter,
                                   colors: [
-                                    Color(0xffF7EFFF).withValues(alpha: 0.20),
-                                    Color(0xffF7EFFF),
+                                   AppColors.purple,AppColors.lightPurple
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(23),
@@ -105,7 +104,7 @@ class CustomSelectGenderBottomSheet extends StatelessWidget {
                                       controller.gender[index]['txt'],
                                       style: AppFontStyle.fontStyleW600(
                                         fontSize: 15,
-                                        fontColor: AppColors.black,
+                                        fontColor: AppColors.white,
                                       ),
                                     ),
                                   ),
@@ -172,7 +171,7 @@ class CustomEditeProfileSelectGenderBottomSheet extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.black,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
@@ -185,7 +184,7 @@ class CustomEditeProfileSelectGenderBottomSheet extends StatelessWidget {
                 EnumLocale.txtSelectYourGender.name.tr,
                 style: AppFontStyle.fontStyleW700(
                   fontSize: 24,
-                  fontColor: AppColors.black,
+                  fontColor: AppColors.white,
                 ),
               ).paddingOnly(bottom: 2, top: 18),
               Text(
@@ -213,10 +212,7 @@ class CustomEditeProfileSelectGenderBottomSheet extends StatelessWidget {
                                 gradient: LinearGradient(
                                   end: Alignment.bottomCenter,
                                   begin: Alignment.topCenter,
-                                  colors: [
-                                    Color(0xffF7EFFF).withValues(alpha: 0.20),
-                                    Color(0xffF7EFFF),
-                                  ],
+                                    colors: [Color(0xFF0D1B2A), Color(0xFF1B3A6B)]
                                 ),
                                 borderRadius: BorderRadius.circular(23),
                               ),
@@ -288,7 +284,7 @@ class CustomEditeProfileSelectGenderBottomSheet extends StatelessWidget {
       builder: (controller) {
         return Container(
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: AppColors.black,
             boxShadow: [
               BoxShadow(
                 color: AppColors.black.withValues(alpha: 0.10),
@@ -304,7 +300,7 @@ class CustomEditeProfileSelectGenderBottomSheet extends StatelessWidget {
                 onTap: () {
                   Get.back();
                 },
-                color: AppColors.appColor,
+                color: AppColors.purple,
                 height: 47,
                 text: 'txtSaveGender'.tr,
                 textStyle: AppFontStyle.fontStyleW500(

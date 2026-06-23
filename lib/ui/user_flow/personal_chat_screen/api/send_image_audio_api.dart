@@ -17,7 +17,6 @@
 //     String? imagePath, // full file path of image
 //     String? filePath, // full file path of image
 //   }) async {
-//     final token = await FirebaseAccessToken.onGet();
 //
 //     Utils.showLog(" Send Image or Audio Api Calling...");
 //
@@ -90,7 +89,6 @@ class SendImageAudioApi {
     String? imagePath, // full path
     String? filePath, // full path
   }) async {
-    final token = await FirebaseAccessToken.onGet();
     Utils.showLog("Send Image or Audio API Calling...");
 
     try {
@@ -99,7 +97,7 @@ class SendImageAudioApi {
 
       final headers = {
         ApiParams.key: Api.secretKey,
-        ApiParams.authToken: 'Bearer $token',
+        ApiParams.authToken: 'Bearer ${Api.secretKey}',
         ApiParams.authUid: Database.loginUserFirebaseId,
       };
 

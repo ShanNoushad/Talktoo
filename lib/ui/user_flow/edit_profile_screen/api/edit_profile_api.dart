@@ -24,7 +24,6 @@ class EditProfileApi {
     String? email,
   }) async {
     Utils.showLog("Edit Profile Api Calling...");
-    final token = await FirebaseAccessToken.onGet();
 
     try {
       var request = http.MultipartRequest(
@@ -35,7 +34,7 @@ class EditProfileApi {
 
       var headers = {
         ApiParams.key: Api.secretKey,
-        ApiParams.authToken: 'Bearer $token',
+        ApiParams.authToken: 'Bearer ${Api.secretKey}',
         ApiParams.contentType: 'application/json',
         ApiParams.authUid: uid
       };

@@ -17,7 +17,6 @@ class HostPersonalChatApi {
     required String receiverId,
     required String senderId,
   }) async {
-    final token = await FirebaseAccessToken.onGet();
 
     Utils.showLog("Listener Personal Personal Chat List Api Calling...");
 
@@ -37,8 +36,8 @@ class HostPersonalChatApi {
 
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.authToken: 'Bearer ${Api.secretKey}',
+      ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     Utils.showLog("Listener Personal Chat List  Api uri :: $uri");

@@ -5,13 +5,10 @@ import 'package:talk_in/ui/host_flow/host_home_screen/model/listener_coin_model.
 import 'package:talk_in/utils/api.dart';
 import 'package:talk_in/utils/api_params.dart';
 import 'package:talk_in/utils/database.dart';
-import 'package:talk_in/utils/firebse_access_token.dart';
 import 'package:talk_in/utils/utils.dart';
 
 class HostCoinApi {
   static Future<ListenerCoinModel?> callApi() async {
-    final token = await FirebaseAccessToken.onGet() ?? "";
-
     Utils.showLog("Listener Coin Api Calling...");
 
     final queryParameters = {
@@ -23,7 +20,11 @@ class HostCoinApi {
 
     Utils.showLog("Listener Coin Api url => $uri");
 
-    final headers = {ApiParams.key: Api.secretKey, ApiParams.authToken: ApiParams.tokenStartPoint + token, ApiParams.authUid: Database.loginUserFirebaseId};
+    final headers = {
+      ApiParams.key: Api.secretKey,
+      ApiParams.authToken: "Bearer ${Api.secretKey}",
+      ApiParams.authUid: Database.loginUserId,
+    };
 
     try {
       final response = await http.get(uri, headers: headers);

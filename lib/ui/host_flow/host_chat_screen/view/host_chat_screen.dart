@@ -33,7 +33,7 @@ class HostChatScreen extends StatelessWidget {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.black,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           flexibleSpace: const HostChatScreenAppBarView(),

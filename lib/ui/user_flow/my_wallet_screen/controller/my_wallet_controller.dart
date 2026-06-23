@@ -1,14 +1,11 @@
 import 'dart:developer';
-
 import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:talk_in/custom/progress_indicator/progress_dialog.dart';
 import 'package:talk_in/payment/api/purchase_coin_plan_api.dart';
-import 'package:talk_in/payment/flutter_wave/flutter_wave_services.dart';
 import 'package:talk_in/payment/in_app_purchase/iap_callback.dart';
 import 'package:talk_in/payment/in_app_purchase/in_app_purchase_helper.dart';
 import 'package:talk_in/payment/razor_pay/razor_pay_service.dart';
-import 'package:talk_in/payment/stripe/stripe_service.dart';
 import 'package:talk_in/routes/app_routes.dart';
 import 'package:talk_in/ui/user_flow/home_screen/api/user_coin_api.dart';
 import 'package:talk_in/ui/user_flow/home_screen/controller/home_screen_controller.dart';
@@ -21,8 +18,8 @@ import 'package:talk_in/utils/common_payment.dart';
 import 'package:talk_in/utils/constant.dart';
 import 'package:talk_in/utils/database.dart';
 import 'package:talk_in/utils/enums.dart';
-import 'package:talk_in/utils/firebse_access_token.dart';
 import 'package:talk_in/utils/utils.dart';
+import '../../../../utils/api.dart';
 
 class MyWalletController extends GetxController implements IAPCallback {
   FetchCoinPlan? fetchCoinPlan;
@@ -31,7 +28,6 @@ class MyWalletController extends GetxController implements IAPCallback {
   int selectedPaymentMethod = -1;
   PurchaseCoinPlan? purchaseCoinPlan;
   UserCoinModel? userCoinModel;
-  // String productKey = '';
   Map<String, PurchaseDetails>? purchases;
   CoinPlan? selectedCoinPlan;
 
@@ -43,15 +39,13 @@ class MyWalletController extends GetxController implements IAPCallback {
 
   /// fetch coin plan
   Future<void> fetchCoinPlanList() async {
-    final uid = Database.loginUserFirebaseId;
-    final token = await FirebaseAccessToken.onGet() ?? "";
 
     isLoading = true;
     update([Constant.idGetCoinPlan]);
 
     fetchCoinPlan = await FetchCoinPlanApi.callApi(
-      uid: uid,
-      token: token,
+      uid: Database.loginUserId,
+      token: Api.secretKey,
     );
     coinPlan.clear();
     coinPlan.addAll(fetchCoinPlan?.data ?? []);
@@ -113,8 +107,7 @@ class MyWalletController extends GetxController implements IAPCallback {
         // context: Get.context!,
         amount: amount,
         onPaymentSuccess: () async {
-          final token = await FirebaseAccessToken.onGet() ?? "";
-          final uid = Database.loginUserFirebaseId;
+          final uid = Database.loginUserId;
 
           Utils.showLog("Flutter Wave Payment Successfully");
 
@@ -122,7 +115,7 @@ class MyWalletController extends GetxController implements IAPCallback {
               barrierDismissible: false); // Start Loading...
 
           purchaseCoinPlan = await PurchaseCoinPlanApi.callApi(
-              coinPlanId: id, paymentGateway: "Stripe", token: token, uid: uid);
+              coinPlanId: id, paymentGateway: "Stripe", token: Api.secretKey, uid: uid);
 
           Get.back(); // Stop Loading...
 
@@ -164,8 +157,7 @@ class MyWalletController extends GetxController implements IAPCallback {
       stripe(
         amount: amount,
         onPaymentSuccess: () async {
-          final token = await FirebaseAccessToken.onGet() ?? "";
-          final uid = Database.loginUserFirebaseId;
+          final uid = Database.loginUserId;
 
           Utils.showLog("Stripe Payment Success Method Called....");
 
@@ -173,7 +165,7 @@ class MyWalletController extends GetxController implements IAPCallback {
               barrierDismissible: false); // Start Loading...
 
           purchaseCoinPlan = await PurchaseCoinPlanApi.callApi(
-              coinPlanId: id, paymentGateway: "Stripe", token: token, uid: uid);
+              coinPlanId: id, paymentGateway: "Stripe", token: Api.secretKey, uid: uid);
 
           Get.back(); // Stop Loading...
 
@@ -216,8 +208,7 @@ class MyWalletController extends GetxController implements IAPCallback {
         // razorKey: Database.settingApiModel?.data?.razorpayKeySecret ?? '',
         // razorKey: "rzp_test_SjZz9HC7RGCfCb",
         onPaymentSuccess: () async {
-          final token = await FirebaseAccessToken.onGet() ?? "";
-          final uid = Database.loginUserFirebaseId;
+          final uid = Database.loginUserId;
 
           Utils.showLog("RazorPay Payment Successfully");
 
@@ -227,7 +218,7 @@ class MyWalletController extends GetxController implements IAPCallback {
           purchaseCoinPlan = await PurchaseCoinPlanApi.callApi(
               coinPlanId: id,
               paymentGateway: "RazorPay",
-              token: token,
+              token: Api.secretKey,
               uid: uid);
 
           Get.back(); // Stop Loading...
@@ -269,17 +260,7 @@ class MyWalletController extends GetxController implements IAPCallback {
 
     Utils.showLog("Starting IAP with product: $productKey");
 
-    // await InAppPurchaseHelper().init(
-    //   paymentType: "In App Purchase",
-    //   userId: Database.loginUserFirebaseId,
-    //   productKey: kProductIds,
-    //   rupee: amount.toDouble(),
-    //   callBack: () async {
-    //     Utils.showLog("In App Purchase Payment Successfully");
-    //     // This callback is called from InAppPurchaseHelper
-    //     // The actual API call will be made in onSuccessPurchase method below
-    //   },
-    // );
+
 
     inAppPurchase(
       amount: amount,
@@ -317,8 +298,7 @@ class MyWalletController extends GetxController implements IAPCallback {
         // context: Get.context!,
         amount: amount,
         onPaymentSuccess: () async {
-          final token = await FirebaseAccessToken.onGet() ?? "";
-          final uid = Database.loginUserFirebaseId;
+          final uid = Database.loginUserId;
 
           Utils.showLog("cash free Payment Successfully");
 
@@ -328,7 +308,7 @@ class MyWalletController extends GetxController implements IAPCallback {
           purchaseCoinPlan = await PurchaseCoinPlanApi.callApi(
               coinPlanId: id,
               paymentGateway: "cash free",
-              token: token,
+              token: Api.secretKey,
               uid: uid);
 
           Get.back(); // Stop Loading...
@@ -368,8 +348,7 @@ class MyWalletController extends GetxController implements IAPCallback {
         // context: Get.context!,
         amount: amount,
         onPaymentSuccess: () async {
-          final token = await FirebaseAccessToken.onGet() ?? "";
-          final uid = Database.loginUserFirebaseId;
+          final uid = Database.loginUserId;
 
           Utils.showLog("pay pal Payment Successfully");
 
@@ -379,7 +358,7 @@ class MyWalletController extends GetxController implements IAPCallback {
           purchaseCoinPlan = await PurchaseCoinPlanApi.callApi(
               coinPlanId: id,
               paymentGateway: "pay pal",
-              token: token,
+              token: Api.secretKey,
               uid: uid);
 
           Get.back(); // Stop Loading...
@@ -419,8 +398,7 @@ class MyWalletController extends GetxController implements IAPCallback {
         // context: Get.context!,
         amount: amount,
         onPaymentSuccess: () async {
-          final token = await FirebaseAccessToken.onGet() ?? "";
-          final uid = Database.loginUserFirebaseId;
+          final uid = Database.loginUserId;
 
           Utils.showLog("pay stack Payment Successfully");
 
@@ -430,7 +408,7 @@ class MyWalletController extends GetxController implements IAPCallback {
           purchaseCoinPlan = await PurchaseCoinPlanApi.callApi(
               coinPlanId: id,
               paymentGateway: "pay stack",
-              token: token,
+              token: Api.secretKey,
               uid: uid);
 
           Get.back(); // Stop Loading...
@@ -488,8 +466,7 @@ class MyWalletController extends GetxController implements IAPCallback {
     try {
       // Show loading dialog
       Get.dialog(const LoadingWidget(), barrierDismissible: false);
-      final token = await FirebaseAccessToken.onGet() ?? "";
-      final uid = Database.loginUserFirebaseId;
+      final uid = Database.loginUserId;
 
       // Call the API to record the purchase
       // final isSuccess =
@@ -498,7 +475,7 @@ class MyWalletController extends GetxController implements IAPCallback {
       final isSuccess = await PurchaseCoinPlanApi.callApi(
           coinPlanId: selectedCoinPlan?.id.toString() ?? '',
           paymentGateway: "In App Purchase",
-          token: token,
+          token: Api.secretKey,
           uid: uid);
 
       // Hide loading dialog

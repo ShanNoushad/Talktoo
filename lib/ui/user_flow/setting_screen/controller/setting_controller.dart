@@ -34,7 +34,6 @@ class SettingController extends GetxController {
 
   /// notification switch
   void onSwitchNotification(bool currentValue) async {
-    final token = await FirebaseAccessToken.onGet();
 
     // Instant UI update
     isShowNotification = currentValue;
@@ -50,7 +49,7 @@ class SettingController extends GetxController {
       // Failure, revert to previous value
       isShowNotification = !currentValue;
     }
-    fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(loginUserId: Database.loginUserFirebaseId, token: token ?? '');
+    fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(loginUserId: Database.loginUserFirebaseId, token: Database.loginUserId ?? '');
     Database.fetchLoginUserProfileModel = fetchLoginUserProfileModel;
 
     Database.fetchLoginUserProfileModel?.user?.isNotificationEnabled = isShowNotification;

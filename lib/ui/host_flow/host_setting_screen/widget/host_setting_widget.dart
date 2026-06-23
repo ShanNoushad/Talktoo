@@ -20,9 +20,10 @@ class HostSettingScreenAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(120),
+      preferredSize: const Size.fromHeight(120),
       child: CustomAppBar(
-        appBarColor: AppColors.lightPurple,
+        appBarColor: AppColors.lightPurple, // Deep purple card surface
+        textColor: AppColors.appDarkColor, // Changed white fallback to standard high-contrast text color
         title: EnumLocale.txtSettings.name.tr,
         showLeadingIcon: true,
       ),
@@ -43,6 +44,7 @@ class HostSettingView extends StatelessWidget {
           subText: EnumLocale.txtManageYourAccountSettingsSubText.name.tr,
           topImage: AppAsset.settingBlur,
         ).paddingOnly(bottom: 20),
+
         // Notification Switch
         GetBuilder<HostSettingController>(
           builder: (controller) {
@@ -53,7 +55,7 @@ class HostSettingView extends StatelessWidget {
                   controller.onSwitchNotification(val);
                 },
                 activeColor: CupertinoColors.activeGreen,
-                trackColor: CupertinoColors.destructiveRed,
+                trackColor: const Color(0xFF3A3A3C), // Replaced intense destructiveRed with a clean dark mode slate track
                 scale: 0.8,
               ),
               icon: AppAsset.notification,
@@ -70,6 +72,7 @@ class HostSettingView extends StatelessWidget {
             Get.toNamed(AppRoutes.hostAppLanguageScreen);
           },
         ).paddingOnly(bottom: 22),
+
         SettingMenu(
           icon: AppAsset.logOut,
           title: EnumLocale.txtLogoutApp.name.tr,
@@ -81,40 +84,40 @@ class HostSettingView extends StatelessWidget {
                 shadowColor: Colors.transparent,
                 surfaceTintColor: Colors.transparent,
                 elevation: 0,
-                child: LogoutDialog(),
+                child: const LogoutDialog(),
               ),
             );
           },
         ).paddingOnly(bottom: 22),
 
         Database.demoListener == true
-            ? Offstage()
+            ? const Offstage()
             : GetBuilder<HostSettingController>(builder: (controller) {
-                return SettingMenu(
-                  icon: AppAsset.delete,
-                  title: EnumLocale.txtDeleteAccount.name.tr,
-                  onTap: () {
-                    Get.dialog(
-                      barrierColor: AppColors.black.withValues(alpha: 0.8),
-                      Dialog(
-                        backgroundColor: AppColors.transparent,
-                        shadowColor: Colors.transparent,
-                        surfaceTintColor: Colors.transparent,
-                        elevation: 0,
-                        child: DeleteAccountDialog(
-                          onTap: () {
-                            if (Database.demoListener == true) {
-                              Utils.showToast(Get.context!, EnumLocale.txtDEmoListenerText.name.tr);
-                            } else {
-                              controller.onDeleteAccount();
-                            }
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }),
+          return SettingMenu(
+            icon: AppAsset.delete,
+            title: EnumLocale.txtDeleteAccount.name.tr,
+            onTap: () {
+              Get.dialog(
+                barrierColor: AppColors.black.withValues(alpha: 0.8),
+                Dialog(
+                  backgroundColor: AppColors.transparent,
+                  shadowColor: Colors.transparent,
+                  surfaceTintColor: Colors.transparent,
+                  elevation: 0,
+                  child: DeleteAccountDialog(
+                    onTap: () {
+                      if (Database.demoListener == true) {
+                        Utils.showToast(Get.context!, EnumLocale.txtDEmoListenerText.name.tr);
+                      } else {
+                        controller.onDeleteAccount();
+                      }
+                    },
+                  ),
+                ),
+              );
+            },
+          );
+        }),
       ],
     );
   }

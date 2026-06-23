@@ -11,15 +11,14 @@ import 'package:talk_in/utils/utils.dart';
 
 class DeleteUserApi {
   static Future<DeleteUserResponseModel?> callApi() async {
-    final token = await FirebaseAccessToken.onGet() ?? "";
 
     Utils.showLog("User account Delete Api Calling...");
 
     final uri = Uri.parse(Api.deleteUserAccount);
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.authToken: 'Bearer ${Api.secretKey}',
+      ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     log("User account Delete Api URL ::$uri");

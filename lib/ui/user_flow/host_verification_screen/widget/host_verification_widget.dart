@@ -23,10 +23,11 @@ class HostVerificationAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(120),
+      preferredSize: const Size.fromHeight(120),
       child: CustomAppBar(
-        appBarColor: AppColors.lightPurple,
+        appBarColor: AppColors.backGroundColor, // Seamless background canvas integration
         title: EnumLocale.txtListenerVerification.name.tr,
+        textColor: AppColors.appDarkColor, // Light text typography adaptation
         showLeadingIcon: true,
       ),
     );
@@ -42,15 +43,14 @@ class HostVerificationUploadImageView extends StatefulWidget {
 
 class _HostVerificationUploadImageViewState extends State<HostVerificationUploadImageView> {
   XFile? xFiles;
-
   final ImagePicker imagePicker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: Get.width,
-      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-      color: AppColors.white,
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      color: AppColors.backGroundColor, // Full page section dark surface layout match
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -58,7 +58,7 @@ class _HostVerificationUploadImageViewState extends State<HostVerificationUpload
             EnumLocale.txtUploadImages.name.tr,
             style: AppFontStyle.fontStyleW700(
               fontSize: 17,
-              fontColor: AppColors.black,
+              fontColor: AppColors.appDarkColor, // Dark background crisp typography flip
             ),
           ),
           Text(
@@ -69,14 +69,16 @@ class _HostVerificationUploadImageViewState extends State<HostVerificationUpload
               height: 1.8,
             ),
           ).paddingOnly(top: 4, bottom: 18),
+
+          // Identity Proof Dropdown Selection Panel
           GetBuilder<HostVerificationController>(
             id: Constant.idIdentityProof,
             builder: (controller) {
               return Container(
                 decoration: BoxDecoration(
-                  color: AppColors.white,
+                  color: AppColors.lightPurple1, // Elevated dropdown list background surface
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.appTextColor.withValues(alpha: 0.5)),
+                  border: Border.all(color: AppColors.purpleBorder),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,17 +89,17 @@ class _HostVerificationUploadImageViewState extends State<HostVerificationUpload
                         controller.selectedIdentityProof?.title ?? EnumLocale.txtSelectIdentityProof.name.tr,
                         style: controller.selectedIdentityProof == null
                             ? AppFontStyle.fontStyleW500(
-                                fontSize: 14,
-                                fontColor: AppColors.appTextColor.withValues(alpha: 0.5),
-                              )
+                          fontSize: 14,
+                          fontColor: AppColors.profileText,
+                        )
                             : AppFontStyle.fontStyleW600(
-                                fontSize: 14,
-                                fontColor: AppColors.black,
-                              ),
+                          fontSize: 14,
+                          fontColor: AppColors.appDarkColor,
+                        ),
                       ),
                       trailing: Icon(
                         controller.isIdentityExpanded ? Icons.expand_less : Icons.expand_more,
-                        color: AppColors.onBoardingTxt,
+                        color: AppColors.profileText,
                       ),
                     ),
                     if (controller.isIdentityExpanded)
@@ -109,7 +111,7 @@ class _HostVerificationUploadImageViewState extends State<HostVerificationUpload
                               item.title ?? '',
                               style: AppFontStyle.fontStyleW500(
                                 fontSize: 14,
-                                fontColor: AppColors.appTextColor.withValues(alpha: 0.5),
+                                fontColor: AppColors.appDarkColor,
                               ),
                             ),
                             onTap: () => controller.selectIdentityProof(item),
@@ -121,310 +123,312 @@ class _HostVerificationUploadImageViewState extends State<HostVerificationUpload
               ).paddingOnly(bottom: 24);
             },
           ),
+
+          // Triple Media Action/Display Modules Grid Row
           GetBuilder<HostVerificationController>(
             id: Constant.idIdentityProof,
             builder: (controller) {
               return Row(
                 children: [
-                  // Personal Photo Section
+                  // 1. Personal Photo Module Slot
                   Expanded(
                     child: DottedBorder(
                       options: RoundedRectDottedBorderOptions(
-                        radius: Radius.circular(14),
+                        radius: const Radius.circular(14),
                         padding: EdgeInsets.zero,
-                        color: AppColors.onBoardingTxt.withValues(alpha: 0.6),
-                        dashPattern: [4, 6],
+                        color: AppColors.purpleBorder,
+                        dashPattern: const [4, 6],
                         strokeWidth: 1,
                       ),
                       child: controller.personalPhoto == null
                           ? Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: AppColors.white,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: AppColors.lightPurple1,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              AppAsset.uploadImage,
+                              height: 45,
+                              width: 45,
+                            ).paddingOnly(top: 17),
+                            Text(
+                              EnumLocale.txtUploadImag.name.tr,
+                              style: AppFontStyle.fontStyleW600(
+                                fontSize: 11,
+                                fontColor: AppColors.appDarkColor,
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    AppAsset.uploadImage,
-                                    height: 45,
-                                    width: 45,
-                                  ).paddingOnly(top: 17),
-                                  Text(
-                                    EnumLocale.txtUploadImag.name.tr,
-                                    style: AppFontStyle.fontStyleW600(
-                                      fontSize: 11,
-                                      fontColor: AppColors.black,
-                                    ),
-                                  ).paddingOnly(top: 10),
-                                  Text(
-                                    EnumLocale.txtPersonalPhotos.name.tr,
-                                    style: AppFontStyle.fontStyleW600(
-                                      fontSize: 9,
-                                      fontColor: AppColors.onBoardingTxt,
-                                    ),
-                                  ).paddingOnly(top: 6, bottom: 7),
-                                  GestureDetector(
-                                    onTap: () => controller.pickImage(isPersonalPhoto: true),
-                                    child: Container(
-                                      width: Get.width,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.appColor,
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          EnumLocale.txtCapture.name.tr,
-                                          style: AppFontStyle.fontStyleW600(fontSize: 10, fontColor: AppColors.white),
-                                        ),
-                                      ),
-                                    ).paddingOnly(bottom: 10, left: 10, right: 10),
-                                  ),
-                                ],
+                            ).paddingOnly(top: 10),
+                            Text(
+                              EnumLocale.txtPersonalPhotos.name.tr,
+                              style: AppFontStyle.fontStyleW600(
+                                fontSize: 9,
+                                fontColor: AppColors.profileText,
                               ),
-                            )
-                          : Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                SizedBox(
-                                  height: 150, // Set a fixed height for image
-                                  width: double.infinity,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(14),
-                                    child: Image.file(
-                                      File(controller.personalPhoto!),
-                                      fit: BoxFit.cover, // Ensures image is scaled proportionally
-                                    ),
-                                  ).paddingAll(8),
+                            ).paddingOnly(top: 6, bottom: 7),
+                            GestureDetector(
+                              onTap: () => controller.pickImage(isPersonalPhoto: true),
+                              child: Container(
+                                width: Get.width,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: BorderRadius.circular(6),
                                 ),
-                                Positioned(
-                                  top: -10,
-                                  right: -8,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      controller.personalPhoto = null; // Clear the personal photo
-                                      controller.update([Constant.idIdentityProof]);
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.all(2),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: AppColors.appColor,
-                                      ),
-                                      child: Icon(
-                                        Icons.close,
-                                        color: AppColors.white,
-                                        size: 20,
-                                      ),
-                                    ),
+                                child: Center(
+                                  child: Text(
+                                    EnumLocale.txtCapture.name.tr,
+                                    style: AppFontStyle.fontStyleW600(fontSize: 10, fontColor: AppColors.white),
                                   ),
                                 ),
-                              ],
+                              ).paddingOnly(bottom: 10, left: 10, right: 10),
                             ),
+                          ],
+                        ),
+                      )
+                          : Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          SizedBox(
+                            height: 150,
+                            width: double.infinity,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: Image.file(
+                                File(controller.personalPhoto!),
+                                fit: BoxFit.cover,
+                              ),
+                            ).paddingAll(8),
+                          ),
+                          Positioned(
+                            top: -10,
+                            right: -8,
+                            child: GestureDetector(
+                              onTap: () {
+                                controller.personalPhoto = null;
+                                controller.update([Constant.idIdentityProof]);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.primary,
+                                ),
+                                child:  Icon(
+                                  Icons.close,
+                                  color: AppColors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
 
-                  // ID Proof Photo 1 Section
+                  // 2. ID Front Side Media Slot
                   Expanded(
                     child: DottedBorder(
                       options: RoundedRectDottedBorderOptions(
-                        radius: Radius.circular(14),
+                        radius: const Radius.circular(14),
                         padding: EdgeInsets.zero,
-                        color: AppColors.onBoardingTxt.withValues(alpha: 0.6),
-                        dashPattern: [4, 6],
+                        color: AppColors.purpleBorder,
+                        dashPattern: const [4, 6],
                         strokeWidth: 1,
                       ),
                       child: controller.idProofPhoto1 == null
                           ? Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: AppColors.white,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: AppColors.lightPurple1,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              AppAsset.uploadIdImage,
+                              height: 45,
+                              width: 45,
+                            ).paddingOnly(top: 17),
+                            Text(
+                              EnumLocale.txtUploadIDPhotos.name.tr,
+                              style: AppFontStyle.fontStyleW600(
+                                fontSize: 11,
+                                fontColor: AppColors.appDarkColor,
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    AppAsset.uploadIdImage,
-                                    height: 45,
-                                    width: 45,
-                                  ).paddingOnly(top: 17),
-                                  Text(
-                                    EnumLocale.txtUploadIDPhotos.name.tr,
-                                    style: AppFontStyle.fontStyleW600(
-                                      fontSize: 11,
-                                      fontColor: AppColors.black,
-                                    ),
-                                  ).paddingOnly(top: 10),
-                                  Text(
-                                    EnumLocale.txtFrontSide.name.tr,
-                                    style: AppFontStyle.fontStyleW600(
-                                      fontSize: 9,
-                                      fontColor: AppColors.onBoardingTxt,
-                                    ),
-                                  ).paddingOnly(top: 6, bottom: 7),
-                                  GestureDetector(
-                                    onTap: () => controller.pickImage(isPersonalPhoto: false),
-                                    child: Container(
-                                      width: Get.width,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.appColor,
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          EnumLocale.txtAttach.name.tr,
-                                          style: AppFontStyle.fontStyleW600(fontSize: 10, fontColor: AppColors.white),
-                                        ),
-                                      ),
-                                    ).paddingOnly(bottom: 10, left: 10, right: 10),
-                                  ),
-                                ],
+                            ).paddingOnly(top: 10),
+                            Text(
+                              EnumLocale.txtFrontSide.name.tr,
+                              style: AppFontStyle.fontStyleW600(
+                                fontSize: 9,
+                                fontColor: AppColors.profileText,
                               ),
-                            )
-                          : Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                SizedBox(
-                                  height: 150, // Set a fixed height for image
-                                  width: double.infinity,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(14),
-                                    child: Image.file(
-                                      File(controller.idProofPhoto1!),
-                                      fit: BoxFit.cover, // Ensures image is scaled proportionally
-                                    ),
-                                  ).paddingAll(8),
+                            ).paddingOnly(top: 6, bottom: 7),
+                            GestureDetector(
+                              onTap: () => controller.pickImage(isPersonalPhoto: false),
+                              child: Container(
+                                width: Get.width,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: BorderRadius.circular(6),
                                 ),
-                                Positioned(
-                                  top: -10,
-                                  right: -8,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      controller.idProofPhoto1 = null; // Clear the ID proof photo 1
-                                      controller.update([Constant.idIdentityProof]);
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.all(2),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: AppColors.appColor,
-                                      ),
-                                      child: Icon(
-                                        Icons.close,
-                                        color: AppColors.white,
-                                        size: 20,
-                                      ),
-                                    ),
+                                child: Center(
+                                  child: Text(
+                                    EnumLocale.txtAttach.name.tr,
+                                    style: AppFontStyle.fontStyleW600(fontSize: 10, fontColor: AppColors.white),
                                   ),
                                 ),
-                              ],
+                              ).paddingOnly(bottom: 10, left: 10, right: 10),
                             ),
+                          ],
+                        ),
+                      )
+                          : Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          SizedBox(
+                            height: 150,
+                            width: double.infinity,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: Image.file(
+                                File(controller.idProofPhoto1!),
+                                fit: BoxFit.cover,
+                              ),
+                            ).paddingAll(8),
+                          ),
+                          Positioned(
+                            top: -10,
+                            right: -8,
+                            child: GestureDetector(
+                              onTap: () {
+                                controller.idProofPhoto1 = null;
+                                controller.update([Constant.idIdentityProof]);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.primary,
+                                ),
+                                child:  Icon(
+                                  Icons.close,
+                                  color: AppColors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
 
-                  // ID Proof Photo 2 Section
+                  // 3. ID Back Side Media Slot
                   Expanded(
                     child: DottedBorder(
                       options: RoundedRectDottedBorderOptions(
-                        radius: Radius.circular(14),
+                        radius: const Radius.circular(14),
                         padding: EdgeInsets.zero,
-                        color: AppColors.onBoardingTxt.withValues(alpha: 0.6),
-                        dashPattern: [4, 6],
+                        color: AppColors.purpleBorder,
+                        dashPattern: const [4, 6],
                         strokeWidth: 1,
                       ),
                       child: controller.idProofPhoto2 == null
                           ? Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: AppColors.white,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: AppColors.lightPurple1,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              AppAsset.uploadIdImage,
+                              height: 45,
+                              width: 45,
+                            ).paddingOnly(top: 17),
+                            Text(
+                              EnumLocale.txtUploadIDPhotos.name.tr,
+                              style: AppFontStyle.fontStyleW600(
+                                fontSize: 11,
+                                fontColor: AppColors.appDarkColor,
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    AppAsset.uploadIdImage,
-                                    height: 45,
-                                    width: 45,
-                                  ).paddingOnly(top: 17),
-                                  Text(
-                                    EnumLocale.txtUploadIDPhotos.name.tr,
-                                    style: AppFontStyle.fontStyleW600(
-                                      fontSize: 11,
-                                      fontColor: AppColors.black,
-                                    ),
-                                  ).paddingOnly(top: 10),
-                                  Text(
-                                    EnumLocale.txtBackSide.name.tr,
-                                    style: AppFontStyle.fontStyleW600(
-                                      fontSize: 9,
-                                      fontColor: AppColors.onBoardingTxt,
-                                    ),
-                                  ).paddingOnly(top: 6, bottom: 7),
-                                  GestureDetector(
-                                    onTap: () => controller.pickImage(isPersonalPhoto: false),
-                                    child: Container(
-                                      width: Get.width,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.appColor,
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          EnumLocale.txtAttach.name.tr,
-                                          style: AppFontStyle.fontStyleW600(fontSize: 10, fontColor: AppColors.white),
-                                        ),
-                                      ),
-                                    ).paddingOnly(bottom: 10, left: 10, right: 10),
-                                  ),
-                                ],
+                            ).paddingOnly(top: 10),
+                            Text(
+                              EnumLocale.txtBackSide.name.tr,
+                              style: AppFontStyle.fontStyleW600(
+                                fontSize: 9,
+                                fontColor: AppColors.profileText,
                               ),
-                            )
-                          : Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                SizedBox(
-                                  height: 150, // Set a fixed height for image
-                                  width: double.infinity,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(14),
-                                    child: Image.file(
-                                      File(controller.idProofPhoto2!),
-                                      fit: BoxFit.cover, // Ensures image is scaled proportionally
-                                    ),
-                                  ).paddingAll(8),
+                            ).paddingOnly(top: 6, bottom: 7),
+                            GestureDetector(
+                              onTap: () => controller.pickImage(isPersonalPhoto: false),
+                              child: Container(
+                                width: Get.width,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: BorderRadius.circular(6),
                                 ),
-                                Positioned(
-                                  top: -10,
-                                  right: -8,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      controller.idProofPhoto2 = null; // Clear the ID proof photo 2
-                                      controller.update([Constant.idIdentityProof]);
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.all(2),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: AppColors.appColor,
-                                      ),
-                                      child: Icon(
-                                        Icons.close,
-                                        color: AppColors.white,
-                                        size: 20,
-                                      ),
-                                    ),
+                                child: Center(
+                                  child: Text(
+                                    EnumLocale.txtAttach.name.tr,
+                                    style: AppFontStyle.fontStyleW600(fontSize: 10, fontColor: AppColors.white),
                                   ),
                                 ),
-                              ],
+                              ).paddingOnly(bottom: 10, left: 10, right: 10),
                             ),
+                          ],
+                        ),
+                      )
+                          : Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          SizedBox(
+                            height: 150,
+                            width: double.infinity,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: Image.file(
+                                File(controller.idProofPhoto2!),
+                                fit: BoxFit.cover,
+                              ),
+                            ).paddingAll(8),
+                          ),
+                          Positioned(
+                            top: -10,
+                            right: -8,
+                            child: GestureDetector(
+                              onTap: () {
+                                controller.idProofPhoto2 = null;
+                                controller.update([Constant.idIdentityProof]);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.primary,
+                                ),
+                                child:  Icon(
+                                  Icons.close,
+                                  color: AppColors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -443,8 +447,8 @@ class HostVerificationFillFormView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16),
-      color: AppColors.white,
+      padding: const EdgeInsets.all(16),
+      color: AppColors.backGroundColor, // Core canvas block wrapper dark sync
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -452,7 +456,7 @@ class HostVerificationFillFormView extends StatelessWidget {
             EnumLocale.txtFillForm.name.tr,
             style: AppFontStyle.fontStyleW700(
               fontSize: 17,
-              fontColor: AppColors.black,
+              fontColor: AppColors.appDarkColor,
             ),
           ),
           Text(
@@ -469,92 +473,48 @@ class HostVerificationFillFormView extends StatelessWidget {
                 key: logic.formKey,
                 child: Column(
                   children: [
-                    // CustomTitle(
-                    //   title: EnumLocale.txtRequestID.name.tr,
-                    //   textStyle: AppFontStyle.fontStyleW500(
-                    //     fontSize: 12,
-                    //     fontColor: AppColors.appTextColor,
-                    //   ),
-                    //   method: CustomTextField(
-                    //     filled: true,
-                    //     borderColor: AppColors.appTextColor.withValues(alpha: 0.5),
-                    //     controller: logic.requestIDController,
-                    //     fillColor: AppColors.white,
-                    //     cursorColor: AppColors.black,
-                    //     fontColor: AppColors.black,
-                    //     fontSize: 15,
-                    //     textInputAction: TextInputAction.next,
-                    //     maxLines: 1,
-                    //   ),
-                    // ).paddingOnly(bottom: 21),
-                    // CustomTitle(
-                    //   title: EnumLocale.txtEnterName.name.tr,
-                    //   textStyle: AppFontStyle.fontStyleW500(
-                    //     fontSize: 12,
-                    //     fontColor: AppColors.appTextColor,
-                    //   ),
-                    //   method: CustomTextField(
-                    //     filled: true,
-                    //     borderColor: AppColors.appTextColor.withValues(alpha: 0.5),
-                    //     controller: logic.nameController,
-                    //     fillColor: AppColors.white,
-                    //     cursorColor: AppColors.black,
-                    //     fontColor: AppColors.black,
-                    //     fontSize: 15,
-                    //     textInputAction: TextInputAction.next,
-                    //     inputFormatters: [UpperCaseTextFormatter()],
-                    //     validator: (value) {
-                    //       if (value == null || value.isEmpty) {
-                    //         return EnumLocale.desEnterFullName.name.tr;
-                    //       }
-                    //       return null;
-                    //     },
-                    //   ),
-                    // ).paddingOnly(bottom: 21),
-                    Database.loginType == 2
-                        ? SizedBox()
-                        : CustomTitle(
-                            title: EnumLocale.txtEnterMail.name.tr,
-                            textStyle: AppFontStyle.fontStyleW500(
-                              fontSize: 12,
-                              fontColor: AppColors.appTextColor,
-                            ),
-                            method: CustomTextField(
-                              filled: true,
-                              borderColor: AppColors.appTextColor.withValues(alpha: 0.5),
-                              controller: logic.emailController,
-                              fillColor: AppColors.white,
-                              cursorColor: AppColors.black,
-                              fontColor: AppColors.black,
-                              fontSize: 15,
-                              textInputAction: TextInputAction.next,
-                              textInputType: TextInputType.emailAddress,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return EnumLocale.desEnterEmail.name.tr;
-                                } else if (!logic.isEmailValid(value)) {
-                                  return EnumLocale.desEnterValidEmailAddress.name.tr;
-                                } else if (!value.toLowerCase().endsWith('@gmail.com')) {
-                                  return 'Please enter a Gmail address';
-                                }
-
-                                return null;
-                              },
-                            ),
-                          ).paddingOnly(bottom: 21),
+                    if (Database.loginType != 2)
+                      CustomTitle(
+                        title: EnumLocale.txtEnterMail.name.tr,
+                        textStyle: AppFontStyle.fontStyleW500(
+                          fontSize: 12,
+                          fontColor: AppColors.profileText,
+                        ),
+                        method: CustomTextField(
+                          filled: true,
+                          borderColor: AppColors.purpleBorder,
+                          controller: logic.emailController,
+                          fillColor: AppColors.lightPurple1, // Dark form field slot fill match
+                          cursorColor: AppColors.primary,
+                          fontColor: AppColors.appDarkColor,
+                          fontSize: 15,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return EnumLocale.desEnterEmail.name.tr;
+                            } else if (!logic.isEmailValid(value)) {
+                              return EnumLocale.desEnterValidEmailAddress.name.tr;
+                            } else if (!value.toLowerCase().endsWith('@gmail.com')) {
+                              return 'Please enter a Gmail address';
+                            }
+                            return null;
+                          },
+                        ),
+                      ).paddingOnly(bottom: 21),
                     CustomTitle(
                       title: EnumLocale.txtEnterYourAddress.name.tr,
                       textStyle: AppFontStyle.fontStyleW500(
                         fontSize: 12,
-                        fontColor: AppColors.appTextColor,
+                        fontColor: AppColors.profileText,
                       ),
                       method: CustomTextField(
                         filled: true,
-                        borderColor: AppColors.appTextColor.withValues(alpha: 0.5),
+                        borderColor: AppColors.purpleBorder,
                         controller: logic.addressController,
-                        fillColor: AppColors.white,
-                        cursorColor: AppColors.black,
-                        fontColor: AppColors.black,
+                        fillColor: AppColors.lightPurple1,
+                        cursorColor: AppColors.primary,
+                        fontColor: AppColors.appDarkColor,
                         fontSize: 15,
                         textInputAction: TextInputAction.next,
                         maxLines: 1,
@@ -564,15 +524,15 @@ class HostVerificationFillFormView extends StatelessWidget {
                       title: EnumLocale.txtCountry.name.tr,
                       textStyle: AppFontStyle.fontStyleW500(
                         fontSize: 12,
-                        fontColor: AppColors.appTextColor,
+                        fontColor: AppColors.profileText,
                       ),
                       method: CustomTextField(
                         filled: true,
-                        borderColor: AppColors.appTextColor.withValues(alpha: 0.5),
+                        borderColor: AppColors.purpleBorder,
                         controller: logic.countryCnt,
-                        fillColor: AppColors.white,
-                        cursorColor: AppColors.black,
-                        fontColor: AppColors.black,
+                        fillColor: AppColors.lightPurple1,
+                        cursorColor: AppColors.primary,
+                        fontColor: AppColors.appDarkColor,
                         fontSize: 15,
                         textInputAction: TextInputAction.next,
                         maxLines: 1,
@@ -582,15 +542,15 @@ class HostVerificationFillFormView extends StatelessWidget {
                       title: EnumLocale.txtEnterYourAge.name.tr,
                       textStyle: AppFontStyle.fontStyleW500(
                         fontSize: 12,
-                        fontColor: AppColors.appTextColor,
+                        fontColor: AppColors.profileText,
                       ),
                       method: CustomTextField(
                         filled: true,
-                        borderColor: AppColors.appTextColor.withValues(alpha: 0.5),
+                        borderColor: AppColors.purpleBorder,
                         controller: logic.ageController,
-                        fillColor: AppColors.white,
-                        cursorColor: AppColors.black,
-                        fontColor: AppColors.black,
+                        fillColor: AppColors.lightPurple1,
+                        cursorColor: AppColors.primary,
+                        fontColor: AppColors.appDarkColor,
                         fontSize: 15,
                         textInputAction: TextInputAction.next,
                         maxLines: 1,
@@ -618,14 +578,14 @@ class HostVerificationBottomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.backGroundColor, // Swapped pure light docking surface for dark background
         boxShadow: [
           BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.10),
-            offset: Offset(0, 0),
-            blurRadius: 8,
+            color: AppColors.black.withValues(alpha: 0.35), // Dark shadow density scaling
+            offset: const Offset(0, -2), // Glow points up onto screen text contents tracking scroll edges
+            blurRadius: 12,
             spreadRadius: 0,
           ),
         ],
@@ -637,7 +597,6 @@ class HostVerificationBottomButton extends StatelessWidget {
               controller.validateAndNext();
             },
             height: Get.height * 0.06,
-            // borderRadius: 30,
             text: EnumLocale.txtNext.name.tr,
             textStyle: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.white),
           ).paddingOnly(bottom: 10);

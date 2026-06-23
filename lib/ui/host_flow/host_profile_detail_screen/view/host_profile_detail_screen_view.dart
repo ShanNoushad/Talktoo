@@ -13,7 +13,7 @@ class HostProfileDetailScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.black,
       bottomNavigationBar: HostProfileBottomButtonView(),
       body: SafeArea(
         child: Stack(

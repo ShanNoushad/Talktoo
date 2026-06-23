@@ -17,7 +17,6 @@ class CallingHistoryApi {
     required String endDate,
     required String startDate,
   }) async {
-    final token = await FirebaseAccessToken.onGet();
 
     Utils.showLog("Calling History Api Calling...");
     startPagination += 1;
@@ -37,8 +36,8 @@ class CallingHistoryApi {
 
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.authToken: 'Bearer ${Api.secretKey}',
+      ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     Utils.showLog("Calling History Api uri :: $uri");

@@ -11,15 +11,14 @@ import 'package:talk_in/utils/utils.dart';
 
 class NotificationClearApi {
   static Future<NotificationClearModel?> callApi() async {
-    final token = await FirebaseAccessToken.onGet() ?? "";
 
     Utils.showLog(" Notification clear Api Calling...");
 
     final uri = Uri.parse(Api.notificationClear);
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.authToken: "Bearer ${Api.secretKey}",
+      ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     log(" Notification clear Api URL ::$uri");

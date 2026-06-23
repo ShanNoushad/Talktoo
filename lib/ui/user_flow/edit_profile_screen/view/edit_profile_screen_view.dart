@@ -27,7 +27,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: saveProfileButton(),
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.black,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         flexibleSpace: const EditProfileScreenAppBar(),

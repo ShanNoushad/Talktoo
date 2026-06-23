@@ -14,7 +14,6 @@ class HostNotificationApi {
   static int limitPagination = 20;
 
   static Future<HostNotificationModel?> callApi() async {
-    final token = await FirebaseAccessToken.onGet() ?? "";
 
     Utils.showLog("Host Notification Api Calling...");
 
@@ -37,8 +36,8 @@ class HostNotificationApi {
 
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      "x-auth-token": "Bearer ${Api.secretKey}",
+      "x-auth-uid": Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     log("Host Notification Api URL ::$uri");

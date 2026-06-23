@@ -19,7 +19,7 @@ class FillProfileScreen extends StatelessWidget {
       },
       child: Scaffold(
         bottomNavigationBar: saveProfileButton(),
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.black,
         appBar: AppBar(
           backgroundColor: Colors.red,
           automaticallyImplyLeading: false,

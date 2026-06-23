@@ -17,10 +17,11 @@ class HostCallingScreenAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(120),
+      preferredSize: const Size.fromHeight(120),
       child: CustomAppBar(
-        appBarColor: AppColors.lightPurple,
+        appBarColor: AppColors.lightPurple, // Clean deep card surface background
         title: EnumLocale.txtRecentCalling.name.tr,
+        textColor: AppColors.white, // Maps safely to your near-white dark theme text config
         showLeadingIcon: false,
       ),
     );
@@ -37,14 +38,24 @@ class HostCallingScreenItem extends StatelessWidget {
   final num coin;
   final VoidCallback? onTalkNowTap;
 
-  const HostCallingScreenItem({super.key, required this.index, required this.image, required this.name, required this.coin, required this.callStatusText, required this.time, required this.controller, this.onTalkNowTap});
+  const HostCallingScreenItem({
+    super.key,
+    required this.index,
+    required this.image,
+    required this.name,
+    required this.coin,
+    required this.callStatusText,
+    required this.time,
+    required this.controller,
+    this.onTalkNowTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.lightGrey),
+        border: Border.all(color: AppColors.borderColor), // Changed from lightGrey to clean dark structural borders
       ),
       child: Row(
         children: [
@@ -71,31 +82,9 @@ class HostCallingScreenItem extends StatelessWidget {
                       child: Text(
                         overflow: TextOverflow.ellipsis,
                         name,
-                        style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.black),
+                        style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.appDarkColor), // Changed from AppColors.black to brightest dark-theme white text
                       ).paddingOnly(right: 8),
                     ),
-                    // coin == 0
-                    //     ? SizedBox.shrink()
-                    //     : Container(
-                    //         // padding: EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
-                    //         decoration: BoxDecoration(
-                    //           color: AppColors.lightYellow100,
-                    //           borderRadius: BorderRadius.circular(30),
-                    //         ),
-                    //         child: Row(
-                    //           children: [
-                    //             Image.asset(
-                    //               AppAsset.dimondCoin,
-                    //               height: 13,
-                    //               width: 13,
-                    //             ).paddingOnly(left: 6, top: 3, bottom: 3),
-                    //             Text(
-                    //               coin.toString(),
-                    //               style: AppFontStyle.fontStyleW600(fontSize: 12, fontColor: AppColors.orange),
-                    //             ).paddingOnly(left: 4, right: 9)
-                    //           ],
-                    //         ),
-                    //       ),
                   ],
                 ),
                 Row(
@@ -104,8 +93,8 @@ class HostCallingScreenItem extends StatelessWidget {
                       callStatusText == "Missed Call"
                           ? AppAsset.missedCall
                           : callStatusText == "Incoming Call"
-                              ? AppAsset.incomingCall
-                              : AppAsset.outgoingCall,
+                          ? AppAsset.incomingCall
+                          : AppAsset.outgoingCall,
                       height: 19,
                       width: 19,
                     ),
@@ -114,25 +103,23 @@ class HostCallingScreenItem extends StatelessWidget {
                       style: AppFontStyle.fontStyleW600(
                           fontSize: 12,
                           fontColor: callStatusText == "Missed Call"
-                              ? Colors.red
+                              ? const Color(0xffFF5252) // Maps explicitly to AppColors.red or system semantic red
                               : callStatusText == "Incoming Call"
-                                  ? AppColors.green
-                                  : AppColors.blue),
+                              ? AppColors.green
+                              : AppColors.blue),
                     ).paddingOnly(left: 4, right: 4)
                   ],
                 ).paddingOnly(bottom: 4, top: 2),
                 Text(
-                  time.toString(),
+                  time,
                   style: AppFontStyle.fontStyleW500(fontSize: 11, fontColor: AppColors.profileText),
                 ),
               ],
             ).paddingOnly(left: 3),
           ),
-          // Spacer(),
           GestureDetector(
             onTap: () {
               if (onTalkNowTap != null) {
-                // 👉 If custom callback is passed, execute it
                 onTalkNowTap!();
               } else {
                 Get.bottomSheet(
@@ -170,16 +157,15 @@ class HostCallingScreenItem extends StatelessWidget {
               }
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   colors: [
                     Color(0xffFF1261),
                     Color(0xffFF1C20),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(30),
-                color: AppColors.appColor,
               ),
               child: Row(
                 children: [

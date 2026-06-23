@@ -31,7 +31,7 @@ class HostProfileScreen extends StatelessWidget {
         }
       },
       child: Scaffold(
-        backgroundColor: Color(0xffF7FAFF),
+        backgroundColor: AppColors.black,
         body: Column(
           children: [
             HostProfileTopView(),

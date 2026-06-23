@@ -17,7 +17,7 @@ class ProfileDetailScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.black,
       bottomNavigationBar: ProfileBottomButtonView(),
       body: SafeArea(
         child: Stack(

@@ -13,8 +13,9 @@ import 'package:talk_in/ui/user_flow/splash_screen_page/model/fetch_listener_pro
 import 'package:talk_in/ui/user_flow/splash_screen_page/model/fetch_login_user_profile_model.dart';
 import 'package:talk_in/ui/user_flow/splash_screen_page/model/setting_api_model.dart';
 import 'package:talk_in/utils/constant.dart';
-import 'package:talk_in/utils/firebse_access_token.dart';
 import 'package:talk_in/utils/utils.dart';
+
+import 'api.dart';
 
 class Database {
   static final localStorage = GetStorage();
@@ -34,21 +35,24 @@ class Database {
 
     onSetFcmToken(fcmToken);
     onSetIdentity(identity);
-
+    log("DEBUG stored loginUserId => $loginUserId");
+    log("DEBUG stored loginUserFirebaseId => $loginUserFirebaseId");
+    log("DEBUG isNewUser => $isNewUser");
+    log("DEBUG isLogin => $isLogin");
     Utils.showLog("Stored fcmToken: $fcmToken");
     Utils.showLog("Stored identity: $identity");
 
     Utils.showLog("Is New User => $isNewUser");
 
     if (isNewUser == false) {
-      final token = await FirebaseAccessToken.onGet();
-
-      fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(loginUserId: loginUserFirebaseId, token: token ?? '');
-    }
-
-    if (isListener) {
-      // fetchSellerDetailsModel = await FetchSellerDetailsApi.callApi(sellerId: sellerId, userId: loginUserId);
-      // Database.onSetSellerPayoutAmount(fetchSellerDetailsModel?.data?.payoutAmount ?? 0);
+      try {
+        fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(
+          loginUserId: loginUserId,
+          token: Api.secretKey,
+        );
+      } catch (e) {
+        log("Database.init profile fetch error: $e");
+      }
     }
   }
 

@@ -17,8 +17,10 @@ class HostAppLanguageScreenAppBar extends StatelessWidget {
       preferredSize: Size.fromHeight(120),
       child: CustomAppBar(
         appBarColor: AppColors.lightPurple,
+        textColor: AppColors.white,
         title: EnumLocale.txtAPPLanguage.name.tr,
         showLeadingIcon: true,
+        iconColor: Colors.white,
       ),
     );
   }

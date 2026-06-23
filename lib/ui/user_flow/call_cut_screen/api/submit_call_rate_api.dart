@@ -15,7 +15,6 @@ class SubmitCallRateApi {
     required String review,
     required String rating,
   }) async {
-    final token = await FirebaseAccessToken.onGet();
 
     Utils.showLog("submit call rate Api Calling...");
 
@@ -33,8 +32,8 @@ class SubmitCallRateApi {
 
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.authToken: 'Bearer ${Api.secretKey}',
+      ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
 

@@ -15,9 +15,9 @@ import 'package:talk_in/utils/app_color.dart';
 import 'package:talk_in/utils/constant.dart';
 import 'package:talk_in/utils/database.dart';
 import 'package:talk_in/utils/enums.dart';
-import 'package:talk_in/utils/firebse_access_token.dart';
 import 'package:talk_in/utils/font_style.dart';
 import 'package:talk_in/utils/utils.dart';
+import '../../../../utils/api.dart';
 
 class FillProfileScreenController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -175,14 +175,13 @@ class FillProfileScreenController extends GetxController {
 
   /// fill profile api
   Future<void> callEditApi({String? image}) async {
-    final token = await FirebaseAccessToken.onGet();
 
     log('Database.countryCode  ::::  ${Database.selectedCountryCode}');
     editProfileModel = await EditProfileApi.callApi(
       country: countryController.text,
       countryFlag: flagController.text,
       countryCode: Database.selectedCountryCode,
-      uid: Database.loginUserFirebaseId,
+      uid: Database.loginUserId,          // ← was loginUserFirebaseId
       birthDate: dateController.text,
       image: pickImage == "" ? photo : pickImage,
       nickName: nickNameController.text,
@@ -193,11 +192,9 @@ class FillProfileScreenController extends GetxController {
     );
 
     if (editProfileModel?.status == true) {
-      // Re-fetch updated profile
-      fetchLoginUserProfileModel =
-      await FetchLoginUserProfileApi.callApi(
-        loginUserId: Database.loginUserFirebaseId,
-        token: token ?? '',
+      fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(
+        loginUserId: Database.loginUserId,    // ← was loginUserFirebaseId
+        token: Api.secretKey,                 // ← was token ?? ''
       );
       Database.fetchLoginUserProfileModel =
           fetchLoginUserProfileModel;

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:talk_in/utils/app_color.dart';
-import 'package:talk_in/utils/font_style.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:sms_autofill/sms_autofill.dart';
+import 'package:talk_in/utils/app_asset.dart';
 import '../controller/mobile_login_controller.dart';
 
 class OtpScreen extends StatefulWidget {
@@ -20,17 +21,28 @@ class _OtpScreenState extends State<OtpScreen> {
   void initState() {
     super.initState();
     controller = Get.find<OtpController>();
-    // SMS autofill paste listener
-    controller.otpControllers[0].addListener(_onFirstBoxChanged);
     _startTimer();
+    _listenOtp();
   }
 
-  void _onFirstBoxChanged() {
-    final text = controller.otpControllers[0].text;
-    if (text.length == 6) {
-      controller.onAutofillPaste(text);
-      setState(() {});
+  Future<void> _listenOtp() async {
+    await SmsAutoFill().unregisterListener();
+    await SmsAutoFill().listenForCode();
+    SmsAutoFill().code.listen((code) {
+      final digits = code.replaceAll(RegExp(r'[^0-9]'), '');
+      if (digits.length == 6) {
+        _fillOtp(digits);
+        SmsAutoFill().unregisterListener();
+      }
+    });
+  }
+
+  void _fillOtp(String code) {
+    for (int i = 0; i < 6; i++) {
+      controller.otpControllers[i].text = code[i];
+      controller.onOtpChanged(code[i], i);
     }
+    setState(() {});
   }
 
   void _startTimer() {
@@ -58,13 +70,14 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   void dispose() {
-    controller.otpControllers[0].removeListener(_onFirstBoxChanged);
+    SmsAutoFill().unregisterListener();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:  Colors.black,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -72,127 +85,278 @@ class _OtpScreenState extends State<OtpScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
+
+              // ── Back button ──────────────────────────────────────────
               GestureDetector(
                 onTap: () => Get.back(),
                 child: Container(
-                  width: 36,
-                  height: 36,
+                  width: 42,
+                  height: 42,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.lightGrey,
-                  ),
-                  child: const Icon(Icons.arrow_back, size: 18),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Center(
-                child: Text("TalkToo",
-                    style: AppFontStyle.fontStyleKaushanW400(
-                        fontSize: 62, fontColor: AppColors.black)),
-              ),
-              const SizedBox(height: 24),
-              Text("Verify your number",
-                  style: AppFontStyle.fontStyleW600(
-                      fontSize: 20, fontColor: AppColors.black)),
-              const SizedBox(height: 6),
-              RichText(
-                text: TextSpan(
-                  style: AppFontStyle.fontStyleW400(
-                      fontSize: 13, fontColor: AppColors.onBoardingTxt),
-                  children: [
-                    const TextSpan(text: 'Enter the 6-digit code sent to '),
-                    TextSpan(
-                      text: '${controller.dialCode} ${controller.phoneNumber}',
-                      style: AppFontStyle.fontStyleW600(
-                          fontSize: 13, fontColor: AppColors.black),
+                    color: Colors.transparent,
+                    border: Border.all(
+                      color: const Color(0xFF7C4DFF),
+                      width: 1.5,
                     ),
-                  ],
+                  ),
+                  child: const Icon(
+                    Icons.arrow_back,
+                    size: 18,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-              const SizedBox(height: 28),
+
+              const SizedBox(height: 16),
+
+              // ── "Talktoo" logo ───────────────────────────────────────
+              Center(
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Talk',
+                        style: GoogleFonts.nunito(
+                          fontSize: 46,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'too',
+                        style: GoogleFonts.nunito(
+                          fontSize: 46,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF9C27B0),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              // ── Hero OTP image ───────────────────────────────────────
+              Center(
+                child: Image.asset(
+                  AppAsset.otpImage,
+                  height: 200,
+                  fit: BoxFit.contain,
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // ── "Verify your number" ─────────────────────────────────
+              Center(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Verify your ',
+                        style: GoogleFonts.nunito(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'number',
+                        style: GoogleFonts.nunito(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF9C27B0),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // ── Subtitle with phone number ───────────────────────────
+              Center(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: GoogleFonts.nunito(
+                      fontSize: 13,
+                      color: Colors.white60,
+                    ),
+                    children: [
+                      const TextSpan(text: 'Enter the 6-digit code sent to '),
+                      TextSpan(
+                        text: '${controller.dialCode} ${controller.phoneNumber}',
+                        style: GoogleFonts.nunito(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF9C27B0),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // ── OTP boxes ────────────────────────────────────────────
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(6, (i) => _buildOtpBox(i)),
               ),
+
               const SizedBox(height: 20),
+
+              // ── Resend timer pill ────────────────────────────────────
               Center(
                 child: _canResend
                     ? const SizedBox.shrink()
                     : Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 4),
+                      horizontal: 20, vertical: 10),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEEEDFE),
-                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: const Color(0xFF7C4DFF),
+                      width: 1.2,
+                    ),
                   ),
-                  child: Text(
-                    "Resend in $_timerText",
-                    style: AppFontStyle.fontStyleW500(
-                        fontSize: 12, fontColor: AppColors.purple),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.refresh_rounded,
+                        color: Color(0xFF9C27B0),
+                        size: 16,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Resend in $_timerText',
+                        style: GoogleFonts.nunito(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
+
               const SizedBox(height: 12),
+
+              // ── "Didn't receive?" row ────────────────────────────────
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       "Didn't receive the code? ",
-                      style: AppFontStyle.fontStyleW400(
-                          fontSize: 13, fontColor: AppColors.onBoardingTxt),
+                      style: GoogleFonts.nunito(
+                        fontSize: 13,
+                        color: Colors.white54,
+                      ),
                     ),
                     GestureDetector(
                       onTap: _canResend
                           ? () async {
                         await controller.onResendOtp();
                         _startTimer();
+                        _listenOtp();
                       }
                           : null,
                       child: Text(
-                        "Resend",
-                        style: AppFontStyle.fontStyleW600(
+                        'Resend',
+                        style: GoogleFonts.nunito(
                           fontSize: 13,
-                          fontColor: _canResend
-                              ? AppColors.purple
-                              : AppColors.onBoardingTxt,
+                          fontWeight: FontWeight.w700,
+                          color: _canResend
+                              ? const Color(0xFF9C27B0)
+                              : Colors.white24,
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 28),
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: () => controller.onVerifyOtp(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.purple,
-                    shape: const StadiumBorder(),
+
+              const SizedBox(height: 24),
+
+              // ── Verify & Continue button ─────────────────────────────
+              GestureDetector(
+                onTap: () => controller.onVerifyOtp(),
+                child: Container(
+                  width: double.infinity,
+                  height: 58,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF7B2FBE),
+                        Color(0xFF9C27B0),
+                        Color(0xFF6A0DAD),
+                      ],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF9C27B0).withOpacity(0.5),
+                        blurRadius: 22,
+                        spreadRadius: 1,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
                   ),
-                  child: Text(
-                    "Verify & Continue",
-                    style: AppFontStyle.fontStyleW600(
-                        fontSize: 16, fontColor: Colors.white),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Verify & Continue',
+                        style: GoogleFonts.nunito(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      const Icon(
+                        Icons.arrow_forward,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+
+              const SizedBox(height: 18),
+
+              // ── Wrong number? Change number ──────────────────────────
               Center(
                 child: GestureDetector(
                   onTap: () => Get.back(),
                   child: RichText(
                     text: TextSpan(
-                      style: AppFontStyle.fontStyleW400(
-                          fontSize: 13, fontColor: AppColors.onBoardingTxt),
+                      style: GoogleFonts.nunito(
+                        fontSize: 13,
+                        color: Colors.white54,
+                      ),
                       children: [
                         const TextSpan(text: 'Wrong number? '),
                         TextSpan(
                           text: 'Change number',
-                          style: AppFontStyle.fontStyleW600(
-                              fontSize: 13, fontColor: AppColors.purple),
+                          style: GoogleFonts.nunito(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF9C27B0),
+                          ),
                         ),
                       ],
                     ),
@@ -207,29 +371,56 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   Widget _buildOtpBox(int index) {
+    final bool hasValue =
+        controller.otpControllers[index].text.isNotEmpty;
+
     return SizedBox(
       width: 46,
-      height: 54,
+      height: 56,
       child: TextFormField(
         controller: controller.otpControllers[index],
         focusNode: controller.focusNodes[index],
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
         maxLength: 1,
-        autofillHints: index == 0 ? [AutofillHints.oneTimeCode] : null,
-        style: AppFontStyle.fontStyleW600(
-            fontSize: 22, fontColor: AppColors.purple),
+        style: GoogleFonts.nunito(
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          color: Colors.white,
+        ),
+        textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
           counterText: '',
+          isDense: false,
+          contentPadding:
+          const EdgeInsets.symmetric(vertical: 14, horizontal: 0),
           filled: true,
-          fillColor: const Color(0xFFEEEDFE),
+          fillColor: const Color(0xFF150D2E),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Color(0xFF534AB7)),
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Color(0xFF7C4DFF), width: 1.2),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: hasValue
+                  ? const Color(0xFF9C27B0)
+                  : const Color(0xFF7C4DFF),
+              width: 1.2,
+            ),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Color(0xFF534AB7), width: 1.5),
+            borderRadius: BorderRadius.circular(10),
+            borderSide:
+            const BorderSide(color: Color(0xFF9C27B0), width: 1.8),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.red, width: 1.2),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.red, width: 1.8),
           ),
         ),
         onChanged: (value) {

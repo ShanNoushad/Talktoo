@@ -1,40 +1,48 @@
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:http/http.dart' as http;
-import 'package:talk_in/ui/user_flow/splash_screen_page/model/fetch_login_user_profile_model.dart';
-import 'package:talk_in/utils/api.dart';
-import 'package:talk_in/utils/firebse_access_token.dart';
-import 'package:talk_in/utils/utils.dart';
+
+import '../../../../utils/api.dart';
+import '../../../../utils/utils.dart';
+import '../model/fetch_login_user_profile_model.dart';
 
 class FetchLoginUserProfileApi {
-  static Future<FetchLoginUserProfileModel?> callApi({required String loginUserId, required String token}) async {
+  static Future<FetchLoginUserProfileModel?> callApi({
+    required String loginUserId,
+    required String token,
+  }) async {
     Utils.showLog("Get Login User Profile Api Calling...");
 
     final uri = Uri.parse(Api.loginUserProfile);
-
     Utils.showLog("Get Login User Profile uri => $uri");
 
     final headers = {
       "key": Api.secretKey,
+      "x-auth-token": "Bearer ${Api.secretKey}",
+      "x-auth-uid": loginUserId,  // ← MongoDB _id of the user
       "Content-Type": "application/json",
-      "x-auth-token": "Bearer $token",
-      "x-auth-uid": loginUserId,
     };
 
-    log("Get Login User Profile headers  $headers");
+    // ← ADD THESE TWO LINES
+    log("PROFILE API headers => $headers");
+    log("PROFILE API userId => $loginUserId");
+
     try {
       final response = await http.get(uri, headers: headers);
-      Utils.showLog("Get Login User Profile Response.status code => ${response.statusCode}");
+
+      // ← ADD THIS LINE
+      log("PROFILE API statusCode => ${response.statusCode}");
+      log("PROFILE API response => ${response.body}");
+
+      Utils.showLog("Get Login User Profile StatusCode => ${response.statusCode}");
+      Utils.showLog("Get Login User Profile Response => ${response.body}");
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
-
-        Utils.showLog("Get Login User Profile Response => ${response.body}");
-        Utils.showLog("Get Login User Profile Response.status code => ${response.statusCode}");
-
         return FetchLoginUserProfileModel.fromJson(jsonResponse);
       } else {
-        Utils.showLog("Get Login User Profile StateCode Error");
+        Utils.showLog("Get Login User Profile StatusCode Error");
       }
     } catch (error) {
       Utils.showLog("Get Login User Profile Api Error => $error");

@@ -18,6 +18,7 @@ class ChatScreenAppBarView extends StatelessWidget {
       preferredSize: Size.fromHeight(120),
       child: CustomAppBar(
         title: EnumLocale.txtChats.name.tr,
+        textColor: Colors.white,
         showLeadingIcon: false,
         appBarColor: AppColors.lightPurple,
         action: [
@@ -29,13 +30,14 @@ class ChatScreenAppBarView extends StatelessWidget {
               height: 42,
               width: 42,
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: AppColors.lightPurple,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
                 child: Image.asset(
                   AppAsset.searchIcon,
                   height: 20,
+                  color: Colors.white,
                 ),
               ),
             ).paddingOnly(right: 18),
@@ -101,7 +103,7 @@ class ChatViewItem extends StatelessWidget {
                   children: [
                     Text(
                       name,
-                      style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.black),
+                      style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.white),
                     ).paddingOnly(right: 8),
                   ],
                 ).paddingOnly(bottom: 7),

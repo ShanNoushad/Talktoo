@@ -14,22 +14,29 @@ class SettingMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.profileOption.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(16),
-        ),
+    return Container(
+      // Moving structural padding to explicit margins handles layout updates cleaner
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppColors.profileOption,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16), // Keeps splash bounded perfectly to container geometry
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(
+                color: AppColors.purple100,
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Image.asset(
                 icon,
                 height: 33,
                 width: 33,
+                color: AppColors.purple400,
               ),
             ).paddingAll(7),
             Expanded(
@@ -37,7 +44,7 @@ class SettingMenu extends StatelessWidget {
                 title,
                 style: AppFontStyle.fontStyleW600(
                   fontSize: 16,
-                  fontColor: AppColors.black,
+                  fontColor: AppColors.appDarkColor,
                 ),
               ).paddingOnly(left: 12),
             ),
@@ -48,11 +55,11 @@ class SettingMenu extends StatelessWidget {
                       AppAsset.backArrowIcon,
                       height: 13,
                       width: 13,
-                      color: AppColors.onBoardingTxt,
+                      color: AppColors.grey,
                     )).paddingAll(15),
           ],
         ),
-      ).paddingSymmetric(horizontal: 16),
+      ),
     );
   }
 }
@@ -77,8 +84,11 @@ class SettingMainMenu extends StatelessWidget {
     return Stack(
       children: [
         Container(
+          width: double.infinity, // Forces full width alignment over varied device displays
           padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(color: AppColors.setting.withValues(alpha: 0.5)),
+          decoration: BoxDecoration(
+            color: AppColors.setting,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -90,14 +100,21 @@ class SettingMainMenu extends StatelessWidget {
                       width: Get.width * 0.76,
                       child: Text(
                         text,
-                        style: AppFontStyle.fontStyleW800(fontSize: 20, fontColor: AppColors.black),
+                        style: AppFontStyle.fontStyleW800(
+                          fontSize: 20,
+                          fontColor: AppColors.appDarkColor,
+                        ),
                       ).paddingOnly(bottom: 4),
                     ),
                     SizedBox(
                       width: Get.width * 0.7,
                       child: Text(
                         subText,
-                        style: AppFontStyle.fontStyleW500(fontSize: 11, fontColor: AppColors.profileText, height: 2),
+                        style: AppFontStyle.fontStyleW500(
+                          fontSize: 11,
+                          fontColor: AppColors.profileText,
+                          height: 2,
+                        ),
                       ),
                     ),
                   ],
@@ -136,38 +153,45 @@ class SettingMainMenuListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16), // Replaced padding extension with performance-friendly margins
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.lightPurple1,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.lightGrey),
+        border: Border.all(color: AppColors.borderColor),
       ),
-      child: ExpansionTile(
-        key: UniqueKey(),
-        initiallyExpanded: isExpanded,
-        onExpansionChanged: (expanded) {
-          onTap();
-        },
-        shape: Border.all(color: AppColors.transparent),
-        childrenPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-        collapsedIconColor: AppColors.onBoardingTxt,
-        iconColor: AppColors.onBoardingTxt,
-        title: Text(
-          title,
-          style: AppFontStyle.fontStyleW600(
-            fontSize: 16,
-            fontColor: AppColors.black,
-          ),
-        ),
-        children: [
-          Text(
-            subTitle,
-            style: AppFontStyle.fontStyleW400(
-              fontColor: AppColors.profileText,
-              fontSize: 13,
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          key: UniqueKey(),
+          initiallyExpanded: isExpanded,
+          onExpansionChanged: (expanded) {
+            onTap();
+          },
+          shape: const Border(), // Replaced runtime execution target with static abstract zero geometry border
+          childrenPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          collapsedIconColor: AppColors.grey,
+          iconColor: AppColors.primary,
+          title: Text(
+            title,
+            style: AppFontStyle.fontStyleW600(
+              fontSize: 16,
+              fontColor: AppColors.appDarkColor,
             ),
-          ).paddingOnly(bottom: 10),
-        ],
+          ),
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                subTitle,
+                style: AppFontStyle.fontStyleW400(
+                  fontColor: AppColors.profileText,
+                  fontSize: 13,
+                ),
+              ),
+            ).paddingOnly(bottom: 10),
+          ],
+        ),
       ),
-    ).paddingSymmetric(horizontal: 16);
+    );
   }
 }

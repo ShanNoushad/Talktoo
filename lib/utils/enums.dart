@@ -386,5 +386,5 @@ enum EnumLocale {
   txtBlockDetailsListener,
   txtBlockDetailsUser,
   txtListenerRequestRejected,
-  txtReMatch, txtPaymentFailedPleaseTryAgain, txtSelfIntro
+  txtReMatch, txtPaymentFailedPleaseTryAgain, txtSelfIntro, txtRejected, txtApproved, txtPending
 }

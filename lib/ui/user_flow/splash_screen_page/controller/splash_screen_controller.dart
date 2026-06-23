@@ -17,9 +17,9 @@ import 'package:talk_in/ui/user_flow/splash_screen_page/model/fetch_listener_pro
 import 'package:talk_in/ui/user_flow/splash_screen_page/model/fetch_login_user_profile_model.dart';
 import 'package:talk_in/ui/user_flow/splash_screen_page/model/ip_api_response_model.dart';
 import 'package:talk_in/ui/user_flow/splash_screen_page/model/setting_api_model.dart';
+import 'package:talk_in/utils/api.dart';
 import 'package:talk_in/utils/app_color.dart';
 import 'package:talk_in/utils/database.dart';
-import 'package:talk_in/utils/firebse_access_token.dart';
 import 'package:talk_in/utils/utils.dart';
 
 import '../api/aap_configuration_api.dart';
@@ -42,16 +42,20 @@ class SplashScreenController extends GetxController {
     /// for privacy policy link and app live key
     appConfigurationModel = await AppConfigurationApi.callApi();
     Database.appConfigurationModel = appConfigurationModel;
-    final token = await FirebaseAccessToken.onGet();
+
     settingApiModel = await SettingApi.callApi();
     Database.settingApiModel = settingApiModel;
+
     fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(
-        loginUserId: Database.loginUserFirebaseId, token: token ?? '');
+      loginUserId: Database.loginUserId,  // ← MongoDB _id
+      token: Api.secretKey,               // ← static secret key
+    );
     Database.fetchLoginUserProfileModel = fetchLoginUserProfileModel;
 
-    ///version update dialog show in splash screen not go main screen
+    /// version update dialog show in splash screen not go main screen
     final bool waitter = await checkForceUpdate();
     if (waitter) return;
+
     if (Database.settingApiModel?.data?.isApplicationLive == false) {
       log("Application is not live...");
       Get.dialog(
@@ -66,20 +70,17 @@ class SplashScreenController extends GetxController {
       );
     }
 
-    // if (fetchLoginUserProfileModel?.status == false || fetchLoginUserProfileModel?.message == "User not found in the database." || token == null) {
-    //   log("Login user not found, redirecting to main screen...");
-    //   Get.offAllNamed(AppRoutes.main);
-    //   return;
-    // }
-
     if (fetchLoginUserProfileModel?.user?.isListener == true) {
       fetchListenerProfileModel = await FetchListenerProfileAPi.callApi(
-          loginListenerId:
-              Database.fetchLoginUserProfileModel?.user?.listenerId ?? '');
-      Database.onSetLoginUserId(fetchListenerProfileModel!.data!.id!);
+        loginListenerId: fetchLoginUserProfileModel?.user?.listenerId ?? '',
+      );
+
       if (fetchListenerProfileModel?.status == false) {
         Utils.showLog(fetchListenerProfileModel?.message ?? "");
+      } else if (fetchListenerProfileModel?.data?.id != null) {
+        await Database.onSetLoginListenerId(fetchListenerProfileModel!.data!.id!); // ✅ separate key
       }
+
       Database.fetchListenerProfileModel = fetchListenerProfileModel;
     }
 
@@ -87,21 +88,18 @@ class SplashScreenController extends GetxController {
     Database.onSetSelectedCountryCode(ipApiResponseModel?.countryCode ?? '');
     log("Database.selectedCountryCode :: ${Database.selectedCountryCode}");
     Database.getDialCode();
-
-    // await splashScreen();
   }
 
   Future<bool> checkForceUpdate() async {
     final packageInfo = await PackageInfo.fromPlatform();
     final currentVersion = packageInfo.version;
     Utils.showLog("Current version ==> ${packageInfo.version}");
-    // 🔴 Replace this with API response
 
     final latestVersion = Platform.isIOS
         ? Database.settingApiModel?.data?.iosAppVersion ?? ""
         : Database.settingApiModel?.data?.androidAppVersion ?? "";
-    // final latestVersion = Platform.isIOS ? "0.1.1" ?? "" : "0.1.1" ?? "";
     Utils.showLog("Latest  version ==> $latestVersion");
+
     if (latestVersion.isEmpty) {
       Utils.showLog("⚠️ Latest version missing from API");
       splashScreen();
@@ -110,7 +108,7 @@ class SplashScreenController extends GetxController {
     if (isUpdateRequired(currentVersion, latestVersion)) {
       Get.dialog(
         const ForceUpdateDialog(),
-        barrierDismissible: false, // ❌ outside tap disabled
+        barrierDismissible: false,
       );
       return true;
     } else {
@@ -132,13 +130,11 @@ class SplashScreenController extends GetxController {
 }
 
 Future<void> splashScreen() async {
-  Timer(Duration(seconds: 2), () async {
-    final token = await FirebaseAccessToken.onGet();
-
+  Timer(const Duration(seconds: 2), () async {
     log("isLogin :: ${Database.isLogin}");
     log("isFillProfile :: ${Database.isFillProfile}");
     log("isSeenOnBoarding :: ${Database.isSeenOnBoarding}");
-    log("Database.fetchLoginUserProfileModel?.user?.isListener :: ${Database.fetchLoginUserProfileModel?.user?.isListener}");
+    log("isListener :: ${Database.fetchLoginUserProfileModel?.user?.isListener}");
 
     if (Database.settingApiModel?.data?.isApplicationLive == false) {
       log("Application is not live...");
@@ -155,37 +151,19 @@ Future<void> splashScreen() async {
     } else {
       if (Database.fetchLoginUserProfileModel?.status == false ||
           Database.fetchLoginUserProfileModel?.message ==
-              "User not found in the database." ||
-          token == null) {
+              "User not found in the database.") {
 
-        print("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-        // if (Database.isSeenOnBoarding == true) {
-        //   if (Database.isFillProfile == true) {
-        //     if (Database.fetchLoginUserProfileModel?.user?.isListener == true) {
-        //       Get.toNamed(AppRoutes.hostBottomBar);
-        //     } else {
-        //       Get.toNamed(AppRoutes.bottomBar);
-        //     }
-        //   }
-        // } else {
-        //   Get.offAllNamed(AppRoutes.onBoarding);
-        // }
-
-
-        if(Database.isSeenOnBoarding == true){
-
-        Get.offAllNamed(AppRoutes.main);}else{
+        if (Database.isSeenOnBoarding == true) {
+          Get.offAllNamed(AppRoutes.main);
+        } else {
           Get.offAllNamed(AppRoutes.onBoarding);
         }
 
-        ////
       } else {
-        print("lllllllllllllllllllllllllllllllllllllll");
         if (Database.isSeenOnBoarding == true) {
           if (Database.isLogin == true) {
             if (Database.isFillProfile == true) {
-              if (Database.fetchLoginUserProfileModel?.user?.isListener ==
-                  true) {
+              if (Database.fetchLoginUserProfileModel?.user?.isListener == true) {
                 Get.toNamed(AppRoutes.hostBottomBar);
               } else {
                 Get.toNamed(AppRoutes.bottomBar);

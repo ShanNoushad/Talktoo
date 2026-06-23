@@ -25,14 +25,13 @@ class _LogoutDialogState extends State<LogoutDialog> {
     return GetBuilder<SettingController>(
       builder: (controller) {
         return SizedBox(
-          // height: 365,
           child: Material(
             shape: const SquircleBorder(
               radius: BorderRadius.all(
                 Radius.circular(110),
               ),
             ),
-            color: AppColors.white,
+            color: AppColors.lightPurple,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

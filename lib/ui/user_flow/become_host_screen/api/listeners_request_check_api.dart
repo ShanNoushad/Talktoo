@@ -13,14 +13,13 @@ class ListenersRequestCheckApi {
   static Future<ListenersRequestCheckModel?> callApi() async {
     Utils.showLog("Listeners Request check Api Calling...");
 
-    final token = await FirebaseAccessToken.onGet();
 
     final uri = Uri.parse(Api.listenersRequestCheck);
 
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.authToken: "Bearer ${Api.secretKey}",
+      ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     Utils.showLog("Listeners Request check Api uri :: $uri");

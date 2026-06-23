@@ -21,7 +21,9 @@ class CallingScreenAppBar extends StatelessWidget {
     return PreferredSize(
       preferredSize: Size.fromHeight(120),
       child: CustomAppBar(
+        appBarColor: AppColors.lightPurple,
         title: EnumLocale.txtCallingHistory.name.tr,
+        textColor: Colors.white,
         showLeadingIcon: false,
       ),
     );

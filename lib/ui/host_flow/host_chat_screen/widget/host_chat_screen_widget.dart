@@ -15,11 +15,12 @@ class HostChatScreenAppBarView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(120),
+      preferredSize: const Size.fromHeight(120),
       child: CustomAppBar(
         title: EnumLocale.txtChats.name.tr,
         showLeadingIcon: false,
-        appBarColor: AppColors.lightPurple,
+        textColor: AppColors.white,
+        appBarColor: AppColors.lightPurple, // Deep purple card surface
         action: [
           GestureDetector(
             onTap: () {
@@ -29,13 +30,14 @@ class HostChatScreenAppBarView extends StatelessWidget {
               height: 42,
               width: 42,
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: AppColors.lightPurple1, // Changed from pure white to slightly elevated surface
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
                 child: Image.asset(
                   AppAsset.searchIcon,
                   height: 20,
+                  color: AppColors.appColor,
                 ),
               ),
             ).paddingOnly(right: 18),
@@ -53,18 +55,18 @@ class HostChatViewItem extends StatelessWidget {
   final int unReadCount;
   final String lastMsgTime;
   final String lastMsg;
-
   final void Function()? onTap;
 
-  const HostChatViewItem(
-      {super.key,
-      required this.name,
-      required this.image,
-      required this.index,
-      this.onTap,
-      required this.unReadCount,
-      required this.lastMsgTime,
-      required this.lastMsg});
+  const HostChatViewItem({
+    super.key,
+    required this.name,
+    required this.image,
+    required this.index,
+    this.onTap,
+    required this.unReadCount,
+    required this.lastMsgTime,
+    required this.lastMsg,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -75,14 +77,13 @@ class HostChatViewItem extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.grey.withValues(alpha: 0.5),
+              color: AppColors.grey.withValues(alpha: 0.2), // Lowered alpha tint for dark mode polish
             ),
             child: Container(
-              // clipBehavior: Clip.hardEdge,
               height: Get.height * 0.06,
               width: Get.height * 0.06,
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.white, width: 1),
+                border: Border.all(color: AppColors.borderColor, width: 1), // Changed from white to general border color
                 shape: BoxShape.circle,
               ),
               child: ClipOval(
@@ -103,7 +104,7 @@ class HostChatViewItem extends StatelessWidget {
                   children: [
                     Text(
                       name,
-                      style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.black),
+                      style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.appDarkColor), // Changed from black to brightest text color
                     ).paddingOnly(right: 8),
                   ],
                 ).paddingOnly(bottom: 7),
@@ -111,36 +112,33 @@ class HostChatViewItem extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   lastMsg,
-                  style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.profileText),
+                  style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.profileText), // Using secondary dark text color
                 ).paddingOnly(right: 15)
               ],
             ),
           ),
-          // Spacer(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               unReadCount > 0
                   ? Container(
-                      height: 22,
-                      width: 22,
-
-                      // padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: AppColors.appColor,
-                      ),
-                      child: Center(
-                        child: Text(
-                          unReadCount.toString(),
-                          style: AppFontStyle.fontStyleW600(fontSize: 13, fontColor: AppColors.white),
-                        ),
-                      ),
-                    ).paddingOnly(bottom: 8)
-                  : SizedBox(
-                      height: 22,
-                      width: 22,
-                    ),
+                height: 22,
+                width: 22,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: AppColors.appColor, // Soft white badge container background
+                ),
+                child: Center(
+                  child: Text(
+                    unReadCount.toString(),
+                    style: AppFontStyle.fontStyleW600(fontSize: 13, fontColor: AppColors.black),
+                  ),
+                ),
+              ).paddingOnly(bottom: 8)
+                  : const SizedBox(
+                height: 22,
+                width: 22,
+              ),
               Text(
                 CustomFormatChatTime.convert(lastMsgTime),
                 style: AppFontStyle.fontStyleW500(fontSize: 10, fontColor: AppColors.profileText),

@@ -11,10 +11,9 @@ class SocketService {
   io.Socket? getSocket() => socket;
 
   static Future<void> socketDisConnect() async {
+    if (socket == null) return;
+    Utils.showLog("Socket Disconnect requested : ${socket?.id}");
     socket?.disconnect();
-    socket?.onDisconnect(
-      (data) => Utils.showLog("Socket Listen => Socket Disconnected Called : ${socket?.id}"),
-    );
   }
 
   static Future<void> socketConnect() async {
@@ -22,8 +21,8 @@ class SocketService {
     log("user id :::::: ${Database.loginUserId}");
 
     try {
-      // Disconnect existing socket cleanly before creating new one
       if (socket != null) {
+        socket?.clearListeners();
         socket?.disconnect();
         socket?.dispose();
         socket = null;
@@ -83,4 +82,13 @@ class SocketService {
     } catch (e) {
       Utils.showLog("❌ Socket Connection Exception: $e");
     }
-  }}
+  }
+
+  static Future<void> ensureConnected() async {
+    if (socket != null && socket!.connected) {
+      Utils.showLog("✅ Socket already connected, skipping reconnect");
+      return;
+    }
+    await socketConnect();
+  }
+}

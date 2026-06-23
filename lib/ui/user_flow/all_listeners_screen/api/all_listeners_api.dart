@@ -18,7 +18,7 @@ class AllListenersApi {
     String? talkTopic,
     String? language,
   }) async {
-    final token = await FirebaseAccessToken.onGet();
+
 
     Utils.showLog("All Listeners Api Calling...");
     startPagination += 1;
@@ -47,8 +47,8 @@ class AllListenersApi {
 
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.authToken: 'Bearer ${Api.secretKey}',
+      ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     Utils.showLog("All Listeners Api uri :: $uri");

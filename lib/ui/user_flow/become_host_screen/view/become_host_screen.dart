@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:talk_in/ui/user_flow/become_host_screen/widget/become_host_screen_widget.dart';
+import 'package:talk_in/utils/app_color.dart';
 
 class BecomeHostScreen extends StatelessWidget {
   const BecomeHostScreen({super.key});
@@ -7,7 +8,7 @@ class BecomeHostScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.black,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         flexibleSpace: const BecomeHostScreenAppBar(),

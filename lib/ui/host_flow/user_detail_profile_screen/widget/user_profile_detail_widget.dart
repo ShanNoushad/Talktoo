@@ -381,7 +381,7 @@ class UserProfileBottomButtonView extends StatelessWidget {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: AppColors.black,
           boxShadow: [
             BoxShadow(
               color: AppColors.black.withValues(alpha: 0.10),

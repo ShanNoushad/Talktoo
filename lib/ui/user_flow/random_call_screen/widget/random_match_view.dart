@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
@@ -16,48 +15,41 @@ import 'package:talk_in/utils/enums.dart';
 import 'package:talk_in/utils/font_style.dart';
 import 'package:talk_in/utils/utils.dart';
 
-class RandomMatchView extends StatefulWidget {
+// ✅ Downgraded to StatelessWidget — no asset to precache anymore
+class RandomMatchView extends StatelessWidget {
   const RandomMatchView({super.key});
-
-  @override
-  State<RandomMatchView> createState() => _RandomMatchViewState();
-}
-
-class _RandomMatchViewState extends State<RandomMatchView> {
-  bool _isImagePrecached = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (!_isImagePrecached) {
-      precacheImage(const AssetImage(AppAsset.randomMatchBg), context);
-      _isImagePrecached = true;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: Colors.transparent,
       body: Container(
         height: Get.height,
         width: Get.width,
-        decoration: BoxDecoration(image: DecorationImage(image: AssetImage(AppAsset.randomMatchBg), fit: BoxFit.cover)),
+        decoration: const BoxDecoration(
+          // ✅ Pure dark gradient — no PNG asset dependency at all
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xff1A1040),   // dark purple top-left
+              Color(0xff12131A),   // near-black center
+              Color(0xff0D0E17),   // darkest bottom-right
+            ],
+          ),
+        ),
         child: GetBuilder<RandomCallController>(builder: (controller) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap: () {
-                  Get.back();
-                },
+                onTap: () => Get.back(),
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Image.asset(
                     AppAsset.closeIcon,
-                    color: AppColors.black,
+                    color: AppColors.appColor,
                     height: 26,
                     width: 26,
                   ),
@@ -65,11 +57,14 @@ class _RandomMatchViewState extends State<RandomMatchView> {
               ).paddingOnly(top: 65, right: 33, bottom: 36),
               Text(
                 EnumLocale.txtItsAMatch.name.tr,
-                style: AppFontStyle.fontStyleLato700(fontSize: 40, fontColor: AppColors.black),
+                style: AppFontStyle.fontStyleLato700(
+                  fontSize: 40,
+                  fontColor: AppColors.appColor,
+                ),
               ).paddingOnly(bottom: 30),
               Center(
                 child: RippleAnimation(
-                  color: AppColors.profileText,
+                  color: AppColors.primary.withValues(alpha: 0.4),
                   delay: const Duration(milliseconds: 100),
                   repeat: true,
                   minRadius: 80,
@@ -80,38 +75,47 @@ class _RandomMatchViewState extends State<RandomMatchView> {
                     height: 100,
                     width: 100,
                     child: ClipOval(
-                      child: CustomProfileImage(image: controller.randomAvailableListenerModel?.data?.image ?? ''),
+                      child: CustomProfileImage(
+                        image: controller.randomAvailableListenerModel?.data?.image ?? '',
+                      ),
                     ),
                   ),
                 ).paddingSymmetric(horizontal: 45),
               ),
               Text(
                 "${controller.randomAvailableListenerModel?.data?.name ?? ''}, ${controller.randomAvailableListenerModel?.data?.age ?? ''}",
-                style: AppFontStyle.fontStyleW600(fontSize: 20, fontColor: AppColors.black),
+                style: AppFontStyle.fontStyleW600(
+                  fontSize: 20,
+                  fontColor: AppColors.appColor,
+                ),
               ).paddingOnly(top: 18),
               Text(
                 "ID:${controller.randomAvailableListenerModel?.data?.uniqueId ?? ''}",
-                style: AppFontStyle.fontStyleW500(fontSize: 14, fontColor: AppColors.black),
+                style: AppFontStyle.fontStyleW500(
+                  fontSize: 14,
+                  fontColor: AppColors.listenersDetail,
+                ),
               ).paddingOnly(bottom: 10, top: 4),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
                 decoration: BoxDecoration(
-                  color: AppColors.lightYellow,
+                  color: AppColors.lightOrange100,
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset(
-                      AppAsset.dimondCoin,
-                      height: 18,
-                      width: 18,
-                    ),
+                    Image.asset(AppAsset.dimondCoin, height: 18, width: 18),
                     Text(
-                      controller.selectedIndex == 1 ? (controller.randomAvailableListenerModel?.data?.rateRandomVideoCall ?? 0).toString() : (controller.randomAvailableListenerModel?.data?.rateRandomAudioCall ?? 0).toString(),
+                      controller.selectedIndex == 1
+                          ? (controller.randomAvailableListenerModel?.data?.rateRandomVideoCall ?? 0).toString()
+                          : (controller.randomAvailableListenerModel?.data?.rateRandomAudioCall ?? 0).toString(),
                       style: AppFontStyle.fontStyleW700(fontSize: 12, fontColor: AppColors.orange),
                     ).paddingOnly(left: 6, right: 6),
-                    Text("/ min", style: AppFontStyle.fontStyleW700(fontSize: 12, fontColor: AppColors.orange))
+                    Text(
+                      "/ min",
+                      style: AppFontStyle.fontStyleW700(fontSize: 12, fontColor: AppColors.orange),
+                    ),
                   ],
                 ),
               ).paddingOnly(right: 10).paddingOnly(bottom: 20, left: 16),
@@ -125,7 +129,7 @@ class _RandomMatchViewState extends State<RandomMatchView> {
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                        color: AppColors.pink,
+                        color: AppColors.purple100,
                         borderRadius: BorderRadius.circular(30),
                       ),
                       child: Center(
@@ -133,7 +137,7 @@ class _RandomMatchViewState extends State<RandomMatchView> {
                           controller.randomAvailableListenerModel?.data?.talkTopics?[index] ?? '',
                           style: AppFontStyle.fontStyleW500(
                             fontSize: 12,
-                            fontColor: AppColors.white,
+                            fontColor: AppColors.purple400,
                           ),
                         ),
                       ),
@@ -147,17 +151,18 @@ class _RandomMatchViewState extends State<RandomMatchView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Spacer(),
+                    const Spacer(),
                     Image.asset(
                       AppAsset.languageIcon,
                       height: 20,
                       width: 20,
+                      color: AppColors.grey,
                     ),
                     Text(
                       '${EnumLocale.txtLanguage.name.tr} : ',
                       style: AppFontStyle.fontStyleW500(
                         fontSize: 14,
-                        fontColor: AppColors.profileLanguage,
+                        fontColor: AppColors.listenersDetail,
                       ),
                     ).paddingOnly(left: 8),
                     Expanded(
@@ -168,15 +173,14 @@ class _RandomMatchViewState extends State<RandomMatchView> {
                         maxLines: 3,
                         style: AppFontStyle.fontStyleW600(
                           fontSize: 14,
-                          fontColor: AppColors.black,
+                          fontColor: AppColors.appColor,
                         ),
                       ),
                     ),
-                    // Spacer(),
                   ],
                 ).paddingOnly(top: 8, left: 12, right: 12),
               ),
-              Spacer(),
+              const Spacer(),
               Column(
                 children: [
                   Row(
@@ -184,19 +188,16 @@ class _RandomMatchViewState extends State<RandomMatchView> {
                     children: [
                       Expanded(
                         child: PrimaryAppButton(
-                          gradientColor: [
-                            AppColors.appColor,
-                            AppColors.appColor,
-                          ],
+                          gradientColor: [AppColors.primary, const Color(0xff5B2ECC)],
                           onTap: () {
                             log("<<<<<<<<<<<<<<<<<<<<<<  ${Database.userCoin.toString()}");
-
                             final isAudio = controller.selectedIndex == 0;
-                            final requiredCoins = isAudio ? controller.randomAvailableListenerModel?.data?.rateRandomAudioCall ?? 0 : controller.randomAvailableListenerModel?.data?.rateRandomVideoCall ?? 0;
+                            final requiredCoins = isAudio
+                                ? controller.randomAvailableListenerModel?.data?.rateRandomAudioCall ?? 0
+                                : controller.randomAvailableListenerModel?.data?.rateRandomVideoCall ?? 0;
 
                             if (controller.randomAvailableListenerModel?.data?.isFake == true) {
                               Utils.showLog("fake call  ${controller.randomAvailableListenerModel?.data?.isFake}");
-
                               Get.toNamed(
                                 AppRoutes.fakeOutgoingCall,
                                 arguments: [
@@ -204,18 +205,11 @@ class _RandomMatchViewState extends State<RandomMatchView> {
                                   controller.randomAvailableListenerModel?.data?.image ?? '',
                                   controller.randomAvailableListenerModel?.data?.video ?? '',
                                   controller.randomAvailableListenerModel?.data?.audio ?? '',
-                                  controller.selectedIndex == 0 ? "audio" : "video"
-                                  // controller.isBackProfile
+                                  controller.selectedIndex == 0 ? "audio" : "video",
                                 ],
                               );
                             } else {
                               if (int.parse(Database.userCoin.toString()) < requiredCoins) {
-                                log('message${int.parse(Database.userCoin.toString()) <= int.parse(controller.randomAvailableListenerModel?.data?.rateRandomVideoCall.toString() ?? '')}');
-
-                                log("userCoin  <<<<<<<<<<<<<<<<<<<<<<  ${Database.userCoin.toString()}");
-                                log("rateRandomVideoCall  <<<<<<<<<<<<<<<<<<<<<<  ${controller.randomAvailableListenerModel?.data?.rateRandomVideoCall.toString()}");
-                                log("rateRandomAudioCall  <<<<<<<<<<<<<<<<<<<<<<  ${controller.randomAvailableListenerModel?.data?.rateRandomAudioCall.toString()}");
-
                                 Utils.showToast(Get.context!, "You have not enough coins.");
                                 Get.toNamed(AppRoutes.myWalletScreen);
                               } else {
@@ -235,8 +229,7 @@ class _RandomMatchViewState extends State<RandomMatchView> {
                           },
                           height: 50,
                           borderRadius: 30,
-                          // width: Get.width,
-                          color: AppColors.grey.withValues(alpha: 0.6),
+                          color: AppColors.primary.withValues(alpha: 0.2),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -248,9 +241,11 @@ class _RandomMatchViewState extends State<RandomMatchView> {
                               ),
                               8.width,
                               Text(
-                                controller.selectedIndex == 1 ? EnumLocale.txtVideoCall.name.tr : EnumLocale.txtAudioCall.name.tr,
+                                controller.selectedIndex == 1
+                                    ? EnumLocale.txtVideoCall.name.tr
+                                    : EnumLocale.txtAudioCall.name.tr,
                                 style: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.white),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -258,10 +253,7 @@ class _RandomMatchViewState extends State<RandomMatchView> {
                       10.width,
                       Expanded(
                         child: PrimaryAppButton(
-                          gradientColor: [
-                            Color(0xff19BE00),
-                            Color(0xff10B607),
-                          ],
+                          gradientColor: [const Color(0xff19BE00), const Color(0xff10B607)],
                           onTap: () {
                             Get.toNamed(
                               AppRoutes.personalChatScreen,
@@ -276,44 +268,21 @@ class _RandomMatchViewState extends State<RandomMatchView> {
                                 controller.randomAvailableListenerModel?.data?.video,
                                 controller.randomAvailableListenerModel?.data?.isAvailableForPrivateVideoCall,
                                 controller.randomAvailableListenerModel?.data?.isAvailableForPrivateAudioCall,
-
-                                // controller.listenerProfileModel?.data?.id,
-                                // controller.listenerProfileModel?.data?.name,
-                                // controller.listenerProfileModel?.data?.statusLabel,
-                                // controller.listenerProfileModel?.data?.image,
-                                // controller.listenerProfileModel?.data?.ratePrivateAudioCall,
-                                // controller.listenerProfileModel?.data?.ratePrivateVideoCall,
-                                // controller.listenerProfileModel?.data?.isFake,
-                                // controller.listenerProfileModel?.data?.video,
-                                // controller.listenerProfileModel?.data?.isAvailableForPrivateVideoCall,
-                                // controller.listenerProfileModel?.data?.isAvailableForPrivateAudioCall,
                               ],
                             );
-                            // controller.randomAvailableListenerModel?.data?.userId;
-                            // controller.chatList[index].name,
-                            // controller.chatList[index].isOnline,
-                            // controller.chatList[index].image,
-                            // controller.chatList[index].ratePrivateAudioCall,
-                            // controller.chatList[index].ratePrivateVideoCall,
                           },
                           height: 50,
                           borderRadius: 30,
-                          // width: Get.width,
-                          color: AppColors.grey.withValues(alpha: 0.6),
+                          color: AppColors.green.withValues(alpha: 0.2),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Image.asset(
-                                AppAsset.chat,
-                                color: AppColors.white,
-                                height: 24,
-                                width: 24,
-                              ),
+                              Image.asset(AppAsset.chat, color: AppColors.white, height: 24, width: 24),
                               8.width,
                               Text(
                                 EnumLocale.txtsayHello.name.tr,
                                 style: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.white),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -321,24 +290,15 @@ class _RandomMatchViewState extends State<RandomMatchView> {
                     ],
                   ).paddingOnly(bottom: 16, left: 22, right: 22),
                   PrimaryAppButton(
-                    gradientColor: [
-                      Color(0xffCF00FD),
-                      Color(0xff8400FF),
-                    ],
+                    gradientColor: [const Color(0xffCF00FD), const Color(0xff8400FF)],
                     onTap: () {
                       controller.getaAvailableListener().then((value) {
                         if (controller.randomAvailableListenerModel?.data != null) {
-                          // controller.randomCall = true;
-                          // log("Random call view after :::::: ${controller.randomCall}");
-
-                          Get.toNamed(AppRoutes.randomMatchView)?.then(
-                            (value) async {
-                              controller.userCoinModel = await UserCoinApi.callApi();
-                              Database.onSetUserCoin(controller.userCoinModel!.coin.toString());
-                            },
-                          ); // Navigate if data is fetched
+                          Get.toNamed(AppRoutes.randomMatchView)?.then((value) async {
+                            controller.userCoinModel = await UserCoinApi.callApi();
+                            Database.onSetUserCoin(controller.userCoinModel!.coin.toString());
+                          });
                         } else {
-                          // Handle error or empty response scenario
                           log("No available listener found");
                           Utils.showToast(Get.context!, controller.randomAvailableListenerModel?.message ?? '');
                         }
@@ -346,28 +306,21 @@ class _RandomMatchViewState extends State<RandomMatchView> {
                     },
                     height: 50,
                     borderRadius: 30,
-                    // width: Get.width,
-                    color: AppColors.grey.withValues(alpha: 0.6),
+                    color: AppColors.chatPink.withValues(alpha: 0.2),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset(
-                          AppAsset.rematchIcon,
-                          color: AppColors.white,
-                          height: 24,
-                          width: 24,
-                        ),
+                        Image.asset(AppAsset.rematchIcon, color: AppColors.white, height: 24, width: 24),
                         8.width,
                         Text(
-                          // "Re-Match"
                           EnumLocale.txtReMatch.name.tr,
                           style: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.white),
-                        )
+                        ),
                       ],
                     ),
                   ).paddingOnly(bottom: 32, left: 22, right: 22),
                 ],
-              )
+              ),
             ],
           );
         }),

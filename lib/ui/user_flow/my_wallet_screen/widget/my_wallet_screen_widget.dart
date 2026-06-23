@@ -15,41 +15,55 @@ class MyWalletScreenTopView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage(AppAsset.walletBg), fit: BoxFit.cover),
+        color: AppColors.backGroundColor,
+        image: DecorationImage(
+          image: AssetImage(AppAsset.walletBg),
+          fit: BoxFit.cover,
+          opacity: 0.35,
+        ),
       ),
       child: Column(
         children: [
-          Row(
-            children: [
-              InkWell(
-                onTap: () {
-                  Get.back();
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(22),
-                  child: Image.asset(
-                    height: 16,
-                    AppAsset.backArrowIcon,
-                    color: AppColors.white,
+          // Header Row with absolute centering to prevent layout skewing across different screen sizes
+          SizedBox(
+            height: 60,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned(
+                  left: 6,
+                  child: InkWell(
+                    onTap: () {
+                      Get.back();
+                    },
+                    borderRadius: BorderRadius.circular(30),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Image.asset(
+                        height: 16,
+                        AppAsset.backArrowIcon,
+                        color: AppColors.appDarkColor,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              Spacer(),
-              Text(
-                EnumLocale.txtMyWallet.name.tr,
-                style: AppFontStyle.fontStyleW600(fontSize: 20, fontColor: AppColors.white),
-              ).paddingOnly(right: Get.width * 0.16),
-              Spacer(),
-            ],
+                Text(
+                  EnumLocale.txtMyWallet.name.tr,
+                  style: AppFontStyle.fontStyleW600(fontSize: 20, fontColor: AppColors.appDarkColor),
+                ),
+              ],
+            ),
           ).paddingOnly(bottom: 10),
+
           GetBuilder<MyWalletController>(
               id: Constant.idGetCoinPlan,
               builder: (controller) {
                 return Container(
-                  padding: EdgeInsets.only(top: 2),
+                  padding: const EdgeInsets.only(top: 2),
                   decoration: BoxDecoration(
-                    color: AppColors.white.withValues(alpha: 0.16),
+                    color: AppColors.lightPurple1,
                     borderRadius: BorderRadius.circular(22),
+                    border: Border.all(color: AppColors.purpleBorder, width: 1.5),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,58 +73,65 @@ class MyWalletScreenTopView extends StatelessWidget {
                         height: 147,
                         width: 147,
                       ).paddingOnly(right: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: Get.width * 0.40,
-                            child: FittedBox(
-                              child: Text(
-                                EnumLocale.txtCurrentCoinBalance.name.tr,
-                                // overflow: TextOverflow.ellipsis,
-                                style: AppFontStyle.fontStyleW600(
-                                  fontSize: 14,
-                                  fontColor: AppColors.yellowDark800,
-                                  decorationColor: AppColors.yellowDark800,
-                                  textDecoration: TextDecoration.underline,
-                                ),
-                              ).paddingOnly(bottom: 6, top: 15),
+                      Expanded( // Enforced template overflow safety
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: Get.width * 0.40,
+                              child: FittedBox(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  EnumLocale.txtCurrentCoinBalance.name.tr,
+                                  style: AppFontStyle.fontStyleW600(
+                                    fontSize: 14,
+                                    fontColor: AppColors.getCoinText,
+                                    decorationColor: AppColors.getCoinText,
+                                    textDecoration: TextDecoration.underline,
+                                  ),
+                                ).paddingOnly(bottom: 6, top: 15),
+                              ),
                             ),
-                          ),
-                          Text(
-                            "${controller.fetchCoinPlan?.userCoin ?? 0}",
-                            style: AppFontStyle.fontStyleW900(fontSize: 44, fontColor: AppColors.yellowDark800),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Get.toNamed(AppRoutes.coinHistoryScreen);
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 2, vertical: 7),
-                              decoration: BoxDecoration(
-                                color: AppColors.white,
-                                borderRadius: BorderRadius.circular(8),
+                            Text(
+                              "${controller.fetchCoinPlan?.userCoin ?? 0}",
+                              style: AppFontStyle.fontStyleW900(
+                                fontSize: 44,
+                                fontColor: AppColors.yellow,
                               ),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    EnumLocale.txtViewCoinHistory.name.tr,
-                                    style: AppFontStyle.fontStyleW600(fontSize: 12, fontColor: AppColors.yellowDark800),
-                                  ).paddingOnly(left: 6, right: 6),
-                                  RotatedBox(
-                                    quarterTurns: 2,
-                                    child: Image.asset(
-                                      AppAsset.backArrowIcon,
-                                      height: 10,
-                                      width: 10,
-                                      color: AppColors.yellowDark800,
-                                    ),
-                                  ).paddingOnly(right: 4),
-                                ],
-                              ),
-                            ).paddingOnly(right: 14),
-                          ).paddingOnly(top: 4, bottom: 14),
-                        ],
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Get.toNamed(AppRoutes.coinHistoryScreen);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 7),
+                                decoration: BoxDecoration(
+                                  color: AppColors.coinTileColor,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: AppColors.yellowBorder),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min, // Prevents button row stretching out of frame
+                                  children: [
+                                    Text(
+                                      EnumLocale.txtViewCoinHistory.name.tr,
+                                      style: AppFontStyle.fontStyleW600(fontSize: 12, fontColor: AppColors.orangeText),
+                                    ).paddingOnly(left: 6, right: 6),
+                                    RotatedBox(
+                                      quarterTurns: 2,
+                                      child: Image.asset(
+                                        AppAsset.backArrowIcon,
+                                        height: 10,
+                                        width: 10,
+                                        color: AppColors.orangeText,
+                                      ),
+                                    ).paddingOnly(right: 4),
+                                  ],
+                                ),
+                              ).paddingOnly(right: 14),
+                            ).paddingOnly(top: 4, bottom: 14),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -132,12 +153,18 @@ class WalletGuideView extends StatelessWidget {
       children: [
         Text(
           EnumLocale.txtWalletGuide.name.tr,
-          style: AppFontStyle.fontStyleW800(fontSize: 17, fontColor: AppColors.black),
+          style: AppFontStyle.fontStyleW800(
+            fontSize: 17,
+            fontColor: AppColors.appDarkColor,
+          ),
         ),
         Text(
           EnumLocale.txtUserGuide.name.tr,
-          // "1. Your wallet balance represents the number of coins available in your account. These coins can be used to access premium features, connect with listeners, or make in-app purchases.\n\n2. You can top up your coin balance by selecting a plan from the options below. Each plan offers a different coin-to-dollar rate, so choose the one that best fits your needs.\n\n3. The more coins you buy, the better the value. Higher plans often come with bonus coins or special offers. Make sure to check for the 'Most Popular Plan' tag for recommended choices.",
-          style: AppFontStyle.fontStyleW500(fontSize: 11, fontColor: AppColors.profileText, height: 1.7),
+          style: AppFontStyle.fontStyleW500(
+            fontSize: 11,
+            fontColor: AppColors.profileText,
+            height: 1.7,
+          ),
         ).paddingOnly(top: 8),
       ],
     ).paddingSymmetric(horizontal: 14);

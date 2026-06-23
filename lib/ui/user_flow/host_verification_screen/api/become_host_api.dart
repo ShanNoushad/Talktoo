@@ -29,7 +29,6 @@ class BecomeHostApi {
   }) async {
     Utils.showLog("Become host Api Calling...");
 
-    final token = await FirebaseAccessToken.onGet();
 
     try {
       var request = http.MultipartRequest(
@@ -40,7 +39,7 @@ class BecomeHostApi {
 
       var headers = {
         ApiParams.key: Api.secretKey,
-        ApiParams.authToken: 'Bearer $token',
+        ApiParams.authToken: 'Bearer ${Api.secretKey}',
         ApiParams.authUid: uid.toString(),
         ApiParams.contentType: 'application/json',
       };

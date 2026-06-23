@@ -24,7 +24,7 @@ class _TalkAboutBottomSheetState extends State<TalkAboutBottomSheet> {
       height: Get.height * 0.6,
       padding: EdgeInsets.symmetric(vertical: 17, horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.lightPurple,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(

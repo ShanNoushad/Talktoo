@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:talk_in/ui/user_flow/mobile_number_screen/controller/mobile_number_controller.dart';
@@ -21,13 +22,21 @@ class MobileNumberAppBarView extends StatelessWidget {
       child: GestureDetector(
         onTap: () => Get.back(),
         child: Container(
-          width: 36,
-          height: 36,
+          width: 42,
+          height: 42,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.lightGrey,
+            color: Colors.transparent,
+            border: Border.all(
+              color: const Color(0xFF7C4DFF),
+              width: 1.5,
+            ),
           ),
-          child: const Icon(Icons.arrow_back, size: 18),
+          child: const Icon(
+            Icons.arrow_back,
+            size: 18,
+            color: Colors.white,
+          ),
         ),
       ),
     );
@@ -43,39 +52,77 @@ class MobileNumberDescriptionView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Logo
+        // ── "Talktoo" logo ─────────────────────────────────────────────
         Center(
-          child: Text(
-            "TalkToo",
-            style: AppFontStyle.fontStyleKaushanW400(
-                fontSize: 62, fontColor: AppColors.black),
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Talk',
+                  style: GoogleFonts.nunito(
+                    fontSize: 48,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
+                ),
+                TextSpan(
+                  text: 'too',
+                  style: GoogleFonts.nunito(
+                    fontSize: 48,
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF9C27B0),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-        const SizedBox(height: 24),
 
-        // Title
+        const SizedBox(height: 40),
+
+        // ── "Log In" white ─────────────────────────────────────────────
         Text(
-          EnumLocale.txtLogInWithMobile.name.tr,
-          style: AppFontStyle.fontStyleW600(
-              fontSize: 20, fontColor: AppColors.black),
+          'Log In',
+          style: GoogleFonts.nunito(
+            fontSize: 32,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+          ),
         ),
-        const SizedBox(height: 6),
 
-        // Subtitle
+        // ── "With Mobile" purple ───────────────────────────────────────
         Text(
-          EnumLocale.txtMobileLoginDescription.name.tr,
+          'With Mobile',
+          style: GoogleFonts.nunito(
+            fontSize: 32,
+            fontWeight: FontWeight.w700,
+            color: const Color(0xFF9C27B0),
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        // ── Subtitle ───────────────────────────────────────────────────
+        Text(
+          'Enter your mobile number to\nreceive a one-time password.',
           style: AppFontStyle.fontStyleW400(
-              fontSize: 13, fontColor: AppColors.onBoardingTxt),
+            fontSize: 14,
+            fontColor: const Color(0xFF9E9E9E),
+          ),
         ),
-        const SizedBox(height: 28),
 
-        // Field label
+        const SizedBox(height: 36),
+
+        // ── Field label ────────────────────────────────────────────────
         Text(
-          EnumLocale.txtEnterMobileNumber.name.tr,
+          'Mobile Number',
           style: AppFontStyle.fontStyleW600(
-              fontSize: 13, fontColor: AppColors.black),
+            fontSize: 14,
+            fontColor: Colors.white,
+          ),
         ),
-        const SizedBox(height: 6),
+
+        const SizedBox(height: 8),
       ],
     );
   }
@@ -92,8 +139,8 @@ class MobileNumberOTPView extends StatelessWidget {
         return Form(
           key: controller.formKey,
           child: IntlPhoneField(
-            flagsButtonPadding: const EdgeInsets.all(8),
-            flagsButtonMargin: const EdgeInsets.only(right: 13),
+            flagsButtonPadding: const EdgeInsets.symmetric(horizontal: 12),
+            flagsButtonMargin: EdgeInsets.zero,
             dropdownIconPosition: IconPosition.trailing,
             controller: controller.numberController,
             obscureText: false,
@@ -103,86 +150,91 @@ class MobileNumberOTPView extends StatelessWidget {
               }
               return null;
             },
-            style: AppFontStyle.fontStyleW600(
-              fontSize: 22,
-              fontColor: AppColors.purple,
+            style: GoogleFonts.nunito(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
             ),
-            cursorColor: AppColors.purple,
-            dropdownTextStyle: AppFontStyle.fontStyleW700(
-              fontSize: 16,
-              fontColor: AppColors.black,
+            cursorColor: const Color(0xFF9C27B0),
+            dropdownTextStyle: GoogleFonts.nunito(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
             ),
             pickerDialogStyle: PickerDialogStyle(
+              backgroundColor: const Color(0xFF12102A),
               countryCodeStyle: AppFontStyle.fontStyleW700(
                 fontSize: 13,
-                fontColor: AppColors.appColor,
+                fontColor: const Color(0xFF9C27B0),
               ),
               countryNameStyle: AppFontStyle.fontStyleW700(
                 fontSize: 13,
-                fontColor: AppColors.appColor,
+                fontColor: Colors.white,
               ),
-              searchFieldCursorColor: AppColors.appColor,
+              searchFieldCursorColor: const Color(0xFF9C27B0),
               searchFieldInputDecoration: InputDecoration(
                 hintStyle: AppFontStyle.fontStyleW400(
                   fontSize: 14,
-                  fontColor: AppColors.grey,
+                  fontColor: Colors.white38,
                 ),
                 hintText: EnumLocale.txtSearchCountryCode.name.tr,
               ),
             ),
             dropdownIcon: const Icon(
-              Icons.arrow_drop_down_outlined,
-              color: Colors.black,
+              Icons.arrow_drop_down,
+              color: Colors.white54,
+              size: 22,
             ),
             keyboardType: TextInputType.number,
             showCountryFlag: false,
             decoration: InputDecoration(
               counterText: '',
+              hintText: 'Enter mobile number',
               filled: true,
-              fillColor: const Color(0xFFEEEDFE),
-              hintStyle: AppFontStyle.fontStyleW400(
-                fontSize: 18,
-                fontColor: AppColors.onBoardingTxt,
+              fillColor: const Color(0xFF0D0B1E),
+              hintStyle: GoogleFonts.nunito(
+                fontSize: 16,
+                color: Colors.white24,
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide:
-                const BorderSide(color: Color(0xFF534AB7)),
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(
+                  color: Color(0xFF7C4DFF),
+                  width: 1.5,
+                ),
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide:
-                const BorderSide(color: Color(0xFF534AB7)),
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(
+                  color: Color(0xFF7C4DFF),
+                  width: 1.5,
+                ),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(14),
                 borderSide: const BorderSide(
-                    color: Color(0xFF534AB7), width: 1.5),
+                  color: Color(0xFF00BCD4),
+                  width: 1.8,
+                ),
               ),
               errorStyle: AppFontStyle.fontStyleW500(
-                fontSize: 8,
+                fontSize: 10,
                 fontColor: AppColors.red,
               ),
               errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: AppColors.red),
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: AppColors.red, width: 1.5),
               ),
               focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide:
-                BorderSide(color: AppColors.red, width: 1.5),
-              ),
-              counterStyle: AppFontStyle.fontStyleW500(
-                fontSize: 9,
-                fontColor: AppColors.grey,
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide(color: AppColors.red, width: 1.8),
               ),
             ),
             initialCountryCode: Database.selectedCountryCode,
             onCountryChanged: (value) {
-              log("message================= ${value.code}");
+              log("Country changed: ${value.code}");
               Database.onSetSelectedCountryCode(value.code);
               Database.getDialCode();
-              log("Database.selectedCountryCode ================= ${Database.selectedCountryCode}");
             },
             onChanged: (phone) {
               controller.dialCode = phone.countryCode;
@@ -204,21 +256,51 @@ class MobileNumberButtonView extends StatelessWidget {
     return GetBuilder<MobileNumberController>(
       builder: (controller) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 24),
-          child: SizedBox(
-            width: double.infinity,
-            height: 52,
-            child: ElevatedButton(
-              onPressed: () => controller.sendOtp(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.purple,
-                shape: const StadiumBorder(),
-                elevation: 0,
+          padding: const EdgeInsets.only(bottom: 32),
+          child: GestureDetector(
+            onTap: () => controller.sendOtp(context),
+            child: Container(
+              width: double.infinity,
+              height: 58,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF7B2FBE),
+                    Color(0xFF9C27B0),
+                    Color(0xFF6A0DAD),
+                  ],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                // Neon glow effect
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF9C27B0).withOpacity(0.5),
+                    blurRadius: 20,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              child: Text(
-                EnumLocale.txtGetOtp.name.tr,
-                style: AppFontStyle.fontStyleW600(
-                    fontSize: 16, fontColor: Colors.white),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Get OTP',
+                    style: GoogleFonts.nunito(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ],
               ),
             ),
           ),

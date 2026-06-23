@@ -29,41 +29,41 @@ class CoinPlanWidget extends GetView<MyWalletController> {
             EnumLocale.txtAddCoinBalanceSelectPlan.name.tr,
             style: AppFontStyle.fontStyleW800(
               fontSize: 17,
-              fontColor: AppColors.black,
+              fontColor: AppColors.appDarkColor, // Light near-white text contrast over dark background
             ),
           ).paddingOnly(top: 22),
-          22.height,
+          const SizedBox(height: 22),
           GetBuilder<MyWalletController>(
             id: Constant.idGetCoinPlan,
             builder: (controller) {
               return controller.isLoading
-                  ? CoinPlanShimmer()
+                  ? const CoinPlanShimmer()
                   : ListView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      itemCount: controller.coinPlan.length,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            controller.selectedPaymentMethod = -1;
-                            controller.update([Constant.onChangePaymentMethod]);
-                            controller.selectedCoinPlan = controller.coinPlan[index];
-                            controller.update([Constant.idGetCoinPlan]);
-                            Utils.showLog('.,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,${controller.selectedCoinPlan?.productId.toString() ?? ' '}');
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                itemCount: controller.coinPlan.length,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      controller.selectedPaymentMethod = -1;
+                      controller.update([Constant.onChangePaymentMethod]);
+                      controller.selectedCoinPlan = controller.coinPlan[index];
+                      controller.update([Constant.idGetCoinPlan]);
+                      Utils.showLog('Selected Plan Product ID: ${controller.selectedCoinPlan?.productId.toString() ?? ' '}');
 
-                            Get.bottomSheet(
-                              PaymentOptionBottomSheet(index: index),
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent, // or keep AppColors.white if you're not wrapping in Container
-                            );
-                          },
-                          child: CoinPlanTile(
-                            coinPlan: controller.coinPlan[index],
-                          ),
-                        );
-                      },
-                    );
+                      Get.bottomSheet(
+                        PaymentOptionBottomSheet(index: index),
+                        isScrollControlled: true,
+                        backgroundColor: AppColors.transparent,
+                      );
+                    },
+                    child: CoinPlanTile(
+                      coinPlan: controller.coinPlan[index],
+                    ),
+                  );
+                },
+              );
             },
           ),
         ],
@@ -96,14 +96,15 @@ class PaymentOptionTile extends StatelessWidget {
 
     return InkWell(
       onTap: () => controller.onChangePaymentMethod(index),
+      borderRadius: BorderRadius.circular(10),
       child: Container(
         height: 60,
         margin: const EdgeInsets.symmetric(vertical: 8),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: AppColors.lightPurple1, // Dark option surface box
           border: Border.all(
-            color: isSelected ? AppColors.appColor : AppColors.grey.withValues(alpha: 0.2),
+            color: isSelected ? AppColors.primary : AppColors.borderColor, // Highlights matching primary brand purple
           ),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -117,7 +118,7 @@ class PaymentOptionTile extends StatelessWidget {
             ),
             Text(
               title,
-              style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.black),
+              style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.appDarkColor), // Crisp light text readability
             ).paddingOnly(left: 16),
             const Spacer(),
             Container(
@@ -126,21 +127,20 @@ class PaymentOptionTile extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? Colors.transparent : AppColors.grey,
+                  color: isSelected ? AppColors.primary : AppColors.grey,
                 ),
-                color: isSelected ? Colors.black : AppColors.white,
+                color: isSelected ? AppColors.primary : AppColors.transparent,
               ),
               child: isSelected
                   ? Padding(
-                      padding: const EdgeInsets.all(0.5),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.appColor,
-                          border: Border.all(color: AppColors.white),
-                        ),
-                      ),
-                    )
+                padding: const EdgeInsets.all(4.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.appDarkColor, // High contrast radio dot layout
+                  ),
+                ),
+              )
                   : null,
             ),
           ],
@@ -162,7 +162,7 @@ class CoinPlanTile extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: AppColors.coinTileColor.withValues(alpha: 0.6),
+            color: AppColors.coinTileColor, // Deep gold-tinted background card layout
             border: Border.all(color: AppColors.yellowBorder),
             borderRadius: BorderRadius.circular(16),
           ),
@@ -171,8 +171,8 @@ class CoinPlanTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: AppColors.white,
-                  border: Border.all(color: AppColors.yellowBorder),
+                  color: AppColors.purple200, // Elevated deep purple box accent frame for the icon
+                  border: Border.all(color: AppColors.purpleBorder),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Image.asset(
@@ -186,15 +186,15 @@ class CoinPlanTile extends StatelessWidget {
                   '${coinPlan.coins} coin',
                   style: AppFontStyle.fontStyleW700(
                     fontSize: 16,
-                    fontColor: AppColors.yellowDark800,
+                    fontColor: AppColors.yellow, // Vibrant rating/star yellow text
                   ),
                 ).paddingOnly(left: 6),
               ),
               Text(
-                "${Database.settingApiModel?.data?.currency?.symbol} ${coinPlan.price}",
+                "₹${coinPlan.price}",
                 style: AppFontStyle.fontStyleW700(
                   fontSize: 22,
-                  fontColor: AppColors.darkOrange,
+                  fontColor: AppColors.orange, // Vibrant warning/coin semantic orange instead of dark orange
                 ),
               ).paddingOnly(right: 14),
               RotatedBox(
@@ -203,7 +203,7 @@ class CoinPlanTile extends StatelessWidget {
                   AppAsset.backArrowIcon,
                   height: 12,
                   width: 12,
-                  color: AppColors.yellowDark800,
+                  color: AppColors.orangeText,
                 ),
               ).paddingOnly(right: 8),
             ],
@@ -214,15 +214,18 @@ class CoinPlanTile extends StatelessWidget {
             top: Get.height * -0.011,
             right: Get.width * 0.07,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.orange, // Semi-vibrant badge background frame space
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.yellowBorder),
+                border: Border.all(color: AppColors.orangeBorder),
               ),
               child: Text(
                 EnumLocale.txtMostPopularPlan.name.tr,
-                style: AppFontStyle.fontStyleW600(fontSize: 10, fontColor: AppColors.darkOrange),
+                style: AppFontStyle.fontStyleW600(
+                  fontSize: 10,
+                  fontColor: AppColors.backGroundColor, // Dark background-toned text over orange surface for deep contrast
+                ),
               ),
             ),
           ),
@@ -239,8 +242,11 @@ class PaymentOptionBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        color: AppColors.profileOptionColor, // Replaced pure white with deep profile background slate
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border(
+          top: BorderSide(color: AppColors.purpleBorder, width: 1.5), // Elegant dark top rim line
+        ),
       ),
       padding: const EdgeInsets.all(16.0),
       child: GetBuilder<MyWalletController>(
@@ -250,9 +256,19 @@ class PaymentOptionBottomSheet extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.unSelected,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ).paddingOnly(bottom: 12),
+              ),
               Text(
                 EnumLocale.txtPaymentMethod.name.tr,
-                style: AppFontStyle.fontStyleW600(fontSize: 17, fontColor: AppColors.black),
+                style: AppFontStyle.fontStyleW600(fontSize: 17, fontColor: AppColors.appDarkColor),
               ).paddingOnly(bottom: 15, top: 5),
 
               if ((Platform.isAndroid && Database.settingApiModel?.data?.isRazorpayEnabled == true) || (Platform.isIOS && Database.settingApiModel?.data?.isRazorpayIosEnabled == true))
@@ -266,8 +282,6 @@ class PaymentOptionBottomSheet extends StatelessWidget {
                 PaymentOptionTile(
                   index: 1,
                   title: "Stripe",
-
-
                   controller: controller,
                   image: AppAsset.stripe,
                 ),
@@ -278,7 +292,7 @@ class PaymentOptionBottomSheet extends StatelessWidget {
                   controller: controller,
                   image: AppAsset.flutterWave,
                 ),
-                if ((Platform.isAndroid && Database.settingApiModel?.data?.isGooglePlayEnabled == true) || (Platform.isIOS && Database.settingApiModel?.data?.isGooglePlayIosEnabled == true))
+              if ((Platform.isAndroid && Database.settingApiModel?.data?.isGooglePlayEnabled == true) || (Platform.isIOS && Database.settingApiModel?.data?.isGooglePlayIosEnabled == true))
                 PaymentOptionTile(
                   index: 3,
                   title: "In App Purchase",
@@ -286,17 +300,15 @@ class PaymentOptionBottomSheet extends StatelessWidget {
                   image: Platform.isIOS ? AppAsset.appStoreImage : AppAsset.googleIcon,
                   width: 50,
                   height: 26,
-                  // width: Platform.isIOS == false ? 60 : 50,
                 ),
               if ((Platform.isAndroid && Database.settingApiModel?.data?.isCashfreeAndroidEnabled == true) || (Platform.isIOS && Database.settingApiModel?.data?.isCashfreeIosEnabled == true))
                 PaymentOptionTile(
                   index: 4,
                   title: "Cash Free",
                   controller: controller,
-                  image:  AppAsset.cashFreeImage,
+                  image: AppAsset.cashFreeImage,
                   width: 50,
                   height: 26,
-                  // width: Platform.isIOS == false ? 60 : 50,
                 ),
               if ((Platform.isAndroid && Database.settingApiModel?.data?.isPaystackAndroidEnabled == true) || (Platform.isIOS && Database.settingApiModel?.data?.isPaystackIosEnabled == true))
                 PaymentOptionTile(
@@ -306,7 +318,6 @@ class PaymentOptionBottomSheet extends StatelessWidget {
                   image: AppAsset.payStackImage,
                   width: 50,
                   height: 26,
-                  // width: Platform.isIOS == false ? 60 : 50,
                 ),
               if ((Platform.isAndroid && Database.settingApiModel?.data?.isPaypalAndroidEnabled == true) || (Platform.isIOS && Database.settingApiModel?.data?.isPaypalIosEnabled == true))
                 PaymentOptionTile(
@@ -316,28 +327,11 @@ class PaymentOptionBottomSheet extends StatelessWidget {
                   image: AppAsset.payPalImage,
                   width: 50,
                   height: 26,
-                  // width: Platform.isIOS == false ? 60 : 50,
                 ),
-
-
-              // _buildPaymentOption(
-              //   context,
-              //   index: 1,
-              //   title: "Stripe",
-              //   controller: controller,
-              //   image: AppAsset.stripe,
-              // ),
-              // _buildPaymentOption(
-              //   context,
-              //   index: 2,
-              //   title: "Flutterwave",
-              //   controller: controller,
-              //   image: AppAsset.flutterWave,
-              // ),
               PrimaryAppButton(
                 onTap: () {
-                  log("message ${controller.coinPlan[index].id}");
-                  log("message ${controller.selectedCoinPlan?.productId}");
+                  log("Plan Selected ID: ${controller.coinPlan[index].id}");
+                  log("Product key: ${controller.selectedCoinPlan?.productId}");
                   controller.onClickPayNow(
                       id: controller.coinPlan[index].id ?? '',
                       amount: controller.coinPlan[index].price ?? 0,
@@ -345,8 +339,9 @@ class PaymentOptionBottomSheet extends StatelessWidget {
                 },
                 height: 50,
                 borderRadius: 30,
+                color: AppColors.primary,
                 text: EnumLocale.txtPay.name.tr,
-                textStyle: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.white),
+                textStyle: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.appDarkColor),
               ).paddingOnly(bottom: 10, top: 18),
             ],
           );

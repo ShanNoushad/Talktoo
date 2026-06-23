@@ -22,7 +22,7 @@ class ExitAppDialog extends StatelessWidget {
             Radius.circular(110),
           ),
         ),
-        color: AppColors.white,
+        color: AppColors.lightPurple,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

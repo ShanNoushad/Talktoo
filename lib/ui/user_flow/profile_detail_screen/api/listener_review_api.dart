@@ -13,15 +13,14 @@ class ListenerReviewApi {
   static Future<ListenerReviewModel?> callApi({
     required String listenerId,
   }) async {
-    final token = await FirebaseAccessToken.onGet();
 
     Utils.showLog("Listener Review  Api Calling...");
 
     final uri = Uri.parse("${Api.listenerReviewApi}${ApiParams.listenerId}=$listenerId");
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.authToken: "Bearer ${Api.secretKey}",
+      ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     Utils.showLog("Listener Review  Api uri :: $uri");

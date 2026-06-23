@@ -10,7 +10,6 @@ import 'package:talk_in/utils/utils.dart';
 
 class FetchListenerProfileAPi {
   static Future<FetchListenerProfileModel?> callApi({required String loginListenerId}) async {
-    final token = await FirebaseAccessToken.onGet();
     Utils.showLog("Get Login Listener Profile Api Calling...");
 
     final Map<String, dynamic> queryParameters = {
@@ -24,10 +23,10 @@ class FetchListenerProfileAPi {
     final uri = Uri.parse(Api.loginListenerProfile + (query.isNotEmpty ? query : ''));
 
     final headers = {
-      "key": Api.secretKey,
-      "Content-Type": "application/json",
-      "x-auth-token": "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.key: Api.secretKey,
+      ApiParams.authToken: "Bearer ${Api.secretKey}",
+      ApiParams.authUid: Database.loginUserId,
+      ApiParams.contentType: "application/json",
     };
 
     log("Get Login Listener Profile headers  $headers");

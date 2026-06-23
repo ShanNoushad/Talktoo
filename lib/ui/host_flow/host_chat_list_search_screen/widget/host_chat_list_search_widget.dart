@@ -14,6 +14,7 @@ class HostChatListSearchWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.black,
       body: SafeArea(
         child: Column(
           children: [
@@ -30,7 +31,7 @@ class HostChatListSearchWidget extends StatelessWidget {
                         child: Image.asset(
                           height: 16,
                           AppAsset.backArrowIcon,
-                          color: AppColors.black,
+                          color: AppColors.white,
                         ),
                       ),
                     ),
@@ -38,7 +39,7 @@ class HostChatListSearchWidget extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
-                          color: AppColors.white,
+                          color: AppColors.black,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
@@ -47,7 +48,7 @@ class HostChatListSearchWidget extends StatelessWidget {
                               AppAsset.searchIcon,
                               height: 18,
                               width: 18,
-                              color: controller.hasText ? AppColors.black : AppColors.otpScreenGrey,
+                              color: controller.hasText ? AppColors.black : AppColors.white,
                             ),
                             const SizedBox(width: 12),
                             Container(
@@ -93,7 +94,7 @@ class HostChatListSearchWidget extends StatelessWidget {
             8.height,
             Expanded(
               child: Container(
-                color: AppColors.white,
+                color: AppColors.black,
                 child: GetBuilder<HostChatListSearchController>(
                   builder: (controller) {
                     return controller.displayedListeners.isEmpty

@@ -12,8 +12,8 @@ class AllListenersAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomAppBar(
-      // appBarColor: AppColors.red,
       title: EnumLocale.txtAllListeners.name.tr,
+      textColor: AppColors.white,
       showLeadingIcon: true,
       action: [
         GestureDetector(

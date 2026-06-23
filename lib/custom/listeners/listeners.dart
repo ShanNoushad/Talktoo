@@ -52,13 +52,12 @@ class CustomListeners extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // padding: EdgeInsets.symmetric(vertical: 9),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        color: AppColors.white,
+        color: AppColors.lightPurple,                       // ✅ #1E2030 dark card
         boxShadow: [
           BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.10),
+            color: AppColors.black.withValues(alpha: 0.30), // ✅ stronger shadow on dark
             blurRadius: 18,
             offset: Offset(0, 0),
             spreadRadius: 0,
@@ -96,12 +95,12 @@ class CustomListeners extends StatelessWidget {
                               "$name $age",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
-                              style: AppFontStyle.fontStyleW600(fontSize: 14, fontColor: AppColors.appDarkColor),
+                              style: AppFontStyle.fontStyleW600(
+                                fontSize: 14,
+                                fontColor: AppColors.appColor,      // ✅ #EDEFF5 near-white
+                              ),
                             ),
                           ),
-                          // SizedBox(width: 4),
-
-                          // Spacer(),
                           Container(
                             padding: EdgeInsets.only(right: 8, bottom: 3, top: 3, left: 7),
                             decoration: BoxDecoration(
@@ -116,7 +115,10 @@ class CustomListeners extends StatelessWidget {
                                   ).paddingOnly(right: 3),
                                 Text(
                                   status ?? '',
-                                  style: AppFontStyle.fontStyleW500(fontSize: 9, fontColor: statusTxtColor),
+                                  style: AppFontStyle.fontStyleW500(
+                                    fontSize: 9,
+                                    fontColor: statusTxtColor,
+                                  ),
                                 ),
                               ],
                             ),
@@ -128,34 +130,46 @@ class CustomListeners extends StatelessWidget {
                           Image.asset(
                             AppAsset.speakingBoy,
                             height: 15,
+                            color: AppColors.grey,                  // ✅ muted icon on dark
                           ).paddingOnly(right: 2),
                           Flexible(
                             child: Text(
                               language,
-                              overflow: TextOverflow.ellipsis, // prevent long text from breaking layout
-                              style: AppFontStyle.fontStyleW500(fontSize: 11, fontColor: AppColors.appTextColor),
+                              overflow: TextOverflow.ellipsis,
+                              style: AppFontStyle.fontStyleW500(
+                                fontSize: 11,
+                                fontColor: AppColors.listenersDetail, // ✅ #7A7D94 secondary text
+                              ),
                             ).paddingOnly(right: 12),
                           ),
                           Image.asset(
                             AppAsset.callIcon,
                             height: 15,
+                            color: AppColors.grey,                  // ✅ muted icon
                           ).paddingOnly(right: 2),
                           Text(
                             callCount.toString(),
-                            style: AppFontStyle.fontStyleW500(fontSize: 11, fontColor: AppColors.appTextColor),
+                            style: AppFontStyle.fontStyleW500(
+                              fontSize: 11,
+                              fontColor: AppColors.listenersDetail,  // ✅ secondary text
+                            ),
                           ).paddingOnly(right: 16),
                           Image.asset(
                             AppAsset.uniqueIdIcon,
                             height: 15,
+                            color: AppColors.grey,                  // ✅ muted icon
                           ).paddingOnly(right: 2),
                           Text(
                             uniqueId.toString(),
-                            style: AppFontStyle.fontStyleW500(fontSize: 11, fontColor: AppColors.appTextColor),
+                            style: AppFontStyle.fontStyleW500(
+                              fontSize: 11,
+                              fontColor: AppColors.listenersDetail,  // ✅ secondary text
+                            ),
                           ).paddingOnly(right: 16),
                         ],
                       ).paddingOnly(bottom: 2),
                       Divider(
-                        color: AppColors.lightGrey,
+                        color: AppColors.borderColor,               // ✅ #252840 subtle divider
                       ).paddingOnly(right: 10, bottom: 4),
                       SizedBox(
                         height: Get.height * 0.026,
@@ -167,7 +181,7 @@ class CustomListeners extends StatelessWidget {
                             return Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               decoration: BoxDecoration(
-                                color: AppColors.lightGrey,
+                                color: AppColors.purple100,         // ✅ #2D2250 dark purple chip
                                 borderRadius: BorderRadius.circular(30),
                               ),
                               child: Center(
@@ -175,7 +189,7 @@ class CustomListeners extends StatelessWidget {
                                   talkTopicName[index],
                                   style: AppFontStyle.fontStyleW500(
                                     fontSize: 10,
-                                    fontColor: AppColors.grey,
+                                    fontColor: AppColors.purple400, // ✅ #9C6FFF light purple text
                                   ),
                                 ),
                               ),
@@ -195,36 +209,43 @@ class CustomListeners extends StatelessWidget {
                 child: PrimaryAppButton(
                   onTap: viewProfileOnTap,
                   height: 38,
-                  color: AppColors.white,
-                  borderColor: AppColors.appColor,
+                  color: AppColors.lightPurple1,                    // ✅ #252740 elevated dark
+                  borderColor: AppColors.borderColor,               // ✅ #252840 subtle border
                   text: EnumLocale.txtViewProfile.name.tr,
-                  textStyle: AppFontStyle.fontStyleW600(fontSize: 14, fontColor: AppColors.appColor),
+                  textStyle: AppFontStyle.fontStyleW600(
+                    fontSize: 14,
+                    fontColor: AppColors.appColor,                  // ✅ near-white text
+                  ),
                 ),
               ),
-              if (availableForPrivateAudioCall || availableForPrivateVideoCall == true || fake == true) SizedBox(width: 14),
+              if (availableForPrivateAudioCall || availableForPrivateVideoCall == true || fake == true)
+                SizedBox(width: 14),
               availableForPrivateAudioCall || availableForPrivateVideoCall == true || fake == true
                   ? Expanded(
-                      child: PrimaryAppButton(
-                        onTap: talkNowOnTap,
-                        height: 38,
-                        color: AppColors.appColor,
-                        borderColor: AppColors.appColor,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              AppAsset.callIcon,
-                              color: AppColors.white,
-                              height: 20,
-                            ).paddingOnly(right: 12),
-                            Text(
-                              EnumLocale.txtTalkNow.name.tr,
-                              style: AppFontStyle.fontStyleW600(fontSize: 14, fontColor: AppColors.white),
-                            ),
-                          ],
+                child: PrimaryAppButton(
+                  onTap: talkNowOnTap,
+                  height: 38,
+                  color: AppColors.primary,                   // ✅ #7C4DFF purple CTA
+                  borderColor: AppColors.primary,             // ✅ matching border
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        AppAsset.callIcon,
+                        color: AppColors.white,
+                        height: 20,
+                      ).paddingOnly(right: 12),
+                      Text(
+                        EnumLocale.txtTalkNow.name.tr,
+                        style: AppFontStyle.fontStyleW600(
+                          fontSize: 14,
+                          fontColor: AppColors.white,         // ✅ white on purple button
                         ),
                       ),
-                    )
+                    ],
+                  ),
+                ),
+              )
                   : SizedBox(),
             ],
           ).paddingOnly(top: 13, left: 6, right: 6, bottom: 10)

@@ -20,10 +20,11 @@ class HostVerificationListenersDetailAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size.fromHeight(120),
+      preferredSize: const Size.fromHeight(120),
       child: CustomAppBar(
-        appBarColor: AppColors.lightPurple,
+        appBarColor: AppColors.backGroundColor, // Seamless dark background anchoring
         title: EnumLocale.txtListenerVerification.name.tr,
+        textColor: AppColors.white, // Crisp light text contrast
         showLeadingIcon: true,
       ),
     );
@@ -31,7 +32,6 @@ class HostVerificationListenersDetailAppBar extends StatelessWidget {
 }
 
 class HostVerificationListenersDetailView extends StatelessWidget {
-  // final List<String> languages = ['English', 'Hindi', 'Gujarati', 'Marathi', 'Punjabi', 'Spanish', 'French', 'Urdu'];
   const HostVerificationListenersDetailView({super.key});
 
   @override
@@ -40,9 +40,10 @@ class HostVerificationListenersDetailView extends StatelessWidget {
       builder: (controller) {
         return Column(
           children: [
+            // Section 1: Core Form Fields Container
             Container(
               width: Get.width,
-              color: AppColors.white,
+              color: AppColors.backGroundColor, // Dark background base canvas
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -50,22 +51,22 @@ class HostVerificationListenersDetailView extends StatelessWidget {
                     EnumLocale.txtListenerDetails.name.tr,
                     style: AppFontStyle.fontStyleW700(
                       fontSize: 17,
-                      fontColor: Colors.black,
+                      fontColor: AppColors.appDarkColor, // Flipped from hardcoded black
                     ),
                   ).paddingOnly(top: 16, bottom: 16),
                   CustomTitle(
                     title: EnumLocale.txtEnterName.name.tr,
                     textStyle: AppFontStyle.fontStyleW500(
                       fontSize: 12,
-                      fontColor: AppColors.listenersDetail,
+                      fontColor: AppColors.profileText, // Standard subtle text label
                     ),
                     method: CustomTextField(
                       filled: true,
-                      borderColor: AppColors.appTextColor.withValues(alpha: 0.18),
+                      borderColor: AppColors.purpleBorder,
                       controller: controller.nameController,
-                      fillColor: AppColors.white,
-                      cursorColor: AppColors.black,
-                      fontColor: AppColors.black,
+                      fillColor: AppColors.lightPurple1, // Elevated field body
+                      cursorColor: AppColors.primary,
+                      fontColor: AppColors.appDarkColor,
                       fontSize: 15,
                       textInputAction: TextInputAction.next,
                       maxLines: 1,
@@ -75,15 +76,15 @@ class HostVerificationListenersDetailView extends StatelessWidget {
                     title: EnumLocale.txtEnterNickName.name.tr,
                     textStyle: AppFontStyle.fontStyleW500(
                       fontSize: 12,
-                      fontColor: AppColors.listenersDetail,
+                      fontColor: AppColors.profileText,
                     ),
                     method: CustomTextField(
                       filled: true,
-                      borderColor: AppColors.appTextColor.withValues(alpha: 0.18),
+                      borderColor: AppColors.purpleBorder,
                       controller: controller.nickNameController,
-                      fillColor: AppColors.white,
-                      cursorColor: AppColors.black,
-                      fontColor: AppColors.black,
+                      fillColor: AppColors.lightPurple1,
+                      cursorColor: AppColors.primary,
+                      fontColor: AppColors.appDarkColor,
                       fontSize: 15,
                       textInputAction: TextInputAction.next,
                       maxLines: 1,
@@ -93,15 +94,15 @@ class HostVerificationListenersDetailView extends StatelessWidget {
                     title: EnumLocale.txtGender.name.tr,
                     textStyle: AppFontStyle.fontStyleW500(
                       fontSize: 12,
-                      fontColor: AppColors.listenersDetail,
+                      fontColor: AppColors.profileText,
                     ),
                     method: CustomTextField(
                       filled: true,
-                      borderColor: AppColors.appTextColor.withValues(alpha: 0.18),
+                      borderColor: AppColors.purpleBorder,
                       controller: controller.genderCnt,
-                      fillColor: AppColors.white,
-                      cursorColor: AppColors.black,
-                      fontColor: AppColors.black,
+                      fillColor: AppColors.lightPurple1,
+                      cursorColor: AppColors.primary,
+                      fontColor: AppColors.appDarkColor,
                       fontSize: 15,
                       textInputAction: TextInputAction.next,
                       maxLines: 1,
@@ -111,15 +112,15 @@ class HostVerificationListenersDetailView extends StatelessWidget {
                     title: EnumLocale.txtEnterIntroduction.name.tr,
                     textStyle: AppFontStyle.fontStyleW500(
                       fontSize: 12,
-                      fontColor: AppColors.listenersDetail,
+                      fontColor: AppColors.profileText,
                     ),
                     method: CustomTextField(
                       filled: true,
-                      borderColor: AppColors.appTextColor.withValues(alpha: 0.18),
+                      borderColor: AppColors.purpleBorder,
                       controller: controller.introCnt,
-                      fillColor: AppColors.white,
-                      cursorColor: AppColors.black,
-                      fontColor: AppColors.black,
+                      fillColor: AppColors.lightPurple1,
+                      cursorColor: AppColors.primary,
+                      fontColor: AppColors.appDarkColor,
                       fontSize: 12,
                       textInputAction: TextInputAction.next,
                       maxLines: 5,
@@ -129,15 +130,15 @@ class HostVerificationListenersDetailView extends StatelessWidget {
                     title: EnumLocale.txtEnterYourExperience.name.tr,
                     textStyle: AppFontStyle.fontStyleW500(
                       fontSize: 12,
-                      fontColor: AppColors.listenersDetail,
+                      fontColor: AppColors.profileText,
                     ),
                     method: CustomTextField(
                       filled: true,
-                      borderColor: AppColors.appTextColor.withValues(alpha: 0.18),
+                      borderColor: AppColors.purpleBorder,
                       controller: controller.experienceCnt,
-                      fillColor: AppColors.white,
-                      cursorColor: AppColors.black,
-                      fontColor: AppColors.black,
+                      fillColor: AppColors.lightPurple1,
+                      cursorColor: AppColors.primary,
+                      fontColor: AppColors.appDarkColor,
                       fontSize: 15,
                       textInputAction: TextInputAction.next,
                       maxLines: 1,
@@ -151,9 +152,11 @@ class HostVerificationListenersDetailView extends StatelessWidget {
                 ],
               ).paddingSymmetric(horizontal: 16),
             ).paddingOnly(bottom: 10, top: 10),
+
+            // Section 2: Languages Selection Container
             Container(
               width: Get.width,
-              color: AppColors.white,
+              color: AppColors.backGroundColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -161,14 +164,14 @@ class HostVerificationListenersDetailView extends StatelessWidget {
                     EnumLocale.txtTalkLanguages.name.tr,
                     style: AppFontStyle.fontStyleW700(
                       fontSize: 17,
-                      fontColor: Colors.black,
+                      fontColor: AppColors.appDarkColor,
                     ),
                   ).paddingOnly(top: 16, bottom: 4),
                   Text(
                     EnumLocale.txtSelectLanguages.name.tr,
                     style: AppFontStyle.fontStyleW500(
                       fontSize: 11,
-                      fontColor: AppColors.appTextColor,
+                      fontColor: AppColors.profileText,
                     ),
                   ).paddingOnly(top: 4, bottom: 14),
                   Row(
@@ -178,25 +181,27 @@ class HostVerificationListenersDetailView extends StatelessWidget {
                         EnumLocale.txtSelectLanguage.name.tr,
                         style: AppFontStyle.fontStyleW600(
                           fontSize: 16,
-                          fontColor: AppColors.black,
+                          fontColor: AppColors.appDarkColor,
                         ),
                       ),
                       GestureDetector(
                         onTap: () {
-                          log("Bottom sheet.....");
                           Get.bottomSheet(
-                            AllLanguageBottomSheet(),
+                            const AllLanguageBottomSheet(),
                             isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
+                            backgroundColor: AppColors.transparent,
                           );
-                          log("Open Bottom sheet.....");
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                          decoration: BoxDecoration(color: AppColors.lightGrey, borderRadius: BorderRadius.circular(6)),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: AppColors.lightPurple1,
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: AppColors.purpleBorder),
+                          ),
                           child: Text(
                             EnumLocale.txtViewAll.name.tr,
-                            style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.onBoardingTxt),
+                            style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.primary),
                           ),
                         ),
                       )
@@ -209,32 +214,34 @@ class HostVerificationListenersDetailView extends StatelessWidget {
                         runSpacing: 8,
                         children: controller.selectedLanguages.map((lang) {
                           return Container(
-                            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                             decoration: BoxDecoration(
-                              // color: AppColors.lightGrey,
-                              border: Border.all(color: AppColors.appColor),
+                              color: AppColors.lightPurple1,
+                              border: Border.all(color: AppColors.primary),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               lang,
                               style: AppFontStyle.fontStyleW500(
                                 fontSize: 13,
-                                fontColor: AppColors.appColor,
+                                fontColor: AppColors.primary,
                               ),
                             ),
                           );
                         }).toList(),
-                      ).paddingOnly(bottom: 14); // Add spacing from the button
+                      ).paddingOnly(bottom: 14);
                     },
                   )
                 ],
               ).paddingSymmetric(horizontal: 16),
             ).paddingOnly(bottom: 10),
+
+            // Section 3: Topics Selection List Container
             GetBuilder<HostVerificationController>(
               builder: (controller) {
                 return Container(
                   width: Get.width,
-                  color: AppColors.white,
+                  color: AppColors.backGroundColor,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -242,34 +249,34 @@ class HostVerificationListenersDetailView extends StatelessWidget {
                         "${EnumLocale.txtTalkAbout.name.tr} :-",
                         style: AppFontStyle.fontStyleW700(
                           fontSize: 17,
-                          fontColor: Colors.black,
+                          fontColor: AppColors.appDarkColor,
                         ),
                       ).paddingOnly(top: 16, bottom: 4),
                       Text(
                         EnumLocale.txtSelectTopic.name.tr,
                         style: AppFontStyle.fontStyleW500(
                           fontSize: 11,
-                          fontColor: AppColors.appTextColor,
+                          fontColor: AppColors.profileText,
                         ),
                       ).paddingOnly(top: 4, bottom: 14),
                       ListView.builder(
                         itemCount: controller.talkTopic.length,
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           final topic = controller.talkTopic[index];
-                          // bool isSelected = controller.selectedTopic == index;
                           bool isSelected = controller.selectedTopics.contains(index);
 
                           return GestureDetector(
                             onTap: () => controller.selectTopic(index),
                             child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
                               width: Get.width,
                               decoration: BoxDecoration(
+                                color: isSelected ? AppColors.lightPurple1 : AppColors.transparent,
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: isSelected ? AppColors.appColor : AppColors.grey.withValues(alpha: 0.2),
+                                  color: isSelected ? AppColors.primary : AppColors.purpleBorder,
                                 ),
                               ),
                               child: Row(
@@ -278,39 +285,34 @@ class HostVerificationListenersDetailView extends StatelessWidget {
                                     topic.name.toString(),
                                     style: isSelected
                                         ? AppFontStyle.fontStyleW600(
-                                            fontSize: 14,
-                                            fontColor: AppColors.appColor,
-                                          )
+                                      fontSize: 14,
+                                      fontColor: AppColors.primary,
+                                    )
                                         : AppFontStyle.fontStyleW500(
-                                            fontSize: 14,
-                                            fontColor: AppColors.appTextColor,
-                                          ),
+                                      fontSize: 14,
+                                      fontColor: AppColors.profileText,
+                                    ),
                                   ),
-                                  Spacer(),
+                                  const Spacer(),
+                                  // Dark UI adapted radio circle selector
                                   Container(
                                     height: 22,
                                     width: 22,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      border: Border.all(color: isSelected ? AppColors.transparent : AppColors.grey),
-                                      color: isSelected ? Colors.black : AppColors.white,
+                                      border: Border.all(color: isSelected ? AppColors.primary : AppColors.grey),
+                                      color: isSelected ? AppColors.primary : AppColors.transparent,
                                     ),
                                     child: isSelected
-                                        ? Container(
-                                            decoration: BoxDecoration(
-                                              color: AppColors.appColor,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Container(
-                                              height: 22,
-                                              width: 22,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(color: AppColors.white),
-                                                color: AppColors.appColor,
-                                              ),
-                                            ).paddingAll(0.5),
-                                          )
+                                        ? Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: AppColors.appDarkColor, // Dark core dot inside radio ring
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                    )
                                         : null,
                                   ),
                                 ],
@@ -337,14 +339,14 @@ class HostVerificationListenersDetailBottomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.backGroundColor, // Replaced pure white background card dock
         boxShadow: [
           BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.10),
-            offset: Offset(0, 0),
-            blurRadius: 8,
+            color: AppColors.black.withValues(alpha: 0.35), // Darkened ambient shadow for deep canvas blend
+            offset: const Offset(0, -2), // Replaced downwards shadow with soft layout top-elevation rim glow
+            blurRadius: 12,
             spreadRadius: 0,
           ),
         ],
@@ -357,7 +359,6 @@ class HostVerificationListenersDetailBottomButton extends StatelessWidget {
               controller.validateAndSubmit();
             },
             height: Get.height * 0.06,
-            // borderRadius: 30,
             text: EnumLocale.txtSUBMIT.name.tr,
             textStyle: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.white),
           ).paddingOnly(bottom: 10);

@@ -39,7 +39,7 @@ class SplashScreenView extends GetView<SplashScreenController> {
                 ),
                 Spacer(),
                 Text(
-                  "TalkToo",
+                  "Talktoo",
                   style: AppFontStyle.fontStyleW600(fontSize: 29, fontColor: AppColors.black),
                 ),
                 Text(

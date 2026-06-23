@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:talk_in/ui/user_flow/home_screen/api/top_listeners_api.dart';
 import 'package:talk_in/ui/user_flow/home_screen/model/top_listeners_model.dart';
+import 'package:talk_in/utils/api.dart';
 import 'package:talk_in/utils/constant.dart';
 import 'package:talk_in/utils/database.dart';
 import 'package:talk_in/utils/firebse_access_token.dart';
@@ -41,12 +42,12 @@ class TopListenersViewAllController extends GetxController {
   /// get top listeners
   getTopListeners() async {
     final uid = Database.loginUserFirebaseId;
-    final token = await FirebaseAccessToken.onGet() ?? "";
 
     isLoading = true;
     update([Constant.idGetListener]);
 
-    topListenersModel = await TopListenersApi.callApi(token: token, uid: uid, searchString: "All");
+    topListenersModel = await TopListenersApi.callApi(
+        token: Api.secretKey, uid: uid, searchString: "All");
     topListeners.addAll(topListenersModel?.data ?? []);
 
     isLoading = false;
@@ -56,13 +57,14 @@ class TopListenersViewAllController extends GetxController {
   /// pagination
   Future<void> onTopListenersPagination() async {
     final uid = Database.loginUserFirebaseId;
-    final token = await FirebaseAccessToken.onGet() ?? "";
 
-    if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
       isPaginationLoading = true;
       update([Constant.idPaginationListener, Constant.idGetListener]);
 
-      topListenersModel = await TopListenersApi.callApi(token: token, uid: uid, searchString: "All");
+      topListenersModel = await TopListenersApi.callApi(
+          token: Api.secretKey, uid: uid, searchString: "All");
       topListeners.addAll(topListenersModel?.data ?? []);
 
       isPaginationLoading = false;

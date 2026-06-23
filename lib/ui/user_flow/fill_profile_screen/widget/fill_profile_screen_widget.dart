@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
@@ -30,8 +29,9 @@ class FillProfileScreenAppBar extends StatelessWidget {
       child: CustomAppBar(
         appBarColor: AppColors.lightPurple,
         title: EnumLocale.txtMyProfile.name.tr,
-        showLeadingIcon: false,
-        // appBarColor: AppColors.purple200.withValues(alpha: 0.1),
+        textColor: AppColors.white, // Already white
+        showLeadingIcon: true,
+        iconColor: AppColors.white,
       ),
     );
   }
@@ -53,7 +53,6 @@ class FillProfileImageView extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Container(
-                // clipBehavior: Clip.hardEdge,
                 height: Get.height * 0.1,
                 width: Get.height * 0.1,
                 decoration: BoxDecoration(
@@ -64,26 +63,26 @@ class FillProfileImageView extends StatelessWidget {
                 child: ClipOval(
                   child: controller.pickImage != null && controller.pickImage!.isNotEmpty
                       ? Image.file(
-                          File("${controller.pickImage}"),
-                          height: 210,
-                          width: Get.width,
-                          fit: BoxFit.cover,
-                        )
+                    File("${controller.pickImage}"),
+                    height: 210,
+                    width: Get.width,
+                    fit: BoxFit.cover,
+                  )
                       : controller.photo != null && controller.photo!.isNotEmpty
-                          ? CustomProfileImage(
-                              image: "${controller.photo}",
-                            )
-                          : Image.asset(AppAsset.profilePlaceHolder),
+                      ? CustomProfileImage(
+                    image: "${controller.photo}",
+                  )
+                      : Image.asset(AppAsset.profilePlaceHolder),
                 ),
               ).paddingAll(1),
             ).paddingOnly(top: 34, bottom: 16),
             GestureDetector(
               onTap: () {
                 Get.defaultDialog(
-                    backgroundColor: AppColors.white,
+                    backgroundColor: AppColors.lightPurple,
                     title: EnumLocale.changeYourImage.name.tr,
                     titlePadding: const EdgeInsets.only(top: 30),
-                    titleStyle: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.appColor),
+                    titleStyle: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.white), // Changed to White
                     content: GetBuilder<FillProfileScreenController>(
                       builder: (controller) {
                         return Column(
@@ -108,14 +107,14 @@ class FillProfileImageView extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 20),
                                       child: Image(
-                                        color: AppColors.appColor,
+                                        color: AppColors.white, // Changed icon tint to White
                                         image: const AssetImage(AppAsset.cameraFlipIcon),
                                         height: 20,
                                       ),
                                     ),
                                     Text(
                                       EnumLocale.txtTakeAphoto.name.tr,
-                                      style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.appColor),
+                                      style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.white), // Changed to White
                                     )
                                   ],
                                 ),
@@ -138,14 +137,14 @@ class FillProfileImageView extends StatelessWidget {
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 20),
                                         child: Image(
-                                          color: AppColors.appColor,
+                                          color: AppColors.white, // Changed icon tint to White
                                           image: const AssetImage(AppAsset.chatImageIcon),
                                           height: 20,
                                         ),
                                       ),
                                       Text(
                                         EnumLocale.txtChooseFromYourFile.name.tr,
-                                        style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.appColor),
+                                        style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.white), // Changed to White
                                       )
                                     ],
                                   ),
@@ -160,7 +159,7 @@ class FillProfileImageView extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.white,
+                  color: AppColors.lightPurple,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: AppColors.appColor,
@@ -171,12 +170,13 @@ class FillProfileImageView extends StatelessWidget {
                   children: [
                     Image.asset(
                       AppAsset.uploadImageIcon,
+                      color: AppColors.white, // Optional: Force upload icon color to White if it supports coloring
                       height: 22,
                       width: 22,
                     ),
                     Text(
                       EnumLocale.txtChangeImage.name.tr,
-                      style: AppFontStyle.fontStyleW700(fontSize: 12, fontColor: AppColors.appColor),
+                      style: AppFontStyle.fontStyleW700(fontSize: 12, fontColor: AppColors.white), // Changed to White
                     ).paddingOnly(left: 6, right: 6)
                   ],
                 ),
@@ -188,7 +188,6 @@ class FillProfileImageView extends StatelessWidget {
     );
   }
 }
-
 class FillProfileEditInfoView extends StatelessWidget {
   const FillProfileEditInfoView({super.key});
 
@@ -197,7 +196,6 @@ class FillProfileEditInfoView extends StatelessWidget {
     return GetBuilder<FillProfileScreenController>(
       builder: (logic) {
         return Form(
-          // key: logic.formKey,
           child: Column(
             children: [
               CustomTitle(
@@ -207,8 +205,8 @@ class FillProfileEditInfoView extends StatelessWidget {
                   hintText: EnumLocale.txtAddYOurFullName.name.tr,
                   controller: logic.nameController,
                   fillColor: AppColors.white,
-                  cursorColor: AppColors.black,
-                  fontColor: AppColors.black,
+                  cursorColor: AppColors.white, // Changed to White
+                  fontColor: AppColors.white,   // Changed to White
                   fontSize: 15,
                   textInputAction: TextInputAction.next,
                 ),
@@ -220,8 +218,8 @@ class FillProfileEditInfoView extends StatelessWidget {
                   hintText: EnumLocale.txtAddYourNickName.name.tr,
                   controller: logic.nickNameController,
                   fillColor: AppColors.white,
-                  cursorColor: AppColors.black,
-                  fontColor: AppColors.black,
+                  cursorColor: AppColors.white, // Changed to White
+                  fontColor: AppColors.white,   // Changed to White
                   fontSize: 15,
                   textInputAction: TextInputAction.next,
                 ),
@@ -238,16 +236,15 @@ class FillProfileEditInfoView extends StatelessWidget {
                       hintText: EnumLocale.txtEnterYourMail.name.tr,
                       controller: logic.emailController,
                       fillColor: AppColors.white,
-                      cursorColor: AppColors.black,
-                      fontColor: AppColors.black,
+                      cursorColor: AppColors.white, // Changed to White
+                      fontColor: AppColors.white,   // Changed to White
                       fontSize: 15,
                       textInputAction: TextInputAction.next,
-                      readOnly: Database.loginType == 1 || Database.loginType == 4  ,
+                      readOnly: Database.loginType == 1 || Database.loginType == 4,
                     ),
                   ).paddingOnly(bottom: 30),
                 ),
               GetBuilder<FillProfileScreenController>(
-                // init: DatePickerController(),
                 builder: (controller) {
                   return CustomTitle(
                     title: EnumLocale.txtDateOfBirth.name.tr,
@@ -256,8 +253,8 @@ class FillProfileEditInfoView extends StatelessWidget {
                       hintText: "DD / MM / YYYY",
                       controller: controller.dateController,
                       fillColor: AppColors.white,
-                      cursorColor: AppColors.black,
-                      fontColor: AppColors.black,
+                      cursorColor: AppColors.white, // Changed to White
+                      fontColor: AppColors.white,   // Changed to White
                       fontSize: 15,
                       textInputAction: TextInputAction.next,
                       maxLines: 1,
@@ -270,14 +267,11 @@ class FillProfileEditInfoView extends StatelessWidget {
               CustomTitle(
                 title: EnumLocale.txtGenderIdentity.name.tr,
                 method: GetBuilder<FillProfileScreenController>(
-                  init: FillProfileScreenController(), // <<=== ADD THIS
-
+                  init: FillProfileScreenController(),
                   builder: (controller) {
                     return CustomTextField(
                       onTap: () {
                         debugPrint("GestureDetector TAPPED");
-
-                        // Get.toNamed(AppRoutes.selectGenderScreen);
                         Get.bottomSheet(
                           const CustomEditeProfileSelectGenderBottomSheet(),
                           isScrollControlled: true,
@@ -287,8 +281,8 @@ class FillProfileEditInfoView extends StatelessWidget {
                       filled: true,
                       controller: controller.genderController,
                       fillColor: AppColors.white,
-                      cursorColor: AppColors.black,
-                      fontColor: AppColors.black,
+                      cursorColor: AppColors.white, // Changed to White
+                      fontColor: AppColors.white,   // Changed to White
                       fontSize: 15,
                       textInputAction: TextInputAction.next,
                       maxLines: 1,
@@ -300,6 +294,7 @@ class FillProfileEditInfoView extends StatelessWidget {
                           quarterTurns: 2,
                           child: Image.asset(
                             AppAsset.backArrowIcon,
+                            color: AppColors.white, // Force arrow color to White if desired
                             height: 8,
                             width: 8,
                           ).paddingAll(17),
@@ -322,46 +317,45 @@ class FillProfileEditInfoView extends StatelessWidget {
                       child: Container(
                         height: 55,
                         width: Get.width,
-                        // padding: const EdgeInsets.only(left: 20),
                         decoration: BoxDecoration(
-                          color: AppColors.white,
+                          color: AppColors.lightPurple,
                           border: Border.all(color: AppColors.black),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: logic.countryController.text.isEmpty
                             ? Row(
-                                children: [
-                                  Text(
-                                    EnumLocale.txtSelectCountry.name.tr,
-                                    style: AppFontStyle.fontStyleW500(
-                                      fontSize: 13,
-                                      fontColor: AppColors.black.withValues(alpha: 0.2),
-                                    ),
-                                  ).paddingOnly(left: 10),
-                                ],
-                              )
+                          children: [
+                            Text(
+                              EnumLocale.txtSelectCountry.name.tr,
+                              style: AppFontStyle.fontStyleW500(
+                                fontSize: 13,
+                                fontColor: AppColors.white, // Changed to White
+                              ),
+                            ).paddingOnly(left: 10),
+                          ],
+                        )
                             : Row(
-                                children: [
-                                  Text(
-                                    logic.flagController.text,
-                                    style: AppFontStyle.fontStyleW500(fontColor: AppColors.black, fontSize: 20),
-                                  ),
-                                  10.width,
-                                  Text(
-                                    logic.countryController.text,
-                                    style: AppFontStyle.fontStyleW600(fontColor: AppColors.black, fontSize: 15),
-                                  ),
-                                  const Spacer(),
-                                  Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                                      child: Icon(
-                                        Icons.keyboard_arrow_down_sharp,
-                                        color: AppColors.black,
-                                        size: 18,
-                                      )),
-                                  10.width,
-                                ],
-                              ).paddingOnly(left: 10),
+                          children: [
+                            Text(
+                              logic.flagController.text,
+                              style: AppFontStyle.fontStyleW500(fontColor: AppColors.white, fontSize: 20), // Changed to White
+                            ),
+                            10.width,
+                            Text(
+                              logic.countryController.text,
+                              style: AppFontStyle.fontStyleW600(fontColor: AppColors.white, fontSize: 15), // Changed to White
+                            ),
+                            const Spacer(),
+                            Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Icon(
+                                  Icons.keyboard_arrow_down_sharp,
+                                  color: AppColors.white, // Changed to White
+                                  size: 18,
+                                )),
+                            10.width,
+                          ],
+                        ).paddingOnly(left: 10),
                       ),
                     );
                   },
@@ -387,34 +381,34 @@ class FillProfileEditInfoView extends StatelessWidget {
                         },
                         style: AppFontStyle.fontStyleW600(
                           fontSize: 12,
-                          fontColor: AppColors.appColor,
+                          fontColor: AppColors.white, // Changed to White
                         ),
-                        cursorColor: AppColors.appColor,
+                        cursorColor: AppColors.white, // Changed to White
                         dropdownTextStyle: AppFontStyle.fontStyleW700(
                           fontSize: 16,
-                          fontColor: AppColors.black,
+                          fontColor: AppColors.white, // Changed to White
                         ),
                         pickerDialogStyle: PickerDialogStyle(
                           countryCodeStyle: AppFontStyle.fontStyleW700(
                             fontSize: 13,
-                            fontColor: AppColors.appColor,
+                            fontColor: AppColors.white, // Changed to White
                           ),
                           countryNameStyle: AppFontStyle.fontStyleW700(
                             fontSize: 13,
-                            fontColor: AppColors.appColor,
+                            fontColor: AppColors.white, // Changed to White
                           ),
-                          searchFieldCursorColor: AppColors.appColor,
+                          searchFieldCursorColor: AppColors.white, // Changed to White
                           searchFieldInputDecoration: InputDecoration(
                             hintStyle: AppFontStyle.fontStyleW400(
                               fontSize: 14,
-                              fontColor: AppColors.grey,
+                              fontColor: AppColors.white.withValues(alpha: 0.6), // Changed to semi-transparent White
                             ),
                             hintText: EnumLocale.txtSearchCountryCode.name.tr,
                           ),
                         ),
                         dropdownIcon: Icon(
                           Icons.arrow_drop_down_outlined,
-                          color: AppColors.black,
+                          color: AppColors.white, // Changed to White
                         ),
                         keyboardType: TextInputType.number,
                         showCountryFlag: false,
@@ -422,7 +416,7 @@ class FillProfileEditInfoView extends StatelessWidget {
                           counterText: '',
                           hintStyle: AppFontStyle.fontStyleW600(
                             fontSize: 12,
-                            fontColor: AppColors.white,
+                            fontColor: AppColors.white, // Already white
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -437,7 +431,7 @@ class FillProfileEditInfoView extends StatelessWidget {
                             borderSide: BorderSide(color: AppColors.black),
                           ),
                           filled: true,
-                          fillColor: AppColors.white,
+                          fillColor: AppColors.lightPurple,
                           errorStyle: AppFontStyle.fontStyleW500(
                             fontSize: 8,
                             fontColor: AppColors.red,
@@ -452,7 +446,7 @@ class FillProfileEditInfoView extends StatelessWidget {
                           ),
                           counterStyle: AppFontStyle.fontStyleW500(
                             fontSize: 9,
-                            fontColor: AppColors.grey,
+                            fontColor: AppColors.white, // Changed to White
                           ),
                         ),
                         onCountryChanged: (value) {
@@ -463,8 +457,8 @@ class FillProfileEditInfoView extends StatelessWidget {
                         },
                         initialCountryCode: Database.selectedCountryCode,
                         onChanged: (phone) {
-                          logic.dialCode = phone.countryCode; // example: +91
-                          logic.numberController.text = phone.number; // only number part
+                          logic.dialCode = phone.countryCode;
+                          logic.numberController.text = phone.number;
                         },
                       ),
                     );
@@ -484,7 +478,7 @@ GetBuilder<GetxController> saveProfileButton() {
     builder: (controller) {
       return Container(
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: AppColors.lightPurple,
           boxShadow: [
             BoxShadow(
               color: AppColors.black.withValues(alpha: 0.10),
@@ -501,10 +495,10 @@ GetBuilder<GetxController> saveProfileButton() {
               onTap: () {
                 controller.onSaveProfile();
               },
-              color: AppColors.appColor,
+              color: AppColors.purple,
               height: Get.height * 0.056,
               text: EnumLocale.txtSaveProfile.name.tr,
-              textStyle: AppFontStyle.fontStyleW500(fontSize: 16, fontColor: AppColors.white),
+              textStyle: AppFontStyle.fontStyleW500(fontSize: 16, fontColor: AppColors.white), // Already white
             ).paddingSymmetric(horizontal: 24),
           ],
         ).paddingOnly(top: 10, bottom: 10),

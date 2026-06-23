@@ -1,19 +1,20 @@
 import 'dart:developer';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:talk_in/custom/progress_indicator/progress_dialog.dart';
 import 'package:talk_in/routes/app_routes.dart';
 import 'package:talk_in/utils/utils.dart';
+import '../../../../utils/twillio_api.dart';
 
 class MobileNumberController extends GetxController {
-  final FirebaseAuth auth = FirebaseAuth.instance;
-
   final formKey = GlobalKey<FormState>();
   final numberController = TextEditingController();
 
-  String verificationId = '';
+  // ✅ Test bypass config
+  static const String _bypassNumber = '2233344444';
+  static const String _bypassDialCode = '+91';
+
   String? dialCode;
 
   @override
@@ -42,36 +43,34 @@ class MobileNumberController extends GetxController {
       return;
     }
 
+    // ✅ Bypass: skip Twilio and go directly to OTP screen
+    if (number == _bypassNumber) {
+      log('🔧 Test bypass triggered for number: $number');
+      Get.toNamed(
+        AppRoutes.verifyOtp,
+        arguments: [number, code, phoneNumber],
+      );
+      return;
+    }
+
     try {
       Get.dialog(LoadingWidget(), barrierDismissible: false);
 
-      await auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        timeout: const Duration(seconds: 60),
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          await auth.signInWithCredential(credential);
-          // Utils.showToast(Get.context!, "Auto login successful");
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          Get.back();
-          Utils.showToast(Get.context!, e.message ?? "OTP sending failed");
-        },
-        codeSent: (String id, int? resendToken) {
-          Get.back();
-          verificationId = id;
-          Get.toNamed(
-            AppRoutes.verifyOtp,
-            arguments: [number, code, verificationId],
-          );
-        },
-        codeAutoRetrievalTimeout: (String id) {
-          log("Auto-retrieval timeout reached");
-          verificationId = id;
-          update();
-        },
-      );
+      final success = await TwilioApi.sendOtp(phoneNumber: phoneNumber);
+
+      Get.back(); // Close loading dialog
+
+      if (success) {
+        Get.toNamed(
+          AppRoutes.verifyOtp,
+          arguments: [number, code, phoneNumber],
+        );
+      } else {
+        Utils.showToast(Get.context!, "OTP sending failed. Please try again.");
+      }
     } catch (e) {
       Get.back();
+      log('sendOtp error: $e');
       Utils.showToast(Get.context!, "OTP process failed: $e");
     }
   }

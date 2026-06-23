@@ -12,6 +12,8 @@ import 'package:talk_in/utils/app_asset.dart';
 import 'package:talk_in/utils/utils.dart';
 import 'package:vibration/vibration.dart';
 
+import '../../../../socket/socket_service.dart';
+
 // class IncomingCallController extends GetxController with WidgetsBindingObserver {
 //   late Map<String, dynamic> args;
 //
@@ -291,24 +293,29 @@ class IncomingCallController extends GetxController with WidgetsBindingObserver 
   }
 
   @override
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       Utils.showLog("User Back To App...");
-      // ✅ Resume ringtone if still on incoming call screen
+
+      // ✅ Force immediate socket reconnect — don't wait on backoff
+      if (socket != null && !socket!.connected) {
+        SocketService.socketConnect();
+      } else {
+        SocketService.ensureConnected();
+      }
+
       if (Get.currentRoute == AppRoutes.incomingCallScreen && !_isAudioPlaying) {
         onPlayAudio();
       }
     }
     if (state == AppLifecycleState.paused) {
       Utils.showLog("User Minimized App...");
-      // ✅ Keep ringtone playing even when app is in background
-      // Don't pause here - let it continue ringing
     }
     if (state == AppLifecycleState.inactive) {
       Utils.showLog("User Try To Exit...");
     }
   }
-
   void onStartVibration() {
     // ✅ Cancel existing timer before creating new one
     vibrationTimer?.cancel();

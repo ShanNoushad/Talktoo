@@ -29,26 +29,20 @@ class RandomCallTopView extends StatelessWidget {
             builder: (controller) {
               return DottedBorder(
                 options: CircularDottedBorderOptions(
-                  color: AppColors.black,
+                  color: AppColors.primary,               // ✅ purple dotted border
                   dashPattern: [3, 2],
                   strokeWidth: 1,
                 ),
                 child: GestureDetector(
                   onTap: () {
-                    Get.toNamed(AppRoutes.myProfileScreen)?.then(
-                      (value) {
-                        // controller.randomCall = false;
-                        // controller.update([Constant.idGetListener]);
-                        // Utils.showLog("Random call ============= ${controller.randomCall}");
-                      },
-                    );
+                    Get.toNamed(AppRoutes.myProfileScreen)?.then((value) {});
                   },
                   child: Container(
                     clipBehavior: Clip.hardEdge,
                     height: Get.height * 0.06,
                     width: Get.height * 0.06,
                     decoration: BoxDecoration(
-                      color: AppColors.lightGrey,
+                      color: AppColors.lightPurple,       // ✅ #1E2030 dark circle bg
                       shape: BoxShape.circle,
                     ),
                     child: CustomProfileImage(
@@ -69,69 +63,51 @@ class RandomCallTopView extends StatelessWidget {
                       Database.loginUserName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.black),
+                      style: AppFontStyle.fontStyleW700(
+                        fontSize: 16,
+                        fontColor: AppColors.appColor,    // ✅ #EDEFF5 near-white
+                      ),
                     ),
                     Text(
                       Database.loginType == 2 ? Database.loginUserNickName : Database.loginUserEmail,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppFontStyle.fontStyleW600(fontSize: 14, fontColor: AppColors.black),
+                      style: AppFontStyle.fontStyleW600(
+                        fontSize: 14,
+                        fontColor: AppColors.listenersDetail, // ✅ #7A7D94 secondary text
+                      ),
                     )
                   ],
                 ),
               );
             }),
-        // Spacer(),
         8.width,
         GetBuilder<RandomCallController>(
-            // id: Constant.idCoinUpdate,
             builder: (controller) {
-          return GestureDetector(
-            onTap: () {
-              log("go to wallet screen");
-              Get.toNamed(AppRoutes.myWalletScreen)?.then(
-                (value) {
-                  // controller.randomCall = false;
-                  // controller.update([Constant.idGetListener]);
+              return GestureDetector(
+                onTap: () {
+                  log("go to wallet screen");
+                  Get.toNamed(AppRoutes.myWalletScreen)?.then((value) {});
                 },
-              );
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 2).copyWith(left: 10),
-              decoration: BoxDecoration(
-                color: Color(0xffFFFDF1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppColors.randomCallCoin,
-                ),
-              ),
-              child: GestureDetector(
-                child: Row(
+                child:Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          Database.userCoin.toString(),
-                          style: AppFontStyle.fontStyleW700(fontSize: 18, fontColor: AppColors.randomCallCoin),
-                        ),
-                        Text(
-                          EnumLocale.txtMyBalance.name.tr,
-                          style: AppFontStyle.fontStyleW600(fontSize: 14, fontColor: AppColors.randomCallCoin),
-                        )
-                      ],
-                    ),
                     Image.asset(
                       AppAsset.starCoin,
-                      height: 32,
-                      width: 32,
-                    ).paddingAll(8),
+                      height: 24,
+                      width: 24,
+                    ),
+                    Text(
+                      Database.userCoin.toString(),
+                      style: AppFontStyle.fontStyleW700(
+                        fontSize: 14,
+                        fontColor: AppColors.randomCallCoin,
+                      ),
+                    ).paddingOnly(left: 6),
                   ],
                 ),
-              ),
-            ),
-          );
-        }),
+              );
+            }),
       ],
     ).paddingOnly(top: Get.height * 0.048, left: 18, right: 18);
   }
@@ -147,10 +123,19 @@ class BottomButtonsView extends StatelessWidget {
         children: [
           Center(
             child: Container(
-              decoration: BoxDecoration(boxShadow: [BoxShadow(color: AppColors.black.withValues(alpha: 0.10), offset: Offset(0, 0), blurRadius: 18, spreadRadius: 0)]),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.black.withValues(alpha: 0.30),
+                    offset: Offset(0, 0),
+                    blurRadius: 18,
+                    spreadRadius: 0,
+                  )
+                ],
+              ),
               child: PrimaryAppButton(
-                borderColor: AppColors.lightGrey,
-                color: AppColors.white,
+                borderColor: AppColors.borderColor,       // ✅ #252840 dark border
+                color: AppColors.lightPurple,             // ✅ #1E2030 dark button bg
                 onTap: () {
                   showDialog(
                     context: context,
@@ -160,7 +145,6 @@ class BottomButtonsView extends StatelessWidget {
                 width: Get.width * 0.4,
                 height: Get.height * 0.047,
                 borderRadius: 30,
-                textStyle: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.white),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
@@ -174,9 +158,12 @@ class BottomButtonsView extends StatelessWidget {
                       controller.selectedIndex == 0
                           ? EnumLocale.txtAudioCall.name.tr
                           : controller.selectedIndex == 1
-                              ? EnumLocale.txtVideoCall.name.tr
-                              : EnumLocale.txtAudioCall.name.tr, // default fallback
-                      style: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.black),
+                          ? EnumLocale.txtVideoCall.name.tr
+                          : EnumLocale.txtAudioCall.name.tr,
+                      style: AppFontStyle.fontStyleW600(
+                        fontSize: 16,
+                        fontColor: AppColors.appColor,    // ✅ near-white text
+                      ),
                     ).paddingOnly(left: 8, right: 7),
                     RotatedBox(
                       quarterTurns: 3,
@@ -184,7 +171,7 @@ class BottomButtonsView extends StatelessWidget {
                         AppAsset.backArrowIcon,
                         height: 14,
                         width: 14,
-                        color: AppColors.black,
+                        color: AppColors.grey,            // ✅ muted arrow
                       ),
                     )
                   ],
@@ -198,21 +185,15 @@ class BottomButtonsView extends StatelessWidget {
               Color(0xff8400FF),
             ],
             onTap: () {
-              // log("Random call view before :::::: ${controller.randomCall}");
-
               controller.getaAvailableListener().then((value) {
                 if (controller.randomAvailableListenerModel?.data != null) {
-                  // controller.randomCall = true;
-                  // log("Random call view after :::::: ${controller.randomCall}");
-
                   Get.toNamed(AppRoutes.randomMatchView)?.then(
-                    (value) async {
+                        (value) async {
                       controller.userCoinModel = await UserCoinApi.callApi();
                       Database.onSetUserCoin(controller.userCoinModel!.coin.toString());
                     },
-                  ); // Navigate if data is fetched
+                  );
                 } else {
-                  // Handle error or empty response scenario
                   log("No available listener found");
                   Utils.showToast(Get.context!, controller.randomAvailableListenerModel?.message ?? '');
                 }
@@ -241,10 +222,9 @@ class ConnectCallDialog extends StatelessWidget {
             borderRadius: BorderRadius.circular(26),
           ),
           child: Container(
-            // padding: EdgeInsets.only(bottom: 18),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
+              color: AppColors.lightPurple,               // ✅ #1E2030 dark dialog bg
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -252,14 +232,18 @@ class ConnectCallDialog extends StatelessWidget {
                 Container(
                   width: Get.width,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(26),
-                      ),
-                      color: AppColors.black.withValues(alpha: 0.02)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(26),
+                    ),
+                    color: AppColors.lightPurple1,        // ✅ #252740 slightly elevated header
+                  ),
                   child: Center(
                     child: Text(
                       EnumLocale.txtSelectCallTypeLower.name.tr,
-                      style: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: Colors.black),
+                      style: AppFontStyle.fontStyleW600(
+                        fontSize: 16,
+                        fontColor: AppColors.appColor,    // ✅ near-white header text
+                      ),
                     ),
                   ).paddingSymmetric(vertical: 13),
                 ),
@@ -272,7 +256,7 @@ class ConnectCallDialog extends StatelessWidget {
                   priceTag: '${Database.settingApiModel?.data?.audioCallRateRandom} Coin',
                 ).paddingOnly(top: 18, bottom: 18),
                 Divider(
-                  color: AppColors.lightGrey,
+                  color: AppColors.borderColor,           // ✅ #252840 dark divider
                   height: 0,
                 ),
                 _buildCallOption(
@@ -292,22 +276,20 @@ class ConnectCallDialog extends StatelessWidget {
   }
 
   Widget _buildCallOption(
-    BuildContext context,
-    RandomCallController controller, {
-    required String icon,
-    required String title,
-    required int index,
-    String? priceTag,
-  }) {
+      BuildContext context,
+      RandomCallController controller, {
+        required String icon,
+        required String title,
+        required int index,
+        String? priceTag,
+      }) {
     bool selected = controller.selectedIndex == index;
     return InkWell(
-      // onTap: () => controller.selectCallType(index),
       onTap: () {
         controller.selectCallType(index);
-        Get.back(result: index); // Return selected index
+        Get.back(result: index);
         log("call type ::::: ${controller.selectedIndex == 0 ? "Audio" : "Video"}");
       },
-
       child: Row(
         children: [
           Image.asset(
@@ -315,59 +297,40 @@ class ConnectCallDialog extends StatelessWidget {
             height: 32,
             width: 32,
           ).paddingOnly(right: 12),
-          // const SizedBox(width: 12),
           Text(
             title,
-            style: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.black),
+            style: AppFontStyle.fontStyleW600(
+              fontSize: 16,
+              fontColor: AppColors.appColor,              // ✅ near-white option text
+            ),
           ).paddingOnly(right: 10),
-          // if (priceTag != null)
-          //   Container(
-          //     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-          //     decoration: BoxDecoration(
-          //       color: AppColors.lightOrange1,
-          //       borderRadius: BorderRadius.circular(12),
-          //     ),
-          //     child: Row(
-          //       children: [
-          //         Image.asset(
-          //           AppAsset.dimondCoin,
-          //           height: 18,
-          //         ).paddingOnly(right: 4),
-          //         Text(
-          //           priceTag,
-          //           style: AppFontStyle.fontStyleW600(
-          //             fontSize: 12,
-          //             fontColor: AppColors.lightOrange,
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
           Spacer(),
           Container(
             height: 22,
             width: 22,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: selected ? AppColors.transparent : AppColors.grey),
-              color: selected ? Colors.black : AppColors.white,
+              border: Border.all(
+                color: selected ? AppColors.primary : AppColors.unSelected, // ✅ purple when selected, muted when not
+              ),
+              color: selected ? AppColors.primary : AppColors.lightPurple1, // ✅ purple fill / dark empty
             ),
             child: selected
                 ? Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.appColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Container(
-                      height: 22,
-                      width: 22,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.white),
-                        color: AppColors.appColor,
-                      ),
-                    ).paddingAll(0.5),
-                  )
+              decoration: BoxDecoration(
+                color: AppColors.primary,           // ✅ purple selected indicator
+                shape: BoxShape.circle,
+              ),
+              child: Container(
+                height: 22,
+                width: 22,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: AppColors.white),
+                  color: AppColors.primary,
+                ),
+              ).paddingAll(0.5),
+            )
                 : null,
           ),
         ],

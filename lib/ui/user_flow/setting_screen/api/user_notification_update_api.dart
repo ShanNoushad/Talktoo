@@ -13,7 +13,6 @@ class UserNotificationUpdateApi {
   static NotificationUpdateUserModel? notificationUpdateUserModel;
 
   static Future<NotificationUpdateUserModel?> callApi() async {
-    final token = await FirebaseAccessToken.onGet();
 
     Utils.showLog("User Notification switch Status...");
 
@@ -22,8 +21,8 @@ class UserNotificationUpdateApi {
 
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.authToken: "Bearer ${Api.secretKey}",
+      ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     Utils.showLog("User Notification switch Status Api Headers => $headers");

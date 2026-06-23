@@ -26,17 +26,14 @@ class HostTopHomeView extends StatelessWidget {
       children: [
         DottedBorder(
           options: CircularDottedBorderOptions(
-            color: Colors.black,
+            color: AppColors.grey, // Clean dark-theme slate grey border
             dashPattern: [3, 2],
             strokeWidth: 1,
           ),
           child: GestureDetector(
             onTap: () {
               Utils.showLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-
               Get.find<HostBottomBarController>().onClick(4);
-
-              // Get.toNamed(AppRoutes.hostProfileScreen);
             },
             child: Container(
               clipBehavior: Clip.hardEdge,
@@ -59,16 +56,8 @@ class HostTopHomeView extends StatelessWidget {
               maxLines: 1,
               Database.fetchListenerProfileModel?.data?.name ?? "",
               overflow: TextOverflow.ellipsis,
-              style: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.black),
+              style: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.appDarkColor), // High-contrast text
             ).paddingOnly(right: 5, bottom: 3),
-            /* Text(
-              Database.loginType == 2
-                  ? Database.fetchListenerProfileModel?.data?.nickName ?? ''
-                  : Database.fetchListenerProfileModel?.data?.email ?? '',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppFontStyle.fontStyleW600(fontSize: 14, fontColor: AppColors.black),
-            )*/
             GetBuilder<HostHomeScreenController>(builder: (controller) {
               return GestureDetector(
                 onTap: () {
@@ -89,7 +78,6 @@ class HostTopHomeView extends StatelessWidget {
                   child: Row(
                     children: [
                       SizedBox(
-                        // width: Get.width * 0.15,
                         child: Text("ID: ${Database.fetchListenerProfileModel?.data?.uniqueId ?? ""}", overflow: TextOverflow.ellipsis, style: AppFontStyle.fontStyleW600(fontSize: 11, fontColor: AppColors.idTxtColor)).paddingOnly(right: 3),
                       ),
                       Image.asset(
@@ -113,12 +101,12 @@ class HostTopHomeView extends StatelessWidget {
                   Get.toNamed(AppRoutes.hostViewCoinHistory);
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 5),
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                   decoration: BoxDecoration(
-                    color: AppColors.white,
+                    color: AppColors.lightPurple, // Dark card surface background
                     borderRadius: BorderRadius.circular(30),
                     border: Border.all(
-                      color: AppColors.border.withValues(alpha: 0.6),
+                      color: AppColors.borderColor, // Dark theme border lines
                     ),
                   ),
                   child: Row(
@@ -130,17 +118,17 @@ class HostTopHomeView extends StatelessWidget {
                       ),
                       controller.isCoinLoading
                           ? Shimmer.fromColors(
-                              baseColor: AppColors.lightGrey1,
-                              highlightColor: AppColors.grey.withValues(alpha: 0.2),
-                              child: Text(
-                                Database.listenerCoin.toString(),
-                                style: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.orange),
-                              ),
-                            ).paddingOnly(left: 6, right: 6)
+                        baseColor: AppColors.lightGrey1,
+                        highlightColor: AppColors.grey.withValues(alpha: 0.2),
+                        child: Text(
+                          Database.listenerCoin.toString(),
+                          style: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.orange),
+                        ),
+                      ).paddingOnly(left: 6, right: 6)
                           : Text(
-                              Database.listenerCoin.toString(),
-                              style: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.orange),
-                            ).paddingOnly(left: 6, right: 6)
+                        Database.listenerCoin.toString(),
+                        style: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.orange),
+                      ).paddingOnly(left: 6, right: 6)
                     ],
                   ),
                 ).paddingOnly(right: 8),
@@ -154,7 +142,7 @@ class HostTopHomeView extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
-              color: AppColors.lightRed.withValues(alpha: 0.5),
+              color: AppColors.lightRed.withValues(alpha: 0.3), // Muted dark mode transparency tint
             ),
             child: Image.asset(
               AppAsset.notificationIconRed,
@@ -178,25 +166,13 @@ class HostImageView extends StatelessWidget {
       builder: (controller) {
         return Column(
           children: [
-            CarouselSlider(
-              options: CarouselOptions(
-                height: 100,
-                autoPlay: true,
-                enlargeCenterPage: true,
-                onPageChanged: controller.onPageChanged,
-              ),
-              items: controller.imageList.map((item) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Image.asset(
-                      item,
-                      fit: BoxFit.contain,
-                      width: Get.width,
-                    );
-                  },
-                );
-              }).toList(),
+            Image.asset(
+              controller.imageList.first, // Uses the first image from your existing list, or replace with a specific string path like AppAsset.yourImage
+              fit: BoxFit.contain,
+              width: Get.width,
+              height: 220,
             ).paddingOnly(top: 30),
+            SizedBox(height: 6,),
             Text(
               EnumLocale.txtHomeFastLalk.name.tr,
               style: AppFontStyle.fontStyleW600(
@@ -213,23 +189,6 @@ class HostImageView extends StatelessWidget {
               ),
             ).paddingOnly(top: 4, bottom: 10),
 
-            /// Indicator using GetBuilder
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(controller.imageList.length, (index) {
-                bool isSelected = controller.currentIndex == index;
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  margin: const EdgeInsets.symmetric(horizontal: 2),
-                  width: isSelected ? 16 : 5,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    color: isSelected ? AppColors.appColor : AppColors.indicatorColor,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                );
-              }),
-            ).paddingOnly(bottom: 10, top: 8),
           ],
         );
       },
@@ -333,30 +292,20 @@ class PermissionView extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 12),
           width: Get.width,
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: AppColors.lightPurple, // Changed from white to deep purple tint base layer
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
                 blurRadius: 12,
-                color: AppColors.black.withValues(alpha: 0.1),
+                color: AppColors.black.withValues(alpha: 0.15), // Soft clean blend shadow
                 spreadRadius: 0,
-                offset: Offset(0, 0),
+                offset: Offset(0, 4),
               ),
             ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // GetBuilder<HostHomeScreenController>(builder: (controller) {
-              //   return CustomSwitchView(
-              //     coinShow: false,
-              //     text: EnumLocale.txtAvailableChat.name.tr,
-              //     value: controller.isChatPermission,
-              //     onChanged: (val) {
-              //       controller.permissionSwitch(val, "isAvailableForChat");
-              //     },
-              //   );
-              // }),
               GetBuilder<HostHomeScreenController>(builder: (controller) {
                 return CustomSwitchView(
                   callCoin: Database.fetchListenerProfileModel?.data?.rateRandomAudioCall.toString() ?? '0',
@@ -402,7 +351,7 @@ class PermissionView extends StatelessWidget {
                 );
               }),
             ],
-          ).paddingOnly(left: 10),
+          ).paddingOnly(left: 10, right: 10), // Added side symmetric padding layout balance
         ),
       ],
     );
@@ -421,7 +370,7 @@ class NoteView extends StatelessWidget {
           EnumLocale.txtNote.name.tr,
           style: AppFontStyle.fontStyleW600(
             fontSize: 13,
-            fontColor: AppColors.black,
+            fontColor: AppColors.appColor, // Changed from pure black to high-contrast soft white
           ),
         ).paddingOnly(top: 16),
         Text(
@@ -467,37 +416,36 @@ class CustomSwitchView extends StatelessWidget {
             ),
           ),
         ),
-        // Spacer(),
         coinShow == true
             ? Container(
-                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 3),
-                decoration: BoxDecoration(
-                  color: AppColors.lightYellow,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      AppAsset.starCoin,
-                      height: 18,
-                      width: 18,
-                    ),
-                    Text(
-                      "${callCoin ?? ''}/Min",
-                      style: AppFontStyle.fontStyleW700(fontSize: 12, fontColor: AppColors.orange),
-                    ).paddingOnly(left: 6, right: 6)
-                  ],
-                ),
-              ).paddingOnly(right: 10)
+          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+          decoration: BoxDecoration(
+            color: AppColors.lightYellow,
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Row(
+            children: [
+              Image.asset(
+                AppAsset.starCoin,
+                height: 18,
+                width: 18,
+              ),
+              Text(
+                "${callCoin ?? ''}/Min",
+                style: AppFontStyle.fontStyleW700(fontSize: 12, fontColor: AppColors.orange),
+              ).paddingOnly(left: 4, right: 2)
+            ],
+          ),
+        ).paddingOnly(right: 10)
             : SizedBox(),
         CommonCupertinoSwitch(
           value: value,
           onChanged: onChanged,
           activeColor: CupertinoColors.activeGreen,
-          trackColor: CupertinoColors.destructiveRed,
+          trackColor: AppColors.unSelected, // Replaced explicit red tracking color with default dark inactive base gray
           scale: 0.8,
         ),
       ],
-    );
+    ).paddingSymmetric(vertical: 6); // Balanced inner spacing rows
   }
 }

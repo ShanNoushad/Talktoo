@@ -48,13 +48,13 @@ class HostUserProfileInfoView extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Color(0xffF3E6FF),
+                color: AppColors.black, // 🔥 was: lightPurple1
                 boxShadow: [
                   BoxShadow(
-                    offset: Offset(0, 0),
+                    offset: const Offset(0, 2),
                     spreadRadius: 0,
-                    blurRadius: 4,
-                    color: AppColors.black.withValues(alpha: 0.20),
+                    blurRadius: 6,
+                    color: AppColors.black.withValues(alpha: 0.35),
                   ),
                 ],
               ),
@@ -63,8 +63,8 @@ class HostUserProfileInfoView extends StatelessWidget {
                 children: [
                   DottedBorder(
                     options: CircularDottedBorderOptions(
-                      color: Colors.black,
-                      dashPattern: [3, 2],
+                      color: AppColors.purpleBorder,
+                      dashPattern: const [3, 2],
                       strokeWidth: 1,
                     ),
                     child: Container(
@@ -72,7 +72,7 @@ class HostUserProfileInfoView extends StatelessWidget {
                       height: 50,
                       width: 50,
                       decoration: BoxDecoration(
-                        color: AppColors.lightGrey,
+                        color: AppColors.black,
                         shape: BoxShape.circle,
                       ),
                       child: CustomProfileImage(
@@ -88,98 +88,78 @@ class HostUserProfileInfoView extends StatelessWidget {
                         children: [
                           Text(
                             controller.fetchListenerProfileModel?.data?.name ?? '',
-                            style: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.black),
+                            style: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.white), // 🔥 was: appDarkColor
                           ).paddingOnly(bottom: 8),
-                          // controller.fetchListenerProfileModel?.data?.id == null
-                          //     ? SizedBox()
-                          //     : Text(
-                          //         ",${controller.fetchListenerProfileModel?.data?.id ?? ''}",
-                          //         style: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.black),
-                          //       ).paddingOnly(bottom: 8),
                         ],
                       ),
                       controller.fetchListenerProfileModel?.data?.id == "Offline"
                           ? Container(
-                              padding: EdgeInsets.only(right: 6, bottom: 5, top: 5, left: 6),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColors.red),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // Image.asset(
-                                  //   AppAsset.availableIcon,
-                                  //   height: 10,
-                                  //   width: 10,
-                                  // ).paddingOnly(right: 5),
-                                  Container(
-                                    // height: 12,
-                                    // width: 12,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.white.withValues(alpha: 0.5),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Container(
-                                      height: 7,
-                                      width: 7,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.white,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ).paddingAll(1.8),
-                                  ).paddingOnly(right: 4),
-                                  Text(
-                                    EnumLocale.txtOnCall.name.tr,
-                                    style: AppFontStyle.fontStyleW500(fontSize: 10, fontColor: AppColors.white),
-                                  ).paddingOnly(right: 4),
-                                ],
+                        padding: const EdgeInsets.only(right: 8, bottom: 5, top: 5, left: 8),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColors.red),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.white.withValues(alpha: 0.5),
+                                shape: BoxShape.circle,
                               ),
-                            )
+                              child: Container(
+                                height: 7,
+                                width: 7,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                              ).paddingAll(1.8),
+                            ).paddingOnly(right: 4),
+                            Text(
+                              EnumLocale.txtOnCall.name.tr,
+                              style: AppFontStyle.fontStyleW500(fontSize: 10, fontColor: AppColors.white),
+                            ).paddingOnly(right: 4),
+                          ],
+                        ),
+                      )
                           : Container(
-                              padding: EdgeInsets.only(right: 6, bottom: 5, top: 5, left: 6),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColors.green),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // Image.asset(
-                                  //   AppAsset.availableIcon,
-                                  //   height: 10,
-                                  //   width: 10,
-                                  // ).paddingOnly(right: 5),
-                                  Container(
-                                    // height: 12,
-                                    // width: 12,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.white.withValues(alpha: 0.5),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Container(
-                                      height: 7,
-                                      width: 7,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.white,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ).paddingAll(1.8),
-                                  ).paddingOnly(right: 4),
-                                  Text(
-                                    EnumLocale.txtOnline.name.tr,
-                                    style: AppFontStyle.fontStyleW500(fontSize: 10, fontColor: AppColors.white),
-                                  ).paddingOnly(right: 4),
-                                ],
+                        padding: const EdgeInsets.only(right: 8, bottom: 5, top: 5, left: 8),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColors.green),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.white.withValues(alpha: 0.5),
+                                shape: BoxShape.circle,
                               ),
-                            )
+                              child: Container(
+                                height: 7,
+                                width: 7,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                              ).paddingAll(1.8),
+                            ).paddingOnly(right: 4),
+                            Text(
+                              EnumLocale.txtOnline.name.tr,
+                              style: AppFontStyle.fontStyleW500(fontSize: 10, fontColor: AppColors.white),
+                            ).paddingOnly(right: 4),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                     decoration: BoxDecoration(
-                      color: AppColors.purple100.withValues(alpha: 0.6),
+                      color: AppColors.black, // 🔥 was: lightPurple
                       border: Border.all(color: AppColors.purpleBorder),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       '10₹ per min',
-                      style: AppFontStyle.fontStyleW700(fontSize: 12, fontColor: AppColors.purple400),
+                      style: AppFontStyle.fontStyleW700(fontSize: 12, fontColor: AppColors.primary),
                     ),
                   ),
                 ],
@@ -190,7 +170,7 @@ class HostUserProfileInfoView extends StatelessWidget {
               style: AppFontStyle.fontStyleW500(
                 fontSize: 12,
                 height: 1.9,
-                fontColor: AppColors.profileText,
+                fontColor: AppColors.white.withValues(alpha: 0.7), // 🔥 was: profileText
               ),
             ).paddingSymmetric(horizontal: 12, vertical: 10),
             Row(
@@ -200,12 +180,13 @@ class HostUserProfileInfoView extends StatelessWidget {
                   AppAsset.languageIcon,
                   height: 20,
                   width: 20,
+                  color: AppColors.primary,
                 ),
                 Text(
                   '${EnumLocale.txtLanguage.name.tr} : ',
                   style: AppFontStyle.fontStyleW500(
                     fontSize: 14,
-                    fontColor: AppColors.profileLanguage,
+                    fontColor: AppColors.white.withValues(alpha: 0.7), // 🔥 was: profileText
                   ),
                 ).paddingOnly(left: 8),
                 Expanded(
@@ -213,7 +194,7 @@ class HostUserProfileInfoView extends StatelessWidget {
                     controller.fetchListenerProfileModel?.data?.language?.join(', ') ?? '',
                     style: AppFontStyle.fontStyleW600(
                       fontSize: 14,
-                      fontColor: AppColors.black,
+                      fontColor: AppColors.white, // 🔥 was: appDarkColor
                     ),
                   ),
                 )
@@ -227,18 +208,19 @@ class HostUserProfileInfoView extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
                   return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
-                      color: AppColors.profileOptionColor,
+                      color: AppColors.black, // 🔥 was: lightPurple1
                       borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: AppColors.purpleBorder),
                     ),
                     child: Center(
                       child: Text(
                         controller.fetchListenerProfileModel?.data?.talkTopics?.join(', ') ?? '',
-                        style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.profileLanguage),
+                        style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.white.withValues(alpha: 0.8)), // 🔥 was: profileText
                       ),
                     ),
-                  ).paddingOnly(right: 5);
+                  ).paddingOnly(right: 6);
                 },
               ),
             ).paddingOnly(left: 12, top: 20, bottom: 20),
@@ -260,15 +242,14 @@ class HostStatusView extends StatelessWidget {
         return Row(
           children: List.generate(
             3,
-            (index) {
+                (index) {
               final item = controller.statsList[index];
-
               return Expanded(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 7, vertical: 22),
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 22),
                   decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.border),
-                    color: AppColors.profileOptionColor,
+                    border: Border.all(color: AppColors.purpleBorder),
+                    color: AppColors.black, // 🔥 was: lightPurple1
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: Column(
@@ -280,19 +261,19 @@ class HostStatusView extends StatelessWidget {
                       ).paddingOnly(bottom: 10),
                       Text(
                         item['title'].toString(),
-                        style: AppFontStyle.fontStyleW500(fontSize: 11, fontColor: AppColors.profileLanguage),
+                        style: AppFontStyle.fontStyleW500(fontSize: 11, fontColor: AppColors.white.withValues(alpha: 0.7)), // 🔥 was: profileText
                       ).paddingOnly(bottom: 5),
                       Text(
                         item['count'].toString(),
-                        style: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.black),
+                        style: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.white), // 🔥 was: appDarkColor
                       ),
                     ],
                   ),
-                ).paddingOnly(right: 8, left: 8),
+                ).paddingOnly(right: 4, left: 4),
               );
             },
           ),
-        ).paddingOnly(left: 8, right: 8, bottom: 10);
+        ).paddingOnly(left: 12, right: 12, bottom: 10);
       },
     );
   }
@@ -304,13 +285,13 @@ class HostProfileBottomButtonView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: AppColors.black, // 🔥 was: white
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.10),
-            offset: Offset(0, 0),
+            offset: const Offset(0, 0),
             blurRadius: 8,
             spreadRadius: 0,
           ),

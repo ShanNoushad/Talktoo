@@ -25,7 +25,7 @@ class CustomTitle extends StatelessWidget {
           style: textStyle ??
               AppFontStyle.fontStyleW600(
                 fontSize: 13,
-                fontColor: AppColors.black,
+                fontColor: AppColors.white,
               ),
         ).paddingOnly(bottom: 10, left: 5),
         method,

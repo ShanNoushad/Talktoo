@@ -97,7 +97,7 @@ class ChatScreenAppBar extends StatelessWidget {
                         children: [
                           Text(
                             controller.receiverName.toString(),
-                            style: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.black),
+                            style: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.white),
                           ).paddingOnly(bottom: 2),
                           controller.receiverStatusLabel == "true" || controller.receiverStatusLabel == "Available"
                               ? Container(
@@ -271,7 +271,7 @@ class PersonalChatBottomView extends StatelessWidget {
                 blurRadius: 6,
               ),
             ],
-            color: Colors.white,
+            color: AppColors.lightPurple,
           ),
           child: Row(
             children: [
@@ -335,9 +335,9 @@ class PersonalChatBottomView extends StatelessWidget {
                       ),
                     ),
                     hintText: "Type Something...",
-                    hintStyle: AppFontStyle.fontStyleW500(fontSize: 15, fontColor: AppColors.darkPurple),
+                    hintStyle: AppFontStyle.fontStyleW500(fontSize: 15, fontColor: AppColors.white.withValues(alpha: .5)),
                     filled: true,
-                    fillColor: Colors.grey.shade200,
+                    fillColor: AppColors.languageContainer,
                     contentPadding: EdgeInsets.symmetric(horizontal: 12),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),

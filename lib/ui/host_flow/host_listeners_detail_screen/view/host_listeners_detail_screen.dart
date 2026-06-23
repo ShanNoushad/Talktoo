@@ -10,7 +10,7 @@ class HostListenersDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backGroundColor,
+      backgroundColor: AppColors.black,
       bottomNavigationBar: HostListenersDetailBottomButton(),
       body: GestureDetector(
         onTap: () {

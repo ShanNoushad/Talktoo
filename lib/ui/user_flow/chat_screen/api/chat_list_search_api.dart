@@ -16,7 +16,6 @@ class ChatListSearchApi {
   static Future<ChatListSearchModel?> callApi({
     String? searchString,
   }) async {
-    final token = await FirebaseAccessToken.onGet();
 
     Utils.showLog("search chat list user Api Calling...");
     // startPagination += 1;
@@ -39,8 +38,8 @@ class ChatListSearchApi {
 
     final headers = {
       ApiParams.key: Api.secretKey,
-      ApiParams.authToken: "Bearer $token",
-      ApiParams.authUid: Database.loginUserFirebaseId,
+      ApiParams.authToken: 'Bearer ${Api.secretKey}',
+      ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
     Utils.showLog("search chat list user Api uri :: $uri");

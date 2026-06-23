@@ -35,7 +35,7 @@ class _HostWalletScreenState extends State<HostWalletScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.black,
         body: Column(
           children: [
             HostWalletScreenTopView(),

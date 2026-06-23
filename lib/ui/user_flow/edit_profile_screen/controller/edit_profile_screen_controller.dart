@@ -9,12 +9,12 @@ import 'package:talk_in/ui/user_flow/edit_profile_screen/api/edit_profile_api.da
 import 'package:talk_in/ui/user_flow/edit_profile_screen/model/edit_profile_model.dart';
 import 'package:talk_in/ui/user_flow/splash_screen_page/api/fetch_login_user_profile_api.dart';
 import 'package:talk_in/ui/user_flow/splash_screen_page/model/fetch_login_user_profile_model.dart';
+import 'package:talk_in/utils/api.dart';
 import 'package:talk_in/utils/app_asset.dart';
 import 'package:talk_in/utils/app_color.dart';
 import 'package:talk_in/utils/constant.dart';
 import 'package:talk_in/utils/database.dart';
 import 'package:talk_in/utils/enums.dart';
-import 'package:talk_in/utils/firebse_access_token.dart';
 import 'package:talk_in/utils/font_style.dart';
 import 'package:talk_in/utils/utils.dart';
 
@@ -28,6 +28,7 @@ class EditProfileController extends GetxController {
   TextEditingController mobileNumberCnt = TextEditingController();
   TextEditingController flagController = TextEditingController();
   TextEditingController countryController = TextEditingController();
+
   // MainScreenController mainScreenController = Get.put(MainScreenController());
   XFile? xFiles;
   final ImagePicker imagePicker = ImagePicker();
@@ -62,7 +63,8 @@ class EditProfileController extends GetxController {
     profilePic = Database.loginUserProfilePic;
     dialCode = Database.dialCode;
 
-    if (Database.loginUserGender.toLowerCase() == EnumLocale.txtFemale.name.tr.toLowerCase()) {
+    if (Database.loginUserGender.toLowerCase() ==
+        EnumLocale.txtFemale.name.tr.toLowerCase()) {
       selectedIndex = 1;
     } else {
       selectedIndex = 0;
@@ -106,19 +108,23 @@ class EditProfileController extends GetxController {
       lastDate: DateTime.now(),
       builder: (context, child) {
         return Theme(
-          data: Theme.of(context).copyWith(
+          data: ThemeData.dark().copyWith(
             dividerColor: Colors.transparent,
-            colorScheme: ColorScheme.light(
-              primary: AppColors.appColor,
-              onPrimary: Colors.white,
-              onSurface: Colors.black,
+            colorScheme: ColorScheme.dark(
+              primary: AppColors.lightPurple,      // selected date circle & header
+              onPrimary: Colors.white,             // text ON the purple circle
+              surface: const Color(0xFF1E1E2E),          // dialog background
+              onSurface: Colors.white,             // calendar day numbers
+              secondary: AppColors.lightPurple,
+              onSecondary: Colors.white,
             ),
+            dialogBackgroundColor: const Color(0xFF1E1E2E),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: AppColors.appColor,
+                foregroundColor: AppColors.white,  // OK / CANCEL visible
                 textStyle: AppFontStyle.fontStyleW600(
                   fontSize: 14,
-                  fontColor: AppColors.appColor,
+                  fontColor: AppColors.lightPurple,
                 ),
               ),
             ),
@@ -129,14 +135,15 @@ class EditProfileController extends GetxController {
     );
 
     if (picked != null) {
-      dateController.text = "${picked.day.toString().padLeft(2, '0')} / ${picked.month.toString().padLeft(2, '0')} / ${picked.year}";
-      update(); // For GetBuilder to update
+      dateController.text =
+      "${picked.day.toString().padLeft(2, '0')} / ${picked.month.toString().padLeft(2, '0')} / ${picked.year}";
+      update();
     }
   }
-
   /// Image Picker from gallery
   getImageFromGallery() async {
-    xFiles = await imagePicker.pickImage(source: ImageSource.gallery, imageQuality: 100);
+    xFiles = await imagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 100);
     if (xFiles != null) {
       pickImage = xFiles!.path;
       log("Gallery Image Path ::: $pickImage");
@@ -146,7 +153,8 @@ class EditProfileController extends GetxController {
 
   /// Take Photo
   takePhoto() async {
-    xFiles = await imagePicker.pickImage(source: ImageSource.camera, imageQuality: 100);
+    xFiles = await imagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 100);
     if (xFiles != null) {
       pickImage = xFiles!.path;
       log("Camera Image Path ::: $pickImage");
@@ -161,15 +169,19 @@ class EditProfileController extends GetxController {
     Utils.showLog("Click On Save Profile => ${Database.loginUserId}");
 
     if (profilePic == "" && pickImage == null) {
-      Utils.showToast(Get.context!, EnumLocale.txtPleaseSelectProfileImage.name.tr);
+      Utils.showToast(
+          Get.context!, EnumLocale.txtPleaseSelectProfileImage.name.tr);
     } else if (nickNameCnt.text.trim().isEmpty) {
       Utils.showToast(Get.context!, EnumLocale.txtPleaseEnterNickName.name.tr);
     } else if (dateController.text.trim().isEmpty) {
-      Utils.showToast(Get.context!, EnumLocale.txtPleaseSelectBirthDate.name.tr);
+      Utils.showToast(
+          Get.context!, EnumLocale.txtPleaseSelectBirthDate.name.tr);
     } else if (mobileNumberCnt.text.trim().isEmpty) {
-      Utils.showToast(Get.context!, EnumLocale.txtPleaseEnterMobileNumber.name.tr);
+      Utils.showToast(
+          Get.context!, EnumLocale.txtPleaseEnterMobileNumber.name.tr);
     } else {
-      Get.dialog(const LoadingWidget(), barrierDismissible: false); // Start Loading...
+      Get.dialog(const LoadingWidget(),
+          barrierDismissible: false); // Start Loading...
 
       await callEditApi();
     }
@@ -177,8 +189,6 @@ class EditProfileController extends GetxController {
 
   /// edit profile api
   Future<void> callEditApi({String? image}) async {
-    final token = await FirebaseAccessToken.onGet();
-
     log('Database.countryCode  ::::  ${Database.selectedCountryCode}');
     log('countryController.text  ::::  ${countryController.text}');
     log('flagController.text  ::::  ${flagController.text}');
@@ -187,7 +197,7 @@ class EditProfileController extends GetxController {
     debugPrint("country: ${countryController.text}");
     debugPrint("countryFlag: ${flagController.text}");
     debugPrint("countryCode: ${Database.selectedCountryCode}");
-    debugPrint("uid: ${Database.loginUserFirebaseId}");
+    debugPrint("uid: ${Database.loginUserId}");
     debugPrint("birthDate: ${dateController.text}");
     debugPrint("image: ${pickImage == "" ? profilePic : pickImage}");
     debugPrint("nickName: ${nickNameCnt.text}");
@@ -199,7 +209,7 @@ class EditProfileController extends GetxController {
       country: countryController.text,
       countryFlag: flagController.text,
       countryCode: Database.selectedCountryCode,
-      uid: Database.loginUserFirebaseId,
+      uid: Database.loginUserId,
       birthDate: dateController.text,
       image: pickImage == "" ? profilePic : pickImage,
       nickName: nickNameCnt.text,
@@ -221,24 +231,34 @@ class EditProfileController extends GetxController {
     debugPrint("fullName: ${nameCnt.text}");
 
     if (editProfileModel?.status == true) {
-      Utils.showToast(Get.context!, EnumLocale.txtProfileUpdateSuccessfully.name.tr);
-      fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(loginUserId: Database.loginUserFirebaseId, token: token ?? '');
+      Utils.showToast(
+          Get.context!, EnumLocale.txtProfileUpdateSuccessfully.name.tr);
+      fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(
+          loginUserId: Database.loginUserId, token: Api.secretKey ?? '');
 
-      Database.onSetLoginUserProfilePic(fetchLoginUserProfileModel?.user?.profilePic ?? "");
+      Database.onSetLoginUserProfilePic(
+          fetchLoginUserProfileModel?.user?.profilePic ?? "");
       Database.onSetLoginUserName(fetchLoginUserProfileModel!.user!.fullName!);
-      Database.onSetLoginUserNickName(fetchLoginUserProfileModel?.user?.nickName ?? "");
+      Database.onSetLoginUserNickName(
+          fetchLoginUserProfileModel?.user?.nickName ?? "");
       Database.onSetLoginUserEmail(fetchLoginUserProfileModel!.user!.email!);
-      Database.onSetLoginUserCountry(fetchLoginUserProfileModel!.user!.country!);
-      Database.onSetLoginUserCountryFlag(fetchLoginUserProfileModel!.user!.countryFlag!);
-      Database.onSetLoginUserBirthDate(fetchLoginUserProfileModel?.user?.birthDate ?? "");
-      Database.onSetLoginUserGender(fetchLoginUserProfileModel?.user?.gender ?? "Male");
-      Database.onSetLoginUserPhoneNumber(fetchLoginUserProfileModel?.user?.phoneNumber ?? "");
+      Database.onSetLoginUserCountry(
+          fetchLoginUserProfileModel!.user!.country!);
+      Database.onSetLoginUserCountryFlag(
+          fetchLoginUserProfileModel!.user!.countryFlag!);
+      Database.onSetLoginUserBirthDate(
+          fetchLoginUserProfileModel?.user?.birthDate ?? "");
+      Database.onSetLoginUserGender(
+          fetchLoginUserProfileModel?.user?.gender ?? "Male");
+      Database.onSetLoginUserPhoneNumber(
+          fetchLoginUserProfileModel?.user?.phoneNumber ?? "");
       Database.fetchLoginUserProfileModel = fetchLoginUserProfileModel;
 
       update([Constant.idProfile]);
 
       Get.close(2);
-      fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(loginUserId: Database.loginUserFirebaseId, token: token ?? '');
+      fetchLoginUserProfileModel = await FetchLoginUserProfileApi.callApi(
+          loginUserId: Database.loginUserId, token: Api.secretKey ?? '');
       Database.fetchLoginUserProfileModel = fetchLoginUserProfileModel;
 
       update();
@@ -256,7 +276,8 @@ class EditProfileController extends GetxController {
         flagController.text = country.flagEmoji;
         countryController.text = country.name;
         update([Constant.idChangeCountry]);
-        debugPrint("Country selected: ${country.name}, Flag: ${country.flagEmoji}");
+        debugPrint(
+            "Country selected: ${country.name}, Flag: ${country.flagEmoji}");
         log("Selected Country => Flag: ${flagController.text}, Name: ${countryController.text}");
       },
     );

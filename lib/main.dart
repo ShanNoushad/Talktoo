@@ -1,16 +1,20 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:awesome_notifications/awesome_notifications.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter_windowmanager_plus/flutter_windowmanager_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:talk_in/custom/ringtone/ringtone_method.dart';
 import 'package:talk_in/localization/locale_constant.dart';
 import 'package:talk_in/routes/app_pages.dart';
 import 'package:talk_in/routes/app_routes.dart';
+import 'package:talk_in/utils/api.dart';
 import 'package:talk_in/utils/app_color.dart';
 import 'package:talk_in/utils/database.dart';
 import 'package:talk_in/services/notification_service/notification_services.dart';
@@ -18,14 +22,41 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import 'localization/localizations_delegate.dart';
 import 'utils/utils.dart';
 import 'package:mobile_device_identifier/mobile_device_identifier.dart';
+
 AppLifecycleState? currentAppLifecycleState;
+
+Future<void> syncFcmTokenToBackend(String token) async {
+  try {
+    if (Database.loginUserId.isEmpty) return;
+
+    final response = await http.post(
+      Uri.parse(Api.updateFcmToken),
+      headers: {
+        'Content-Type': 'application/json',
+        'key': Api.secretKey,
+        'x-auth-token': 'Bearer ${Api.secretKey}',
+        'x-auth-uid': Database.loginUserId,
+      },
+      body: jsonEncode({'fcmToken': token}),
+    );
+
+    Utils.showLog('FCM sync response: ${response.statusCode} ${response.body}');
+  } catch (e) {
+    Utils.showLog('FCM token sync failed: $e');
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await 500.milliseconds.delay();
 
+  // ✅ Block screenshots & screen recording (Android only)
+  if (Platform.isAndroid) {
+    await FlutterWindowManagerPlus.addFlags(FlutterWindowManagerPlus.FLAG_SECURE);
+  }
+
   await Firebase.initializeApp();
 
-  // ✅ Move here — must be right after Firebase.initializeApp()
   FirebaseMessaging.onBackgroundMessage(backgroundNotification);
 
   await GetStorage.init();
@@ -40,16 +71,16 @@ void main() async {
 
   if (fcmToken != null) {
     await Database.init(identity, fcmToken);
+    await syncFcmTokenToBackend(fcmToken);
   }
 
-  await NotificationServices.init(); // ✅ add await
+  FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+    Utils.showLog('FCM Token refreshed => $newToken');
+    Database.onSetFcmToken(newToken);
+    await syncFcmTokenToBackend(newToken);
+  });
 
-  // ✅ REMOVE this — setListeners is already called inside NotificationServices.init()
-  // Calling it twice overrides the first registration
-  // AwesomeNotifications().setListeners(
-  //   onActionReceivedMethod: NotificationServices.onAwesomeNotificationActionReceived,
-  // );
-
+  await NotificationServices.init();
   NotificationServices.firebaseInit();
 
   runApp(const MyApp());
@@ -57,7 +88,8 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
-  static final StreamController purchaseStreamController = StreamController<PurchaseDetails>.broadcast();
+  static final StreamController purchaseStreamController =
+  StreamController<PurchaseDetails>.broadcast();
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -104,16 +136,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       locale: const Locale("en"),
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: const TextScaler.linear(1.0)),
           child: Container(
-            color: AppColors.white,
+            color: AppColors.black,
             child: SafeArea(
               bottom: true,
               top: false,
               left: false,
               right: false,
               child: Scaffold(
-                // backgroundColor: AppColors.black,
+                backgroundColor: AppColors.black,
                 body: Stack(
                   children: [
                     child ?? const SizedBox(),

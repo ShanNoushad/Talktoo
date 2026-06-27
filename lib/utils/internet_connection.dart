@@ -7,7 +7,7 @@ class InternetConnection {
 
   static void init() {
     Connectivity().onConnectivityChanged.listen(
-      (result) {
+          (result) {
         switch (result.first) {
           case ConnectivityResult.none:
             isConnect.value = false;
@@ -36,6 +36,10 @@ class InternetConnection {
           case ConnectivityResult.other:
             isConnect.value = true;
             Utils.showLog("Network Connected to Other...");
+            break;
+          case ConnectivityResult.satellite:
+            isConnect.value = true;
+            Utils.showLog("Network Connected to Satellite...");
             break;
         }
       },

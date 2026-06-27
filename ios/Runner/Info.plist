@@ -34,7 +34,7 @@
     			<key>CFBundleTypeRole</key>
     			<string>Editor</string>
     			<key>CFBundleURLName</key>
-    			<string>com.incodes.talkin</string>
+    			<string>com.incodes.talktoo</string>
     			<key>CFBundleURLSchemes</key>
     			<array>
     				<string>com.googleusercontent.apps.488115751804-cfbjg8p58dpi6k1la5cfrq48ia2m7imm</string>

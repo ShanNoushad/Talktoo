@@ -1,11 +1,11 @@
-//package com.incodes.talkin
+//package com.incodes.talktoo
 //
 //import io.flutter.embedding.android.FlutterFragmentActivity
 //
 //class MainActivity: FlutterFragmentActivity()
 
 
-package com.incodes.talkin
+package com.incodes.talktoo
 
 import android.media.Ringtone
 import android.media.RingtoneManager

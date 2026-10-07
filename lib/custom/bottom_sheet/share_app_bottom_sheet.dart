@@ -21,7 +21,7 @@ class ShareAppBottomSheet extends StatelessWidget {
       return Container(
         padding: EdgeInsets.symmetric(vertical: 17, horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.lightPurple,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Column(
@@ -63,7 +63,7 @@ class ShareAppBottomSheet extends StatelessWidget {
               controller.receiverName ?? '',
               style: AppFontStyle.fontStyleW700(
                 fontSize: 17,
-                fontColor: AppColors.black,
+                fontColor: AppColors.white,
               ),
             ).paddingOnly(bottom: 18, top: 14),
             // Image.asset(
@@ -90,7 +90,7 @@ class ShareAppBottomSheet extends StatelessWidget {
                   border: Border.all(
                     color: AppColors.darkGrey.withValues(alpha: 0.3),
                   ),
-                  color: AppColors.white),
+                  color: AppColors.white.withValues(alpha: .3)),
               child: TextFormField(
                 controller: controller.reviewCnt,
                 style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.black),

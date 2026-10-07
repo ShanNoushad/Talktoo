@@ -58,272 +58,254 @@ class _RandomCallScreenState extends State<RandomCallScreen> {
   Widget build(BuildContext context) {
     Utils.onChangeStatusBar(brightness: Brightness.dark);
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        Get.dialog(
-          barrierColor: AppColors.black.withValues(alpha: 0.8),
-          Dialog(
-            backgroundColor: AppColors.transparent,
-            shadowColor: Colors.transparent,
-            surfaceTintColor: Colors.transparent,
-            elevation: 0,
-            child: const ExitAppDialog(),
+    return Scaffold(
+      // ── Transparent so the gradient Container underneath shows through ──
+      backgroundColor: Colors.transparent,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        // ── GRADIENT BACKGROUND ──────────────────────────────────────────
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xff0D0D1A), // very dark navy — top
+              Color(0xff12102B), // deep indigo-black — mid
+              Color(0xff1A1040), // dark purple-navy — bottom
+            ],
+            stops: [0.0, 0.5, 1.0],
           ),
-        );
-        if (didPop) {
-          return;
-        }
-      },
-      child: Scaffold(
-        // ── Transparent so the gradient Container underneath shows through ──
-        backgroundColor: Colors.transparent,
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          // ── GRADIENT BACKGROUND ──────────────────────────────────────────
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xff0D0D1A), // very dark navy — top
-                Color(0xff12102B), // deep indigo-black — mid
-                Color(0xff1A1040), // dark purple-navy — bottom
-              ],
-              stops: [0.0, 0.5, 1.0],
-            ),
-          ),
-          child: GetBuilder<RandomCallController>(
-            builder: (controller) {
-              return Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  // ── Top view ────────────────────────────────────────────
-                  Column(
-                    children: [
-                      RandomCallTopView(),
-                    ],
-                  ),
+        ),
+        child: GetBuilder<RandomCallController>(
+          builder: (controller) {
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // ── Top view ────────────────────────────────────────────
+                Column(
+                  children: [
+                    RandomCallTopView(),
+                  ],
+                ),
 
-                  // ── Ripple animation — tinted to match gradient ─────────
-                  Positioned(
-                    right: -170,
-                    top: Get.height * 0.2,
-                    child: RippleAnimation(
-                      color: Colors.white.withValues(alpha: 0.12),
-                      delay: const Duration(milliseconds: 100),
-                      repeat: true,
-                      minRadius: 200,
-                      maxRadius: 170,
-                      ripplesCount: 5,
-                      duration: const Duration(seconds: 3),
-                      child: const SizedBox(
-                        height: 310,
-                        width: 310,
-                      ),
+                // ── Ripple animation — tinted to match gradient ─────────
+                Positioned(
+                  right: -170,
+                  top: Get.height * 0.2,
+                  child: RippleAnimation(
+                    color: Colors.white.withValues(alpha: 0.12),
+                    delay: const Duration(milliseconds: 100),
+                    repeat: true,
+                    minRadius: 200,
+                    maxRadius: 170,
+                    ripplesCount: 5,
+                    duration: const Duration(seconds: 3),
+                    child: const SizedBox(
+                      height: 310,
+                      width: 310,
                     ),
                   ),
+                ),
 
-                  // ── Dot background (kept, blended with white tint) ──────
+                // ── Dot background (kept, blended with white tint) ──────
 
-                  // ── Earth bg (blended) ───────────────────────────────────
-                  Positioned(
-                    right: -140,
-                    top: Get.height * 0.2,
-                    child: Container(
-                      padding: EdgeInsets.zero,
-                      height: 270,
-                      width: 270,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(AppAsset.randomBg),
-                          opacity: 0.18,
-                        ),
-                        shape: BoxShape.circle,
-                        color: Colors.white.withValues(alpha: 0.06),
+                // ── Earth bg (blended) ───────────────────────────────────
+                Positioned(
+                  right: -140,
+                  top: Get.height * 0.2,
+                  child: Container(
+                    padding: EdgeInsets.zero,
+                    height: 270,
+                    width: 270,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(AppAsset.randomBg),
+                        opacity: 0.18,
                       ),
+                      shape: BoxShape.circle,
+                      color: Colors.white.withValues(alpha: 0.06),
                     ),
                   ),
+                ),
 
-                  // ── Bottom dot bg ────────────────────────────────────────
+                // ── Bottom dot bg ────────────────────────────────────────
 
-                  // ── Bottom buttons ───────────────────────────────────────
-                  GetBuilder<RandomCallController>(
-                    id: Constant.idGetListener,
-                    builder: (context) {
-                      return Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: BottomButtonsView(),
-                      );
-                    },
-                  ),
+                // ── Bottom buttons ───────────────────────────────────────
+                GetBuilder<RandomCallController>(
+                  id: Constant.idGetListener,
+                  builder: (context) {
+                    return Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: BottomButtonsView(),
+                    );
+                  },
+                ),
 
-                  // ── Listener cards list ──────────────────────────────────
-                  GetBuilder<RandomCallController>(
-                    id: Constant.idGetListener,
-                    builder: (context) {
-                      return Positioned(
-                        top: Get.height * 0.18,
-                        bottom: Get.height * 0.17,
-                        left: (Get.width - 340) / 2,
-                        child: SizedBox(
-                          width: Get.width * 0.55,
-                          child: GetBuilder<RandomCallController>(
-                            id: Constant.idGetListener,
-                            builder: (controller) {
-                              return Column(
-                                children: List.generate(
-                                  controller.allListener.take(4).length,
-                                      (index) {
-                                    final item = controller.randomDisplayList[index];
-                                    bool isLeft = index % 2 == 0;
+                // ── Listener cards list ──────────────────────────────────
+                GetBuilder<RandomCallController>(
+                  id: Constant.idGetListener,
+                  builder: (context) {
+                    return Positioned(
+                      top: Get.height * 0.18,
+                      bottom: Get.height * 0.17,
+                      left: (Get.width - 340) / 2,
+                      child: SizedBox(
+                        width: Get.width * 0.55,
+                        child: GetBuilder<RandomCallController>(
+                          id: Constant.idGetListener,
+                          builder: (controller) {
+                            return Column(
+                              children: List.generate(
+                                controller.allListener.take(4).length,
+                                    (index) {
+                                  final item = controller.randomDisplayList[index];
+                                  bool isLeft = index % 2 == 0;
 
-                                    return Align(
-                                      alignment: isLeft
-                                          ? Alignment.centerLeft
-                                          : Alignment.centerRight,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Get.toNamed(
-                                            AppRoutes.profileDetailScreenView,
-                                            arguments: item.id,
-                                          );
-                                        },
-                                        child: SmoothNameTransition(
-                                          fadeDuration: randomCallController.fadeDurations[index],
-                                          delay: randomCallController.delays[index],
-                                          onAnimationComplete: () => replaceListenerAt(index),
-                                          key: ValueKey('name-${item.id}-${item.name}'),
-                                          childWidget: Stack(
-                                            alignment: Alignment.center,
-                                            clipBehavior: Clip.none,
-                                            children: [
-                                              // ── Card bubble ─────────────
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                  left: index == 3 ? 32 : 20,
-                                                  right: index == 3 ? 14 : 32,
-                                                  bottom: 7,
-                                                  top: 7,
+                                  return Align(
+                                    alignment: isLeft
+                                        ? Alignment.centerLeft
+                                        : Alignment.centerRight,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Get.toNamed(
+                                          AppRoutes.profileDetailScreenView,
+                                          arguments: item.id,
+                                        );
+                                      },
+                                      child: SmoothNameTransition(
+                                        fadeDuration: randomCallController.fadeDurations[index],
+                                        delay: randomCallController.delays[index],
+                                        onAnimationComplete: () => replaceListenerAt(index),
+                                        key: ValueKey('name-${item.id}-${item.name}'),
+                                        childWidget: Stack(
+                                          alignment: Alignment.center,
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            // ── Card bubble ─────────────
+                                            Container(
+                                              padding: EdgeInsets.only(
+                                                left: index == 3 ? 32 : 20,
+                                                right: index == 3 ? 14 : 32,
+                                                bottom: 7,
+                                                top: 7,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                // Semi-transparent white card
+                                                color: Colors.white.withValues(alpha: 0.18),
+                                                borderRadius: index == 3
+                                                    ? const BorderRadius.only(
+                                                  bottomRight: Radius.circular(42),
+                                                  topRight: Radius.circular(42),
+                                                )
+                                                    : const BorderRadius.only(
+                                                  bottomLeft: Radius.circular(42),
+                                                  topLeft: Radius.circular(42),
                                                 ),
-                                                decoration: BoxDecoration(
-                                                  // Semi-transparent white card
-                                                  color: Colors.white.withValues(alpha: 0.18),
-                                                  borderRadius: index == 3
-                                                      ? const BorderRadius.only(
-                                                    bottomRight: Radius.circular(42),
-                                                    topRight: Radius.circular(42),
-                                                  )
-                                                      : const BorderRadius.only(
-                                                    bottomLeft: Radius.circular(42),
-                                                    topLeft: Radius.circular(42),
-                                                  ),
-                                                  border: Border.all(
-                                                    color: Colors.white.withValues(alpha: 0.55),
-                                                    width: 2,
-                                                  ),
+                                                border: Border.all(
+                                                  color: Colors.white.withValues(alpha: 0.55),
+                                                  width: 2,
                                                 ),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      item.name ?? '',
-                                                      style: AppFontStyle.fontStyleW700(
-                                                        fontSize: 12,
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    item.name ?? '',
+                                                    style: AppFontStyle.fontStyleW700(
+                                                      fontSize: 12,
+                                                      fontColor: AppColors.white,
+                                                    ),
+                                                  ).paddingOnly(bottom: 3),
+                                                  Container(
+                                                    padding: const EdgeInsets.symmetric(
+                                                        horizontal: 6, vertical: 1),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(46),
+                                                      gradient: const LinearGradient(
+                                                        colors: [
+                                                          Color(0xffCF00FD),
+                                                          Color(0xff8400FF),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                      " ${item.talkTopics?[0] ?? ''}  ",
+                                                      style: AppFontStyle.fontStyleW600(
+                                                        fontSize: 10,
                                                         fontColor: AppColors.white,
                                                       ),
-                                                    ).paddingOnly(bottom: 3),
-                                                    Container(
-                                                      padding: const EdgeInsets.symmetric(
-                                                          horizontal: 6, vertical: 1),
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(46),
-                                                        gradient: const LinearGradient(
-                                                          colors: [
-                                                            Color(0xffCF00FD),
-                                                            Color(0xff8400FF),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      child: Text(
-                                                        " ${item.talkTopics?[0] ?? ''}  ",
-                                                        style: AppFontStyle.fontStyleW600(
-                                                          fontSize: 10,
-                                                          fontColor: AppColors.white,
-                                                        ),
-                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            // ── Avatar circle ────────────
+                                            Positioned(
+                                              left: index == 3 ? -36 : null,
+                                              right: index == 3 ? null : -36,
+                                              child: Container(
+                                                width: 62,
+                                                height: 62,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    width: 4,
+                                                    color: Colors.white.withValues(alpha: 0.8),
+                                                  ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: const Color(0xffCF00FD)
+                                                          .withValues(alpha: 0.3),
+                                                      blurRadius: 8,
+                                                      offset: const Offset(1, 1),
+                                                      spreadRadius: 2.5,
                                                     ),
                                                   ],
+                                                  shape: BoxShape.circle,
                                                 ),
-                                              ),
-
-                                              // ── Avatar circle ────────────
-                                              Positioned(
-                                                left: index == 3 ? -36 : null,
-                                                right: index == 3 ? null : -36,
-                                                child: Container(
-                                                  width: 62,
-                                                  height: 62,
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                      width: 4,
-                                                      color: Colors.white.withValues(alpha: 0.8),
-                                                    ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: const Color(0xffCF00FD)
-                                                            .withValues(alpha: 0.3),
-                                                        blurRadius: 8,
-                                                        offset: const Offset(1, 1),
-                                                        spreadRadius: 2.5,
-                                                      ),
-                                                    ],
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: ClipOval(
-                                                    child: CustomProfileImage(
-                                                      image: item.image ?? '',
-                                                      fit: BoxFit.cover,
-                                                    ),
+                                                child: ClipOval(
+                                                  child: CustomProfileImage(
+                                                    image: item.image ?? '',
+                                                    fit: BoxFit.cover,
                                                   ),
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ).paddingOnly(bottom: Get.height * 0.045);
-                                  },
-                                ),
-                              );
-                            },
-                          ),
+                                    ),
+                                  ).paddingOnly(bottom: Get.height * 0.045);
+                                },
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
+                ),
 
-                  // ── Loading overlay ──────────────────────────────────────
-                  if (controller.isLoading)
-                    Positioned.fill(
-                      child: Container(
-                        color: Colors.black.withValues(alpha: 0.5),
-                        child: Center(
-                          child: LoadingAnimationWidget.threeArchedCircle(
-                            color: AppColors.appColor,
-                            size: 50,
-                          ),
+                // ── Loading overlay ──────────────────────────────────────
+                if (controller.isLoading)
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      child: Center(
+                        child: LoadingAnimationWidget.threeArchedCircle(
+                          color: AppColors.appColor,
+                          size: 50,
                         ),
                       ),
                     ),
-                ],
-              );
-            },
-          ),
+                  ),
+              ],
+            );
+          },
         ),
       ),
     );

@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +12,7 @@ class Utils {
   static const sandboxVerifyReceiptUrl = false;
 
   static RxBool isAppOpen = false.obs;
-  static String? playStoreId = "com.incodes.talkin";
+  static String? playStoreId = "com.ishvion.talktoo";
   static String? appStoreId = "6747668315";
 
   // /// =================== Toast =================== ///
@@ -104,7 +103,6 @@ class Utils {
     required Brightness brightness,
     int? delay,
   }) {
-    showLog("Change Status Bar => Brightness => $brightness => $delay");
     Future.delayed(
       Duration(milliseconds: delay ?? 0),
       () => SystemChrome.setSystemUIOverlayStyle(
@@ -124,6 +122,17 @@ class Utils {
 
 extension HeightExtension on num {
   SizedBox get height => SizedBox(height: toDouble());
+}
+
+ String formatCallDuration(String? duration) {
+if (duration == null || duration.isEmpty) return "00:00";
+if (duration.contains(":")) return duration; // already formatted like "02:05"
+final seconds = int.tryParse(duration);
+if (seconds == null) return duration; // unknown format, show raw value
+final d = Duration(seconds: seconds);
+final minutes = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+final secs = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+return "$minutes:$secs";
 }
 
 extension WidthExtension on num {

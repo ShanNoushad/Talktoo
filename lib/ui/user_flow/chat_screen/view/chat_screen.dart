@@ -17,96 +17,80 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) {
-        Get.dialog(
-          barrierColor: AppColors.black.withValues(alpha: 0.8),
-          Dialog(
-            backgroundColor: AppColors.transparent,
-            shadowColor: Colors.transparent,
-            surfaceTintColor: Colors.transparent,
-            elevation: 0,
-            child: const ExitAppDialog(),
-          ),
-        );
-        if (didPop) return;
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.black,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          flexibleSpace: const ChatScreenAppBarView(),
-        ),
-        body: GetBuilder<ChatScreenController>(
-          id: Constant.idChatList,
-          builder: (controller) {
-            return controller.isLoading
-                ? ChatListShimmer()
-                : RefreshIndicator(
-                    onRefresh: () async => controller.onRefresh(),
-                    child: controller.chatList.isEmpty
-                        ? SizedBox(
-                            height: Get.height,
-                            child: Center(
-                              child: Image.asset(
-                                AppAsset.noChatFound,
-                                height: 250,
-                              ),
+    return Scaffold(
+      backgroundColor: AppColors.black,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        flexibleSpace: const ChatScreenAppBarView(),
+      ),
+      body: GetBuilder<ChatScreenController>(
+        id: Constant.idChatList,
+        builder: (controller) {
+          return controller.isLoading
+              ? ChatListShimmer()
+              : RefreshIndicator(
+                  onRefresh: () async => controller.onRefresh(),
+                  child: controller.chatList.isEmpty
+                      ? SizedBox(
+                          height: Get.height,
+                          child: Center(
+                            child: Image.asset(
+                              AppAsset.noChatFound,
+                              height: 250,
                             ),
-                          )
-                        : ListView.builder(
-                            itemCount: controller.chatList.length,
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            padding: EdgeInsets.zero,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  ChatViewItem(
-                                    onTap: () {
-                                      Utils.showLog("receiver id ${controller.chatList[index].receiverId}");
-                                      Utils.showLog("receiver name ${controller.chatList[index].name}");
-
-                                      Get.toNamed(
-                                        AppRoutes.personalChatScreen,
-                                        arguments: [
-                                          controller.chatList[index].receiverId,
-                                          controller.chatList[index].name,
-                                          controller.chatList[index].isOnline,
-                                          controller.chatList[index].image,
-                                          controller.chatList[index].ratePrivateAudioCall,
-                                          controller.chatList[index].ratePrivateVideoCall,
-                                          controller.chatList[index].isFake,
-                                          controller.chatList[index].video,
-                                          controller.chatList[index].isAvailableForPrivateVideoCall,
-                                          controller.chatList[index].isAvailableForPrivateAudioCall,
-                                        ],
-                                      )?.then(
-                                        (value) async {
-                                          ChatListApi.startPagination = 0;
-                                          controller.chatList.clear();
-                                          controller.getChatList();
-                                        },
-                                      );
-                                    },
-                                    index: index,
-                                    name: controller.chatList[index].name ?? '',
-                                    lastMsg: controller.chatList[index].message ?? '',
-                                    image: controller.chatList[index].image ?? '',
-                                    unReadCount: controller.chatList[index].unreadCount ?? 0,
-                                    lastMsgTime: controller.chatList[index].lastChatMessageTime.toString(),
-                                  ).paddingOnly(left: 14, right: 14),
-                                  Divider(
-                                    color: AppColors.lightGrey,
-                                    height: 0,
-                                  ),
-                                ],
-                              );
-                            },
                           ),
-                  );
-          },
-        ),
+                        )
+                      : ListView.builder(
+                          itemCount: controller.chatList.length,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: EdgeInsets.zero,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                ChatViewItem(
+                                  onTap: () {
+                                    Utils.showLog("receiver id ${controller.chatList[index].receiverId}");
+                                    Utils.showLog("receiver name ${controller.chatList[index].name}");
+
+                                    Get.toNamed(
+                                      AppRoutes.personalChatScreen,
+                                      arguments: [
+                                        controller.chatList[index].receiverId,
+                                        controller.chatList[index].name,
+                                        controller.chatList[index].isOnline,
+                                        controller.chatList[index].image,
+                                        controller.chatList[index].ratePrivateAudioCall,
+                                        controller.chatList[index].ratePrivateVideoCall,
+                                        controller.chatList[index].isFake,
+                                        controller.chatList[index].video,
+                                        controller.chatList[index].isAvailableForPrivateVideoCall,
+                                        controller.chatList[index].isAvailableForPrivateAudioCall,
+                                      ],
+                                    )?.then(
+                                      (value) async {
+                                        ChatListApi.startPagination = 0;
+                                        controller.chatList.clear();
+                                        controller.getChatList();
+                                      },
+                                    );
+                                  },
+                                  index: index,
+                                  name: controller.chatList[index].name ?? '',
+                                  lastMsg: controller.chatList[index].message ?? '',
+                                  image: controller.chatList[index].image ?? '',
+                                  unReadCount: controller.chatList[index].unreadCount ?? 0,
+                                  lastMsgTime: controller.chatList[index].lastChatMessageTime.toString(),
+                                ).paddingOnly(left: 14, right: 14),
+                                Divider(
+                                  color: AppColors.lightGrey,
+                                  height: 0,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                );
+        },
       ),
     );
   }

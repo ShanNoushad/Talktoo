@@ -37,13 +37,13 @@ class CallingScreenItem extends StatelessWidget {
   final String time;
   final String callStatusText;
   final num coin;
+  final String? duration;
   final bool audioCall;
   final bool videoCall;
   final CallingScreenController controller;
   final VoidCallback? onTalkNowTap;
 
-  const CallingScreenItem({super.key, required this.index, required this.image, required this.name, required this.time, required this.callStatusText, required this.coin, required this.controller, required this.audioCall, required this.videoCall, this.onTalkNowTap});
-
+  const CallingScreenItem({super.key, required this.index, required this.image, required this.name, required this.time, required this.callStatusText, required this.coin, required this.duration, required this.controller, required this.audioCall, required this.videoCall, this.onTalkNowTap});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -78,30 +78,30 @@ class CallingScreenItem extends StatelessWidget {
                       child: Text(
                         overflow: TextOverflow.ellipsis,
                         name,
-                        style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.black),
+                        style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.white),
                       ).paddingOnly(right: 8),
                     ),
-                    // coin == 0
-                    //     ? SizedBox.shrink()
-                    //     : Container(
-                    //         decoration: BoxDecoration(
-                    //           color: AppColors.lightYellow100,
-                    //           borderRadius: BorderRadius.circular(30),
-                    //         ),
-                    //         child: Row(
-                    //           children: [
-                    //             Image.asset(
-                    //               AppAsset.dimondCoin,
-                    //               height: 13,
-                    //               width: 13,
-                    //             ).paddingOnly(left: 6, top: 3, bottom: 3),
-                    //             Text(
-                    //               coin.toString(),
-                    //               style: AppFontStyle.fontStyleW600(fontSize: 12, fontColor: AppColors.orange),
-                    //             ).paddingOnly(left: 4, right: 9)
-                    //           ],
-                    //         ),
-                    //       ),
+                    coin == 0
+                        ? const SizedBox.shrink()
+                        : Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.lightYellow100,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            AppAsset.starCoin,
+                            height: 13,
+                            width: 13,
+                          ).paddingOnly(left: 6, top: 3, bottom: 3),
+                          Text(
+                            "- $coin",
+                            style: AppFontStyle.fontStyleW600(fontSize: 12, fontColor: AppColors.red),
+                          ).paddingOnly(left: 4, right: 9)
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 Row(
@@ -127,10 +127,24 @@ class CallingScreenItem extends StatelessWidget {
                     ).paddingOnly(left: 4, right: 4)
                   ],
                 ).paddingOnly(bottom: 4, top: 2),
-                Text(
-                  time.toString(),
-                  style: AppFontStyle.fontStyleW500(fontSize: 11, fontColor: AppColors.profileText),
+                Row(
+                  children: [
+                    Text(
+                      time.toString(),
+                      style: AppFontStyle.fontStyleW500(fontSize: 11, fontColor: AppColors.profileText),
+                    ),
+
+                  ],
                 ),
+                Row(
+                  children: [
+                    if (duration != null && duration!.isNotEmpty && duration != "0")
+                      Text(
+                        " • ${formatCallDuration(duration)}",
+                        style: AppFontStyle.fontStyleW500(fontSize: 11, fontColor: AppColors.profileText),
+                      ),
+                  ],
+                )
               ],
             ).paddingOnly(left: 3),
           ),

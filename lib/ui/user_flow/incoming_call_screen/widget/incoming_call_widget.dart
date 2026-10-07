@@ -1,12 +1,11 @@
 import 'dart:developer';
-
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 import 'package:talk_in/custom/custom_profile/custom_profile_image.dart';
-import 'package:talk_in/services/permission_handler/permission_handler.dart';
+import 'package:talk_in/services/notification_service/notification_services.dart'; // 👈 FIX: added import
 import 'package:talk_in/socket/socket_emit.dart';
 import 'package:talk_in/ui/user_flow/incoming_call_screen/controller/incoming_call_controller.dart';
 import 'package:talk_in/utils/app_asset.dart';
@@ -139,6 +138,8 @@ class IncomingCallView extends StatelessWidget {
                         Vibration.vibrate(duration: 50, amplitude: 128);
                         await 50.milliseconds.delay();
 
+                        NotificationServices.dismissCallNotification(); // 👈 FIX: kill system notification on in-app decline
+
                         if (logic.isCallResponse == false) {
                           logic.isCallResponse = true;
                           if (logic.callerRole == "user") {
@@ -194,6 +195,8 @@ class IncomingCallView extends StatelessWidget {
 
                         Vibration.vibrate(duration: 50, amplitude: 128);
                         await 400.milliseconds.delay();
+
+                        NotificationServices.dismissCallNotification(); // 👈 FIX: kill system notification on in-app accept
 
                         if (logic.isCallResponse == false) {
                           logic.isCallResponse = true;

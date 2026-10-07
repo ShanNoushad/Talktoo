@@ -18,8 +18,11 @@ class FlutterWaveService {
 
     final Flutterwave flutterWave = Flutterwave(
       publicKey: Database.settingApiModel?.data?.flutterwavePublicKey ?? "",
+
+
+      ///edit2026
       // publicKey: "FLWPUBK_TEST-cdc51a4df113a91fe33a914eaf8d1c75-X",
-      currency: Database.settingApiModel?.data?.currency?.currencyCode ?? '',
+currency:  "INR",
       redirectUrl: "https://www.google.com/",
       txRef: DateTime.now().microsecond.toString(),
       amount: amount,

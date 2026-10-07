@@ -57,7 +57,7 @@ class ChatScreenAppBar extends StatelessWidget {
                   child: Image.asset(
                     height: 16,
                     AppAsset.backArrowIcon,
-                    color: AppColors.black,
+                    color: AppColors.white,
                   ),
                 ),
               ),
@@ -241,6 +241,7 @@ class ChatScreenAppBar extends StatelessWidget {
                 child: Center(
                   child: Image.asset(
                     AppAsset.circleMoreBlack,
+                    color: Colors.white,
                     height: 22,
                     width: 22,
                   ),
@@ -653,7 +654,7 @@ class ChatVideoCallWidget extends StatelessWidget {
               msg.callType == 1 || msg.callType == 2 ? AppAsset.chatVideoCallIcon : AppAsset.missedVideoCall,
               height: 26,
               width: 26,
-              // color: AppColors.darkPurple,
+              color: AppColors.darkPurple,
             ),
           ).paddingOnly(right: 11),
           Column(
@@ -661,7 +662,7 @@ class ChatVideoCallWidget extends StatelessWidget {
             children: [
               Text(
                 EnumLocale.txtVideoCall.name.tr,
-                style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.black),
+                style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.white),
               ).paddingOnly(bottom: 4),
               if (msg.callType == 1)
                 Text(
@@ -722,7 +723,7 @@ class ChatAudioCallWidget extends StatelessWidget {
             children: [
               Text(
                 EnumLocale.txtAudioCall.name.tr,
-                style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.black),
+                style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.white),
               ).paddingOnly(bottom: 4),
               if (msg.callType == 1)
                 Text(

@@ -16,10 +16,19 @@ class PermissionHandler {
   }
 
   static Future<void> microphonePermissions() async {
-    await Permission.notification.request();
-    await Permission.notification.isDenied.then((value) {
+    await Permission.microphone.request();          // fixed: was Permission.notification
+    await Permission.microphone.isDenied.then((value) {
       if (value) {
-        Permission.notification.request();
+        Permission.microphone.request();
+      }
+    });
+  }
+
+  static Future<void> cameraPermissions() async {
+    await Permission.camera.request();               // restored, was commented out
+    await Permission.camera.isDenied.then((value) {
+      if (value) {
+        Permission.camera.request();
       }
     });
   }
@@ -71,15 +80,6 @@ class PermissionHandler {
       log("microphone Permission Failed => $e");
     }
   }
-
-  // static Future<void> cameraPermissions() async {
-  //   await Permission.camera.request();
-  //   await Permission.camera.isDenied.then((value) {
-  //     if (value) {
-  //       Permission.camera.request();
-  //     }
-  //   });
-  // }
 
   static Future<void> storagePermissions() async {
     await Permission.storage.request();

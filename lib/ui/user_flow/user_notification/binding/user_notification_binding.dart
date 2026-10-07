@@ -4,6 +4,8 @@ import 'package:talk_in/ui/user_flow/user_notification/controller/user_notificat
 class UserNotificationBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<UserNotificationController>(() => UserNotificationController());
+    if (!Get.isRegistered<UserNotificationController>()) {
+      Get.put<UserNotificationController>(UserNotificationController(), permanent: true);
+    }
   }
 }

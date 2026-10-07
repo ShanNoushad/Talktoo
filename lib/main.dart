@@ -14,6 +14,7 @@ import 'package:talk_in/custom/ringtone/ringtone_method.dart';
 import 'package:talk_in/localization/locale_constant.dart';
 import 'package:talk_in/routes/app_pages.dart';
 import 'package:talk_in/routes/app_routes.dart';
+import 'package:talk_in/services/permission_handler/permission_handler.dart';
 import 'package:talk_in/utils/api.dart';
 import 'package:talk_in/utils/app_color.dart';
 import 'package:talk_in/utils/database.dart';
@@ -50,7 +51,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await 500.milliseconds.delay();
 
-  // ✅ Block screenshots & screen recording (Android only)
   if (Platform.isAndroid) {
     await FlutterWindowManagerPlus.addFlags(FlutterWindowManagerPlus.FLAG_SECURE);
   }
@@ -82,7 +82,10 @@ void main() async {
 
   await NotificationServices.init();
   NotificationServices.firebaseInit();
-
+  await PermissionHandler.notificationPermissions();
+  await PermissionHandler.cameraPermissions();
+  await PermissionHandler.microphonePermissions();
+  await PermissionHandler.storagePermissions();
   runApp(const MyApp());
 }
 

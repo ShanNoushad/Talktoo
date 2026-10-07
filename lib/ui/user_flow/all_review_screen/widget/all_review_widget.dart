@@ -21,6 +21,9 @@ class AllReviewAppBar extends StatelessWidget {
         appBarColor: AppColors.lightPurple,
         title: EnumLocale.txtReview.name.tr,
         showLeadingIcon: true,
+        iconColor: AppColors.white,
+        textColor: AppColors.white,
+
       ),
     );
   }
@@ -46,7 +49,7 @@ class AllReview extends StatelessWidget {
                       decoration: BoxDecoration(
                         border: Border.all(color: AppColors.reviewBorder),
                         borderRadius: BorderRadius.circular(18),
-                        color: AppColors.reviewBackground,
+                        color: AppColors.lightPurple.withValues(alpha: .3),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +86,7 @@ class AllReview extends StatelessWidget {
                                 children: [
                                   Text(
                                     controller.reviews?[index].fullName ?? '',
-                                    style: AppFontStyle.fontStyleW600(fontSize: 15, fontColor: AppColors.black),
+                                    style: AppFontStyle.fontStyleW600(fontSize: 15, fontColor: AppColors.white),
                                   ),
                                   StarRating(
                                     rating: controller.reviews?[index].rating?.toDouble() ?? 0.0,
@@ -97,7 +100,7 @@ class AllReview extends StatelessWidget {
                                 decoration: BoxDecoration(color: Color(0xffE7EBF7), borderRadius: BorderRadius.circular(34)),
                                 child: Text(
                                   controller.reviews?[index].time ?? '',
-                                  style: AppFontStyle.fontStyleW600(fontSize: 10, fontColor: AppColors.profileLanguage),
+                                  style: AppFontStyle.fontStyleW600(fontSize: 10, fontColor: AppColors.black),
                                 ),
                               )
                             ],
@@ -107,7 +110,7 @@ class AllReview extends StatelessWidget {
                             textAlign: TextAlign.start,
                             style: AppFontStyle.fontStyleW500(
                               fontSize: 12,
-                              fontColor: AppColors.profileLanguage,
+                              fontColor: AppColors.white,
                               height: 1.8,
                             ),
                           )

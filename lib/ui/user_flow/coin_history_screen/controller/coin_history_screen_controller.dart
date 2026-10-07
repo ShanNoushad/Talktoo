@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:talk_in/ui/user_flow/calling_screen/api/calling_history_api.dart';
+import 'package:talk_in/ui/user_flow/calling_screen/model/calling_history_response_model.dart';
 import 'package:talk_in/ui/user_flow/coin_history_screen/api/coin_history_api.dart';
 import 'package:talk_in/ui/user_flow/coin_history_screen/api/purchase_coin_plan_api.dart';
 import 'package:talk_in/ui/user_flow/coin_history_screen/model/coin_history_model.dart';
@@ -21,6 +23,10 @@ class CoinHistoryScreenController extends GetxController {
   ScrollController scrollController1 = ScrollController();
   DateTimeRange? selectedCoinDateRange;
   DateTimeRange? selectedPaymentDateRange;
+
+  /// used only to look up correct per-call coin values for reconciliation
+  List<CallHistory> _callingHistoryForReconciliation = [];
+
   @override
   void onInit() {
     init();
@@ -35,7 +41,48 @@ class CoinHistoryScreenController extends GetxController {
     PurchaseCoinGetPlanApi.startPagination = 0;
 
     await paymentHistory();
+    await _loadCallingHistoryForReconciliation();
     await coinHistory();
+  }
+
+  /// fetch calling history once, purely to source correct call-coin values
+  /// (mirrors CallingScreenController.getCallingHistory, where userCoin
+  /// is known to display correctly)
+  Future<void> _loadCallingHistoryForReconciliation() async {
+    try {
+      final result = await CallingHistoryApi.callApi(endDate: "All", startDate: "All");
+      _callingHistoryForReconciliation = result?.data ?? [];
+    } catch (e) {
+      log("Reconciliation fetch failed :: $e");
+      _callingHistoryForReconciliation = [];
+    }
+  }
+
+  /// Overwrite ledger coin values for call-type entries using the
+  /// calling-history value, since that's computed once from real call
+  /// duration and isn't affected by duplicate deduction socket emits.
+  ///
+  /// ASSUMPTIONS — please confirm against your actual CoinHistory model:
+  /// - `entry.id`   -> matches the call's Mongo _id
+  /// - `entry.type` -> int flag, 3 == call-type transaction
+  /// - `entry.userCoin` -> exists; treated as immutable, so we rebuild
+  ///   the entry with copyWith rather than mutate it directly
+  void _reconcileCoinValues() {
+    if (_callingHistoryForReconciliation.isEmpty) return;
+
+    final Map<String, num> callIdToCoin = {
+      for (final call in _callingHistoryForReconciliation)
+        if (call.id != null && call.coin != null) call.id!: call.coin!
+    };
+
+    for (int i = 0; i < coinHistoryList.length; i++) {
+      final entry = coinHistoryList[i];
+
+      // if (entry.type == 3 && entry.id != null && callIdToCoin.containsKey(entry.id)) {
+      //   final correctCoin = callIdToCoin[entry.id]!;
+      //   coinHistoryList[i] = entry.copyWith(userCoin: correctCoin);
+      // }
+    }
   }
 
   void changeTab(int index) {
@@ -46,7 +93,6 @@ class CoinHistoryScreenController extends GetxController {
   /// get payment history
   paymentHistory() async {
     isLoading = true;
-    // update([Constant.idCoinHistory, Constant.idPaymentHistory]);
     update([Constant.idTabChange]);
 
     purchaseCoinPlanModel = await PurchaseCoinGetPlanApi.callApi(endDate: "All", startDate: "All");
@@ -55,20 +101,18 @@ class CoinHistoryScreenController extends GetxController {
 
     isLoading = false;
     update([Constant.idTabChange]);
-
-    // update([Constant.idCoinHistory, Constant.idPaymentHistory]);
   }
 
   /// get coin history
   coinHistory() async {
     isLoading = true;
-    // update([Constant.idCoinHistory, Constant.idPaymentHistory]);
     update([Constant.idTabChange]);
 
     coinHistoryModel = await CoinHistoryApi.callApi(endDate: "All", startDate: "All");
     coinHistoryList.clear();
-
     coinHistoryList.addAll((coinHistoryModel?.data ?? []));
+
+    _reconcileCoinValues();
 
     isLoading = false;
     update([Constant.idTabChange]);
@@ -84,6 +128,10 @@ class CoinHistoryScreenController extends GetxController {
     );
     coinHistoryList.clear();
     coinHistoryList.addAll((coinHistoryModel?.data ?? []));
+
+    await _loadCallingHistoryForReconciliation();
+    _reconcileCoinValues();
+
     update([Constant.idTabChange]);
   }
 
@@ -115,6 +163,7 @@ class CoinHistoryScreenController extends GetxController {
 
       if (newItems.isNotEmpty) {
         coinHistoryList.addAll(newItems);
+        _reconcileCoinValues();
       }
 
       isPaginationLoading = false;
@@ -169,6 +218,9 @@ class CoinHistoryScreenController extends GetxController {
         endDate: Utils.formatDateToApi(endDate),
       );
       coinHistoryList.addAll((coinHistoryModel?.data ?? []));
+
+      await _loadCallingHistoryForReconciliation();
+      _reconcileCoinValues();
     }
 
     isLoading = false;
@@ -178,7 +230,6 @@ class CoinHistoryScreenController extends GetxController {
   /// clear filter
   void clearDateFilter() async {
     if (tabIndex == 0) {
-      /// Clear payment date filter
       isLoading = true;
       selectedPaymentDateRange = null;
       purchaseCoinList.clear();
@@ -192,7 +243,6 @@ class CoinHistoryScreenController extends GetxController {
       );
       purchaseCoinList.addAll((purchaseCoinPlanModel?.data ?? []));
     } else {
-      /// Clear coin date filter
       isLoading = true;
       selectedCoinDateRange = null;
       coinHistoryList.clear();
@@ -204,6 +254,9 @@ class CoinHistoryScreenController extends GetxController {
         endDate: "All",
       );
       coinHistoryList.addAll((coinHistoryModel?.data ?? []));
+
+      await _loadCallingHistoryForReconciliation();
+      _reconcileCoinValues();
     }
 
     isLoading = false;

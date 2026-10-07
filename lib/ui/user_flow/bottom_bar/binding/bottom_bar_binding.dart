@@ -8,6 +8,8 @@ import 'package:talk_in/ui/user_flow/home_screen/controller/home_screen_controll
 import 'package:talk_in/ui/user_flow/listener_screen/controller/listeners_screen_controller.dart';
 import 'package:talk_in/ui/user_flow/random_call_screen/controller/random_call_controller.dart';
 
+import '../../user_notification/controller/user_notification_controller.dart';
+
 class BottomBarBinding extends Bindings {
   @override
   void dependencies() {
@@ -19,5 +21,8 @@ class BottomBarBinding extends Bindings {
     Get.lazyPut<RandomCallController>(() => RandomCallController(), fenix: true);
     Get.lazyPut<ChatScreenController>(() => ChatScreenController(), fenix: true);
     Get.lazyPut<CallingScreenController>(() => CallingScreenController(), fenix: true);
+    if (!Get.isRegistered<UserNotificationController>()) {
+      Get.put<UserNotificationController>(UserNotificationController(), permanent: true);
+    }
   }
 }

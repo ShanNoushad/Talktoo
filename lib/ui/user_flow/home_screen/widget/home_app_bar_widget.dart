@@ -13,9 +13,11 @@ import 'package:talk_in/utils/database.dart';
 import 'package:talk_in/utils/font_style.dart';
 import 'package:talk_in/utils/utils.dart';
 
+import '../../user_notification/controller/user_notification_controller.dart';
+
 class HomeAppBarWidget extends GetWidget<HomeScreenController> {
-  HomeAppBarWidget({super.key});
-  final editController = Get.find<EditProfileController>();
+  const HomeAppBarWidget({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +43,7 @@ class HomeAppBarWidget extends GetWidget<HomeScreenController> {
                       // Avatar — dotted border only when profile complete
                       DottedBorder(
                         options: CircularDottedBorderOptions(
-                          color: isIncomplete
-                              ? AppColors.grey
-                              : Colors.black,
+                          color: isIncomplete ? AppColors.grey : Colors.black,
                           dashPattern: isIncomplete ? [2, 3] : [3, 2],
                           strokeWidth: 1,
                         ),
@@ -65,7 +65,7 @@ class HomeAppBarWidget extends GetWidget<HomeScreenController> {
                             child: isIncomplete &&
                                 Database.loginUserProfilePic.isEmpty
                             // Placeholder avatar for incomplete profile
-                                ?  Icon(Icons.person,
+                                ? Icon(Icons.person,
                                 color: AppColors.grey, size: 30)
                                 : CustomProfileImage(
                               image: Database.loginUserProfilePic,
@@ -101,16 +101,17 @@ class HomeAppBarWidget extends GetWidget<HomeScreenController> {
                                 return GestureDetector(
                                   onTap: () {
                                     if (!hController.isToastVisible) {
-                                      Utils.copyText(
-                                          Database.fetchLoginUserProfileModel
-                                              ?.user?.uniqueId ??
-                                              "");
+                                      Utils.copyText(Database
+                                          .fetchLoginUserProfileModel
+                                          ?.user
+                                          ?.uniqueId ??
+                                          "");
                                       Utils.showToast(context, "copied");
                                       hController.isToastVisible = true;
-                                      Future.delayed(
-                                          const Duration(seconds: 3), () {
-                                        hController.isToastVisible = false;
-                                      });
+                                      Future.delayed(const Duration(seconds: 3),
+                                              () {
+                                            hController.isToastVisible = false;
+                                          });
                                     }
                                   },
                                   child: Container(
@@ -172,8 +173,7 @@ class HomeAppBarWidget extends GetWidget<HomeScreenController> {
                 return GestureDetector(
                   onTap: () => Get.toNamed(AppRoutes.myWalletScreen),
                   child: Container(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
                     decoration: BoxDecoration(
                       color: AppColors.lightPurple,
                       borderRadius: BorderRadius.circular(30),
@@ -191,20 +191,17 @@ class HomeAppBarWidget extends GetWidget<HomeScreenController> {
                         controller.isCoinLoading
                             ? Shimmer.fromColors(
                           baseColor: AppColors.lightGrey1,
-                          highlightColor:
-                          AppColors.grey.withValues(alpha: 0.2),
+                          highlightColor: AppColors.grey.withValues(alpha: 0.2),
                           child: Text(
-                            Database.listenerCoin.toString(),
+                            "0000", // static placeholder shape — don't bind real data under shimmer
                             style: AppFontStyle.fontStyleW700(
-                                fontSize: 16,
-                                fontColor: AppColors.orange),
+                                fontSize: 16, fontColor: AppColors.orange),
                           ),
                         ).paddingOnly(left: 6, right: 6)
-                            : Text(
-                          Database.userCoin.toString(),
+                            :  Text(
+                          Database.userCoin.isEmpty ? "0" : Database.userCoin,
                           style: AppFontStyle.fontStyleW700(
-                              fontSize: 15,
-                              fontColor: AppColors.orange),
+                              fontSize: 15, fontColor: AppColors.orange),
                         ).paddingOnly(left: 6, right: 5),
                       ],
                     ),
@@ -212,45 +209,64 @@ class HomeAppBarWidget extends GetWidget<HomeScreenController> {
                 );
               },
             ),
-            // GestureDetector(
-            //   onTap: (){Get.toNamed(AppRoutes.myWalletScreen);},
-            //   child: Row(
-            //     mainAxisSize: MainAxisSize.min,
-            //     children: [
-            //       Image.asset(
-            //         AppAsset.starCoin,
-            //         height: 24,
-            //         width: 24,
-            //       ),
-            //       Text(
-            //         Database.userCoin.toString(),
-            //         style: AppFontStyle.fontStyleW700(
-            //           fontSize: 14,
-            //           fontColor: AppColors.randomCallCoin,
-            //         ),
-            //       ).paddingOnly(left: 6),
-            //     ],
-            //   ),
-            // ),
-            SizedBox(width: 8,),
-            // ── Notification bell ──────────────────────────────────────────
-            GestureDetector(
-              onTap: () => Get.toNamed(AppRoutes.userNotificationView),
-              child: Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: AppColors.lightRed.withValues(alpha: 0.5),
-                ),
-                child: Image.asset(
-                  AppAsset.notificationIconRed,
-                  height: 20,
-                  width: 20,
-                ),
-              ),
+            SizedBox(
+              width: 8,
             ),
-          ],
+            // ── Notification bell ──────────────────────────────────────────
+// ── Notification bell ──────────────────────────────────────────
+            GestureDetector(
+              onTap: () {
+                if (Get.isRegistered<UserNotificationController>()) {
+                  Get.find<UserNotificationController>().markAllAsSeen();
+                }
+                Get.toNamed(AppRoutes.userNotificationView);
+              },
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: AppColors.lightRed.withValues(alpha: 0.5),
+                    ),
+                    child: Image.asset(
+                      AppAsset.notificationIconRed,
+                      height: 20,
+                      width: 20,
+                    ),
+                  ),
+                  if (Get.isRegistered<UserNotificationController>())
+                    GetBuilder<UserNotificationController>(
+                      id: Constant.idNotificationBadge,
+                      builder: (notifController) {
+                        if (notifController.unreadCount <= 0) return const SizedBox.shrink();
+                        return Positioned(
+                          right: -2,
+                          top: -2,
+                          child: Container(
+                            padding: const EdgeInsets.all(3),
+                            constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              notifController.unreadCount > 9 ? "9+" : "${notifController.unreadCount}",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 9,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ),
+            ),          ],
         ).paddingOnly(top: Get.height * 0.048, bottom: 10),
       ),
     );

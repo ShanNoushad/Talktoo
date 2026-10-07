@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:dio/dio.dart';
 import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
@@ -100,13 +101,22 @@ class InAppPurchaseHelper {
     log("Not found product IDs: ${response.notFoundIDs}");
 
     for (var product in response.productDetails) {
-      log("Found product: ${product.id} - ${product.title} - ${product.price}");
+      log("=== PRODUCT DETAIL ===");
+      log("ID: ${product.id}");
+      log("Title: ${product.title}");
+      log("Description: ${product.description}");
+      log("Price (formatted): ${product.price}");
+      log("Raw price (numeric): ${product.rawPrice}");
+      log("Currency code: ${product.currencyCode}");
+      log("Currency symbol: ${product.currencySymbol}");
+      log("=======================");
     }
 
     for (var notFound in response.notFoundIDs) {
       log("Not found product: $notFound");
     }
   }
+
 
   getAlreadyPurchaseItems(IAPCallback iapCallback) {
     _iapCallback = iapCallback;
@@ -135,6 +145,8 @@ class InAppPurchaseHelper {
   }
 
   Future<void> initStoreInfo() async {
+    log("Device locale: ${ui.PlatformDispatcher.instance.locale}");
+
     final bool isAvailable = await _connection.isAvailable();
     if (!isAvailable) {
       _products = [];
@@ -164,6 +176,13 @@ class InAppPurchaseHelper {
       _products = productDetailResponse.productDetails;
       _purchases = [];
       log("Products loaded: ${_products.length}");
+
+      // ADD THIS BLOCK
+      for (var product in _products) {
+        log("LOADED PRODUCT => id: ${product.id}, price: ${product.price}, "
+            "rawPrice: ${product.rawPrice}, currencyCode: ${product.currencyCode}, "
+            "currencySymbol: ${product.currencySymbol}");
+      }
     }
 
     await _connection.restorePurchases();

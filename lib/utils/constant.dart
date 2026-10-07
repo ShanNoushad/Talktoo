@@ -97,6 +97,27 @@ class Constant {
     {"country": "Urdu", "code": "ا", "id": "18"},
   ];
 
+
+  static const idNotificationBadge = "idNotificationBadge";
+
+  static String formatCallDuration(String? duration) {
+    if (duration == null || duration.isEmpty) return "00:00";
+
+    // If it's already formatted like "02:05", return as-is
+    if (duration.contains(":")) return duration;
+
+    // Otherwise assume it's raw seconds
+    final seconds = int.tryParse(duration);
+    if (seconds == null) return duration; // fallback, show whatever API sent
+
+    final d = Duration(seconds: seconds);
+    final minutes = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final secs = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return "$minutes:$secs";
+  }
+
+
+
   /// =================== Shimmers =================== ///
   // static Color baseColor = AppColors.shimmerGrey.withValues(alpha: 0.6);
   static Color highlightColor = Colors.grey.withValues(alpha: 0.2);

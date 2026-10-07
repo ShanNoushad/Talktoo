@@ -10,7 +10,7 @@ class OutgoingAudioCallScreen extends StatelessWidget {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.lightPurple,
         body: const OutgoingAudioCallView(),
       ),
     );

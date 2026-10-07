@@ -16,16 +16,14 @@ Future<void> razorPay({
 }) async {
   Utils.showLog("Razorpay Payment (Incodes) starting...");
   Utils.showLog("Razorpay Payment (Incodes) starting...$amount");
-
+  Utils.showLog("CURRENCY FROM SETTINGS: ${Database.settingApiModel?.data?.currency?.currencyCode}");
+  Utils.showLog("FULL CURRENCY OBJECT: ${Database.settingApiModel?.data?.currency}");
   try {
     final razorKey =
         Database.settingApiModel?.data?.razorpayKeySecret ?? '';
     final email = Database.fetchLoginUserProfileModel?.user?.email ;
-
-    final currency =
-        Database.settingApiModel?.data?.currency?.currencyCode ??
-
-            "INR";
+///edit 2026
+    final currency = "INR";
     // Utils.showLog("customerName>>>>>>>>>>>>>>>>>>>>>>$customerName");
     Utils.showLog("email>>>>>>>>>>>>>>>>>>>>>>$email");
     Utils.showLog("Database.email>>>>>>>>>>>>>>>>>>>>>>${email}");

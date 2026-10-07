@@ -21,6 +21,8 @@ class TopListenersViewAllAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomAppBar(
       title: EnumLocale.txtTopListener.name.tr,
+      appBarColor: AppColors.lightPurple,
+      textColor: AppColors.white,
       showLeadingIcon: true,
       action: [
         GestureDetector(
@@ -37,6 +39,7 @@ class TopListenersViewAllAppBar extends StatelessWidget {
             ),
             child: Center(
               child: Image.asset(
+                color: Colors.white,
                 AppAsset.searchIcon,
                 height: 18,
                 width: 18,

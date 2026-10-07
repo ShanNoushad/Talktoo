@@ -18,7 +18,6 @@ class PurchaseCoinGetPlanApi {
     String? endDate,
   }) async {
 
-    Utils.showLog("purchase Coin history Api Calling...");
     startPagination += 1;
 
     final Map<String, dynamic> queryParameters = {
@@ -28,7 +27,6 @@ class PurchaseCoinGetPlanApi {
       ApiParams.limit: limitPagination.toString(),
     };
 
-    log("purchase Coin history queryParameters ::$queryParameters");
 
     String query = Uri(queryParameters: queryParameters).query;
 
@@ -40,8 +38,7 @@ class PurchaseCoinGetPlanApi {
       ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
-    Utils.showLog("purchase Coin history Api uri :: $uri");
-    Utils.showLog("purchase Coin history Api headers :: $headers");
+
 
     try {
       final response = await http.get(uri, headers: headers);

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.incodes.talktoo"
+    namespace = "com.ishvion.talktoo"
     compileSdk = 36
     buildToolsVersion = "35.0.0"
     ndkVersion = flutter.ndkVersion
@@ -22,7 +22,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.incodes.talktoo"
+        applicationId "com.ishvion.talktoo"
         minSdkVersion = 24
         targetSdk = 36
         versionCode = flutter.versionCode

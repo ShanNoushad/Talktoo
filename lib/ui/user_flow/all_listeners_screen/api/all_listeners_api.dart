@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:http/http.dart' as http;
 import 'package:talk_in/ui/user_flow/home_screen/model/top_listeners_model.dart';
 import 'package:talk_in/utils/api.dart';
@@ -20,7 +19,6 @@ class AllListenersApi {
   }) async {
 
 
-    Utils.showLog("All Listeners Api Calling...");
     startPagination += 1;
 
     final Map<String, dynamic> queryParameters = {
@@ -38,7 +36,6 @@ class AllListenersApi {
       queryParameters[ApiParams.language] = language;
     }
 
-    log("All Listeners queryParameters ::$queryParameters");
 
     String query = Uri(queryParameters: queryParameters).query;
 
@@ -51,13 +48,11 @@ class AllListenersApi {
       ApiParams.authUid: Database.loginUserId,
       ApiParams.contentType: "application/json",
     };
-    Utils.showLog("All Listeners Api uri :: $uri");
-    Utils.showLog("All Listeners Api headers :: $headers");
+
 
     try {
       final response = await http.get(uri, headers: headers);
 
-      log('All Listeners API STATUS CODE :: ${response.statusCode} \n RESPONSE :: ${response.body}');
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);

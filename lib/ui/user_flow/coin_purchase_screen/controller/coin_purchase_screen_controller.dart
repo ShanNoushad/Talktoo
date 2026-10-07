@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class CoinPurchaseScreenController extends GetxController {
+  bool isLoading = true;
+
   String? date;
   String? amountPaid;
   String? paymentMode;
@@ -15,13 +17,42 @@ class CoinPurchaseScreenController extends GetxController {
 
     log("purchase coin plan arguments :: $data");
 
-    // date = data['date']?.toString();
-    date = formatToCustomDate("${data['date']?.toString()}");
-    amountPaid = data['amount']?.toString(); // ✅ Convert to string
-    paymentMode = data['paymentMode']?.toString();
-    transactionId = data['transactionId']?.toString();
+    // If we were navigated here before the purchase API resolved,
+    // arguments will just be {"isLoading": true} — stay in loading state
+    // and wait for setLoaded() to be called once the payment succeeds.
+    if (data['isLoading'] == true) {
+      isLoading = true;
+    } else {
+      _applyData(data);
+      isLoading = false;
+    }
 
     super.onInit();
+  }
+
+  /// Called by MyWalletController once PurchaseCoinPlanApi resolves,
+  /// to fill in the real receipt data and switch out of loading state.
+  void setLoaded({
+    String? date,
+    String? amount,
+    String? paymentMode,
+    String? transactionId,
+  }) {
+    _applyData({
+      'date': date,
+      'amount': amount,
+      'paymentMode': paymentMode,
+      'transactionId': transactionId,
+    });
+    isLoading = false;
+    update();
+  }
+
+  void _applyData(Map<String, dynamic> data) {
+    date = formatToCustomDate("${data['date']?.toString()}");
+    amountPaid = data['amount']?.toString();
+    paymentMode = data['paymentMode']?.toString();
+    transactionId = data['transactionId']?.toString();
   }
 
   String formatToCustomDate(String input) {

@@ -23,7 +23,9 @@ class CoinHistoryScreenAppBar extends StatelessWidget {
       preferredSize: Size.fromHeight(120),
       child: CustomAppBar(
         appBarColor: AppColors.lightPurple,
+        textColor: AppColors.white,
         title: EnumLocale.txtHistory.name.tr,
+
         showLeadingIcon: true,
       ),
     );
@@ -45,7 +47,7 @@ class CoinHistoryScreenTabBar extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               height: Get.height * 0.06,
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: AppColors.profileMail,
                 border: Border.all(color: AppColors.borderColor),
                 borderRadius: BorderRadius.circular(24),
               ),
@@ -217,7 +219,7 @@ class CoinHistoryScreenTabBarScreen extends StatelessWidget {
               ? PaymentHistoryShimmer()
               : Container(
                   decoration: BoxDecoration(
-                    color: AppColors.white,
+                    color: AppColors.lightPurple,
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(16),
                     ),
@@ -240,7 +242,7 @@ class CoinHistoryScreenTabBarScreen extends StatelessWidget {
                               flex: 5,
                               child: Text(
                                 EnumLocale.txtDetails.name.tr,
-                                style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.profileMail),
+                                style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.white),
                               ),
                             ),
 
@@ -249,7 +251,7 @@ class CoinHistoryScreenTabBarScreen extends StatelessWidget {
                               child: Text(
                                 textAlign: TextAlign.center,
                                 EnumLocale.txtPaymentGetway.name.tr,
-                                style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.profileMail),
+                                style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.white),
                               ),
                             ),
                             Expanded(
@@ -257,7 +259,7 @@ class CoinHistoryScreenTabBarScreen extends StatelessWidget {
                               child: Text(
                                 textAlign: TextAlign.center,
                                 EnumLocale.txtCoin.name.tr,
-                                style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.profileMail),
+                                style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.white),
                               ),
                             ),
                             Expanded(
@@ -265,7 +267,7 @@ class CoinHistoryScreenTabBarScreen extends StatelessWidget {
                               child: Text(
                                 textAlign: TextAlign.center,
                                 EnumLocale.txtAmount.name.tr,
-                                style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.profileMail),
+                                style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.white),
                               ),
                             ),
                             // SizedBox(
@@ -304,7 +306,7 @@ class CoinHistoryScreenTabBarScreen extends StatelessWidget {
                                                     item?.uniqueId.toString() ?? '',
                                                     style: AppFontStyle.fontStyleW600(
                                                       fontSize: 14,
-                                                      fontColor: AppColors.black,
+                                                      fontColor: AppColors.white,
                                                     ),
                                                   ).paddingOnly(bottom: 3),
                                                   Text(
@@ -321,7 +323,7 @@ class CoinHistoryScreenTabBarScreen extends StatelessWidget {
                                                 item?.paymentGateway ?? '',
                                                 style: AppFontStyle.fontStyleW500(
                                                   fontSize: 13,
-                                                  fontColor: AppColors.black,
+                                                  fontColor: AppColors.white,
                                                 ),
                                               ),
                                             ),
@@ -388,7 +390,7 @@ class CoinHistoryScreenTabBarScreen extends StatelessWidget {
               ? CoinHistoryShimmer()
               : Container(
                   decoration: BoxDecoration(
-                    color: AppColors.white,
+                    color: AppColors.lightPurple,
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(16),
                     ),
@@ -464,7 +466,7 @@ class CoinHistoryScreenTabBarScreen extends StatelessWidget {
                                                         item.type == 1 || item.type == 2 ? Database.loginUserName : item.receiverName ?? '',
                                                         style: AppFontStyle.fontStyleW700(
                                                           fontSize: 13,
-                                                          fontColor: AppColors.black,
+                                                          fontColor: AppColors.white,
                                                         ),
                                                       ).paddingOnly(bottom: 3),
                                                       Row(

@@ -12,29 +12,27 @@ class MyWalletScreen extends GetView<MyWalletController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.black,
-      body: GetBuilder<MyWalletController>(builder: (controller) {
-        return Column(
-          children: [
-            MyWalletScreenTopView(),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  await controller.onRefresh();
-                },
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Column(
-                    children: [
-                      CoinPlanWidget(),
-                      WalletGuideView(),
-                    ],
-                  ),
+      body: Column(
+        children: [
+          MyWalletScreenTopView(),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                await controller.onRefresh();
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    CoinPlanWidget(),
+                    WalletGuideView(),
+                  ],
                 ),
               ),
-            )
-          ],
-        );
-      }),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

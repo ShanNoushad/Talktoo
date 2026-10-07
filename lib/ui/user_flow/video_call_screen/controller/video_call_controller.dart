@@ -439,11 +439,11 @@ class VideoCallController extends GetxController {
   }
 
   void coinCutEveryOneMinute() async {
+    final bool isMeUser = Database.fetchLoginUserProfileModel?.user?.isListener != true;
 
-    Utils.showLog('coinCutEveryOneMinute callerId >>>>> $callerId');
-    Utils.showLog('coinCutEveryOneMinute Database.loginUserId >>>>> ${Database.fetchLoginUserProfileModel?.user?.id}');
+    Utils.showLog('coinCutEveryOneMinute isMeUser >>>>> $isMeUser, callerId >>>>> $callerId');
 
-    if (callerId == Database.loginUserId) {
+    if (isMeUser) {
       SocketEmit.callCoinsDeducted(
         callerId: callerId.toString(),
         receiverId: receiverId.toString(),

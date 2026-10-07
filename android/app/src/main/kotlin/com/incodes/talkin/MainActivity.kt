@@ -5,7 +5,7 @@
 //class MainActivity: FlutterFragmentActivity()
 
 
-package com.incodes.talktoo
+package com.ishvion.talktoo
 
 import android.media.Ringtone
 import android.media.RingtoneManager

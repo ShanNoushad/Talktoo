@@ -76,7 +76,9 @@ class HostUserProfileInfoView extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       child: CustomProfileImage(
-                        image: controller.fetchListenerProfileModel?.data?.image ?? '',
+                        image:
+                            controller.fetchListenerProfileModel?.data?.image ??
+                                '',
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -87,71 +89,89 @@ class HostUserProfileInfoView extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            controller.fetchListenerProfileModel?.data?.name ?? '',
-                            style: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.white), // 🔥 was: appDarkColor
+                            controller.fetchListenerProfileModel?.data?.name ??
+                                '',
+                            style: AppFontStyle.fontStyleW700(
+                                fontSize: 16,
+                                fontColor:
+                                    AppColors.white), // 🔥 was: appDarkColor
                           ).paddingOnly(bottom: 8),
                         ],
                       ),
-                      controller.fetchListenerProfileModel?.data?.id == "Offline"
+                      controller.fetchListenerProfileModel?.data?.id ==
+                              "Offline"
                           ? Container(
-                        padding: const EdgeInsets.only(right: 8, bottom: 5, top: 5, left: 8),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColors.red),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
+                              padding: const EdgeInsets.only(
+                                  right: 8, bottom: 5, top: 5, left: 8),
                               decoration: BoxDecoration(
-                                color: AppColors.white.withValues(alpha: 0.5),
-                                shape: BoxShape.circle,
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: AppColors.red),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.white
+                                          .withValues(alpha: 0.5),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Container(
+                                      height: 7,
+                                      width: 7,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.white,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ).paddingAll(1.8),
+                                  ).paddingOnly(right: 4),
+                                  Text(
+                                    EnumLocale.txtOnCall.name.tr,
+                                    style: AppFontStyle.fontStyleW500(
+                                        fontSize: 10,
+                                        fontColor: AppColors.white),
+                                  ).paddingOnly(right: 4),
+                                ],
                               ),
-                              child: Container(
-                                height: 7,
-                                width: 7,
-                                decoration: BoxDecoration(
-                                  color: AppColors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                              ).paddingAll(1.8),
-                            ).paddingOnly(right: 4),
-                            Text(
-                              EnumLocale.txtOnCall.name.tr,
-                              style: AppFontStyle.fontStyleW500(fontSize: 10, fontColor: AppColors.white),
-                            ).paddingOnly(right: 4),
-                          ],
-                        ),
-                      )
+                            )
                           : Container(
-                        padding: const EdgeInsets.only(right: 8, bottom: 5, top: 5, left: 8),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColors.green),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
+                              padding: const EdgeInsets.only(
+                                  right: 8, bottom: 5, top: 5, left: 8),
                               decoration: BoxDecoration(
-                                color: AppColors.white.withValues(alpha: 0.5),
-                                shape: BoxShape.circle,
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: AppColors.green),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.white
+                                          .withValues(alpha: 0.5),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Container(
+                                      height: 7,
+                                      width: 7,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.white,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ).paddingAll(1.8),
+                                  ).paddingOnly(right: 4),
+                                  Text(
+                                    EnumLocale.txtOnline.name.tr,
+                                    style: AppFontStyle.fontStyleW500(
+                                        fontSize: 10,
+                                        fontColor: AppColors.white),
+                                  ).paddingOnly(right: 4),
+                                ],
                               ),
-                              child: Container(
-                                height: 7,
-                                width: 7,
-                                decoration: BoxDecoration(
-                                  color: AppColors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                              ).paddingAll(1.8),
-                            ).paddingOnly(right: 4),
-                            Text(
-                              EnumLocale.txtOnline.name.tr,
-                              style: AppFontStyle.fontStyleW500(fontSize: 10, fontColor: AppColors.white),
-                            ).paddingOnly(right: 4),
-                          ],
-                        ),
-                      ),
+                            ),
                     ],
                   ),
                   const Spacer(),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                     decoration: BoxDecoration(
                       color: AppColors.black, // 🔥 was: lightPurple
                       border: Border.all(color: AppColors.purpleBorder),
@@ -159,7 +179,8 @@ class HostUserProfileInfoView extends StatelessWidget {
                     ),
                     child: Text(
                       '10₹ per min',
-                      style: AppFontStyle.fontStyleW700(fontSize: 12, fontColor: AppColors.primary),
+                      style: AppFontStyle.fontStyleW700(
+                          fontSize: 12, fontColor: AppColors.primary),
                     ),
                   ),
                 ],
@@ -170,7 +191,8 @@ class HostUserProfileInfoView extends StatelessWidget {
               style: AppFontStyle.fontStyleW500(
                 fontSize: 12,
                 height: 1.9,
-                fontColor: AppColors.white.withValues(alpha: 0.7), // 🔥 was: profileText
+                fontColor: AppColors.white
+                    .withValues(alpha: 0.7), // 🔥 was: profileText
               ),
             ).paddingSymmetric(horizontal: 12, vertical: 10),
             Row(
@@ -186,12 +208,15 @@ class HostUserProfileInfoView extends StatelessWidget {
                   '${EnumLocale.txtLanguage.name.tr} : ',
                   style: AppFontStyle.fontStyleW500(
                     fontSize: 14,
-                    fontColor: AppColors.white.withValues(alpha: 0.7), // 🔥 was: profileText
+                    fontColor: AppColors.white
+                        .withValues(alpha: 0.7), // 🔥 was: profileText
                   ),
                 ).paddingOnly(left: 8),
                 Expanded(
                   child: Text(
-                    controller.fetchListenerProfileModel?.data?.language?.join(', ') ?? '',
+                    controller.fetchListenerProfileModel?.data?.language
+                            ?.join(', ') ??
+                        '',
                     style: AppFontStyle.fontStyleW600(
                       fontSize: 14,
                       fontColor: AppColors.white, // 🔥 was: appDarkColor
@@ -203,7 +228,8 @@ class HostUserProfileInfoView extends StatelessWidget {
             SizedBox(
               height: Get.height * 0.035,
               child: ListView.builder(
-                itemCount: controller.fetchListenerProfileModel?.data?.talkTopics?.length,
+                itemCount: controller
+                    .fetchListenerProfileModel?.data?.talkTopics?.length,
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
@@ -216,8 +242,13 @@ class HostUserProfileInfoView extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        controller.fetchListenerProfileModel?.data?.talkTopics?.join(', ') ?? '',
-                        style: AppFontStyle.fontStyleW500(fontSize: 12, fontColor: AppColors.white.withValues(alpha: 0.8)), // 🔥 was: profileText
+                        controller.fetchListenerProfileModel?.data?.talkTopics
+                                ?.join(', ') ??
+                            '',
+                        style: AppFontStyle.fontStyleW500(
+                            fontSize: 12,
+                            fontColor: AppColors.white
+                                .withValues(alpha: 0.8)), // 🔥 was: profileText
                       ),
                     ),
                   ).paddingOnly(right: 6);
@@ -246,10 +277,11 @@ class HostStatusView extends StatelessWidget {
               final item = controller.statsList[index];
               return Expanded(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 22),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 7, vertical: 22),
                   decoration: BoxDecoration(
                     border: Border.all(color: AppColors.purpleBorder),
-                    color: AppColors.black, // 🔥 was: lightPurple1
+                    color: AppColors.black,
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: Column(
@@ -261,11 +293,15 @@ class HostStatusView extends StatelessWidget {
                       ).paddingOnly(bottom: 10),
                       Text(
                         item['title'].toString(),
-                        style: AppFontStyle.fontStyleW500(fontSize: 11, fontColor: AppColors.white.withValues(alpha: 0.7)), // 🔥 was: profileText
+                        style: AppFontStyle.fontStyleW500(
+                            fontSize: 11,
+                            fontColor: AppColors.white),
                       ).paddingOnly(bottom: 5),
                       Text(
                         item['count'].toString(),
-                        style: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.white), // 🔥 was: appDarkColor
+                        style: AppFontStyle.fontStyleW600(
+                            fontSize: 16,
+                            fontColor: AppColors.white),
                       ),
                     ],
                   ),
@@ -278,7 +314,6 @@ class HostStatusView extends StatelessWidget {
     );
   }
 }
-
 class HostProfileBottomButtonView extends StatelessWidget {
   const HostProfileBottomButtonView({super.key});
 
@@ -287,7 +322,7 @@ class HostProfileBottomButtonView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.black, // 🔥 was: white
+        color: AppColors.black,
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.10),
@@ -310,7 +345,8 @@ class HostProfileBottomButtonView extends StatelessWidget {
             ).paddingOnly(right: 8),
             Text(
               EnumLocale.txtTalkNow.name.tr,
-              style: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.white),
+              style: AppFontStyle.fontStyleW600(
+                  fontSize: 16, fontColor: AppColors.white),
             )
           ],
         ),

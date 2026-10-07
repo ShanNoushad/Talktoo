@@ -29,37 +29,58 @@ class CoinPlanWidget extends GetView<MyWalletController> {
             EnumLocale.txtAddCoinBalanceSelectPlan.name.tr,
             style: AppFontStyle.fontStyleW800(
               fontSize: 17,
-              fontColor: AppColors.appDarkColor, // Light near-white text contrast over dark background
+              fontColor: AppColors.appDarkColor,
             ),
           ).paddingOnly(top: 22),
           const SizedBox(height: 22),
           GetBuilder<MyWalletController>(
             id: Constant.idGetCoinPlan,
             builder: (controller) {
-              return controller.isLoading
-                  ? const CoinPlanShimmer()
-                  : ListView.builder(
+              if (controller.isLoading) {
+                return const CoinPlanShimmer();
+              }
+
+              // Once the user has already completed their first (₹1)
+              // recharge, don't show that introductory plan again.
+              final bool hasPurchasedCoins =
+                  Database.fetchLoginUserProfileModel?.user?.coinsRecharged == true ||
+                      Database.isFirstPayDone == true;
+
+              final List<CoinPlan> visiblePlans = hasPurchasedCoins
+                  ? controller.coinPlan
+                  .where((plan) => plan.productId != 'com.example.app.coinpack_firstcall')
+                  .toList()
+                  : controller.coinPlan;
+
+              return ListView.builder(
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
-                itemCount: controller.coinPlan.length,
+                itemCount: visiblePlans.length,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
+                  final plan = visiblePlans[index];
+                  // Map back to the index in the FULL coinPlan list, since
+                  // PaymentOptionBottomSheet indexes into controller.coinPlan
+                  // directly (via controller.coinPlan[index] in onClickPayNow).
+                  final int originalIndex = controller.coinPlan.indexOf(plan);
+
                   return GestureDetector(
                     onTap: () {
                       controller.selectedPaymentMethod = -1;
                       controller.update([Constant.onChangePaymentMethod]);
-                      controller.selectedCoinPlan = controller.coinPlan[index];
+                      controller.selectedCoinPlan = plan;
                       controller.update([Constant.idGetCoinPlan]);
-                      Utils.showLog('Selected Plan Product ID: ${controller.selectedCoinPlan?.productId.toString() ?? ' '}');
+                      Utils.showLog(
+                          'Selected Plan Product ID: ${controller.selectedCoinPlan?.productId.toString() ?? ' '}');
 
                       Get.bottomSheet(
-                        PaymentOptionBottomSheet(index: index),
+                        PaymentOptionBottomSheet(index: originalIndex),
                         isScrollControlled: true,
                         backgroundColor: AppColors.transparent,
                       );
                     },
                     child: CoinPlanTile(
-                      coinPlan: controller.coinPlan[index],
+                      coinPlan: plan,
                     ),
                   );
                 },
@@ -71,7 +92,6 @@ class CoinPlanWidget extends GetView<MyWalletController> {
     );
   }
 }
-
 class PaymentOptionTile extends StatelessWidget {
   final int index;
   final double? width;

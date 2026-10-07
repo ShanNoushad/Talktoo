@@ -11,6 +11,8 @@ import 'package:talk_in/utils/database.dart';
 import 'package:talk_in/utils/enums.dart';
 import 'package:talk_in/utils/font_style.dart';
 
+import '../../../../routes/app_routes.dart';
+
 /// =================== Video Call View =================== ///
 class VoiceCallView extends StatelessWidget {
   const VoiceCallView({super.key});
@@ -155,9 +157,13 @@ class VoiceCallView extends StatelessWidget {
                             receiverImage: controller.receiverImage ?? '',
                             receiverName: controller.receiverName ?? '',
                           );
-                          // Get.toNamed(AppRoutes.callCutScreen);
-                        },
-                      ),
+                          // End the call locally immediately instead of waiting for the server
+                          // to echo `callTerminated` back to this same socket — that echo may
+                          // never arrive for the person who initiated the cut.
+                          if (Get.currentRoute == AppRoutes.voiceCallScreen || Get.currentRoute == AppRoutes.videoCallScreen) {
+                            Get.back();
+                          }
+                        },                      ),
                     ],
                   ).paddingSymmetric(horizontal: 13),
                 ).paddingSymmetric(horizontal: 32);
@@ -195,7 +201,7 @@ class VoiceCallView1 extends StatelessWidget {
       children: [
         Center(
             child: Text(
-          "Talkin",
+          "Talktoo",
           style: AppFontStyle.fontStyleKaushanW400(
             font: FontWeight.w600,
             fontSize: 32,

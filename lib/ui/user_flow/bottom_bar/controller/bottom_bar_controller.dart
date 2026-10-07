@@ -15,6 +15,8 @@ import 'package:talk_in/utils/constant.dart';
 import 'package:talk_in/utils/database.dart';
 import 'package:talk_in/utils/utils.dart';
 import 'package:zego_express_engine/zego_express_engine.dart';
+import '../../home_screen/controller/home_screen_controller.dart';
+import '../../random_call_screen/controller/random_call_controller.dart';
 
 class BottomBarController extends GetxController {
   bool checkScreen = false;
@@ -71,6 +73,19 @@ class BottomBarController extends GetxController {
     if (value != null) {
       selectIndex = value;
       update([Constant.idBottomBar]);
+
+      // Single source of truth for the coin fetch (see fetchUserCoin() note
+      // in HomeScreenController — do not duplicate the fetch elsewhere).
+      if (Get.isRegistered<HomeScreenController>()) {
+        await Get.find<HomeScreenController>().fetchUserCoin();
+      }
+
+      // fetchUserCoin() only notifies HomeScreenController's own GetBuilders.
+      // RandomCallTopView's coin widget listens to RandomCallController
+      // instead, so nudge it too — it just re-reads Database.userCoin.
+      if (Get.isRegistered<RandomCallController>()) {
+        Get.find<RandomCallController>().update();
+      }
     }
   }
 }

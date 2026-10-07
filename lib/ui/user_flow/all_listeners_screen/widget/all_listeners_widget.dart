@@ -13,8 +13,10 @@ class AllListenersAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomAppBar(
       title: EnumLocale.txtAllListeners.name.tr,
+      appBarColor: AppColors.lightPurple,
       textColor: AppColors.white,
       showLeadingIcon: true,
+      iconColor: Colors.white,
       action: [
         GestureDetector(
           onTap: () {
@@ -29,6 +31,7 @@ class AllListenersAppBar extends StatelessWidget {
             ),
             child: Center(
               child: Image.asset(
+                color: Colors.white,
                 AppAsset.searchIcon,
                 height: 18,
                 width: 18,

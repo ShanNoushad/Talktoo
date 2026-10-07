@@ -536,7 +536,7 @@ class HostChatVideoCallWidget extends StatelessWidget {
             children: [
               Text(
                 EnumLocale.txtVideoCall.name.tr,
-                style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.black),
+                style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.white),
               ).paddingOnly(bottom: 4),
               if (msg.callType == 1)
                 Text(
@@ -599,7 +599,7 @@ class HostChatAudioCallWidget extends StatelessWidget {
             children: [
               Text(
                 EnumLocale.txtAudioCall.name.tr,
-                style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.black),
+                style: AppFontStyle.fontStyleW700(fontSize: 15, fontColor: AppColors.white),
               ).paddingOnly(bottom: 4),
               if (msg.callType == 1)
                 Text(
@@ -636,13 +636,13 @@ class HostPersonalChatBottomView extends StatelessWidget {
                 blurRadius: 6,
               ),
             ],
-            color: Colors.white,
+            color: AppColors.lightPurple,
           ),
           child: Row(
             children: [
               Expanded(
                 child: TextFormField(
-                  cursorColor: AppColors.darkPurple,
+                  cursorColor: AppColors.black,
                   controller: controller.messageController,
                   maxLength: 1000,
                   buildCounter: (
@@ -687,7 +687,7 @@ class HostPersonalChatBottomView extends StatelessWidget {
                             GestureDetector(
                               onTap: () {
                                 Get.defaultDialog(
-                                  backgroundColor: AppColors.white,
+                                  backgroundColor: AppColors.black,
                                   title: EnumLocale.changeYourImage.name.tr,
                                   titlePadding: const EdgeInsets.only(top: 30),
                                   titleStyle: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.appColor),
@@ -768,9 +768,9 @@ class HostPersonalChatBottomView extends StatelessWidget {
                       ),
                     ),
                     hintText: "Type Something...",
-                    hintStyle: AppFontStyle.fontStyleW500(fontSize: 15, fontColor: AppColors.darkPurple),
+                    hintStyle: AppFontStyle.fontStyleW500(fontSize: 15, fontColor: AppColors.white),
                     filled: true,
-                    fillColor: Colors.grey.shade200,
+                    fillColor: AppColors.lightPurple.withValues(alpha: .3),
                     contentPadding: EdgeInsets.symmetric(horizontal: 12),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),

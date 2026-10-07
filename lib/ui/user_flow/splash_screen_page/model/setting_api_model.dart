@@ -203,6 +203,7 @@ class Data {
     androidAppVersion:json["androidAppVersion"],
     iosAppLink:json["iosAppLink"],
     iosAppVersion:json["iosAppVersion"],
+
   );
 
   Map<String, dynamic> toJson() => {
@@ -262,6 +263,8 @@ class Data {
     "iosAppLink":iosAppLink,
     "iosAppVersion":iosAppVersion,
   };
+
+
 }
 
 class Currency {
@@ -350,4 +353,6 @@ class PrivateKey {
     "client_x509_cert_url": clientX509CertUrl,
     "universe_domain": universeDomain,
   };
+
+
 }

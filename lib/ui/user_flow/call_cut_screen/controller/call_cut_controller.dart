@@ -15,6 +15,9 @@ import 'package:talk_in/utils/database.dart';
 import 'package:talk_in/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../routes/app_routes.dart';
+import '../../home_screen/controller/home_screen_controller.dart';
+
 class CallCutController extends GetxController {
   String listenerService = 'yes';
   String favListener = 'yes';
@@ -134,8 +137,11 @@ class CallCutController extends GetxController {
 
       ListenerReviewApi.callApi(listenerId: receiverId ?? '');
 
-      // Optionally, navigate back after successful submission
-      Get.close(2);
+      if (Get.isRegistered<HomeScreenController>()) {
+        Get.find<HomeScreenController>().fetchUserCoin();
+      }
+      Get.offNamed(AppRoutes.bottomBar);
+
     } else {
       // Handle error or failure
       Utils.showLog("Failed to submit rating.");

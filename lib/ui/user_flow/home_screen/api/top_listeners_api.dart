@@ -12,7 +12,6 @@ class TopListenersApi {
   static int limitPagination = 20;
 
   static Future<TopListenersModel?> callApi({required String searchString, required String token, required String uid}) async {
-    Utils.showLog("Top Listeners Api Calling...");
 
     startPagination += 1;
 
@@ -26,14 +25,12 @@ class TopListenersApi {
 
     final uri = Uri.parse(Api.topListeners + query);
 
-    Utils.showLog("Top Listeners Api url => $uri");
 
     final headers = {ApiParams.key: Api.secretKey, ApiParams.authToken: ApiParams.tokenStartPoint + token, ApiParams.authUid: Database.loginUserId};
 
     try {
       final response = await http.get(uri, headers: headers);
 
-      Utils.showLog("Top Listeners Api Response => ${response.body}");
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);

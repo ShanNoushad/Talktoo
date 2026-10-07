@@ -10,6 +10,8 @@ import 'package:talk_in/utils/constant.dart';
 import 'package:talk_in/utils/enums.dart';
 import 'package:talk_in/utils/font_style.dart';
 
+import '../../../../routes/app_routes.dart';
+
 class OutgoingAudioCallView extends StatelessWidget {
   const OutgoingAudioCallView({super.key});
 
@@ -22,11 +24,11 @@ class OutgoingAudioCallView extends StatelessWidget {
             children: [
               Center(
                   child: Text(
-                "Talkin",
+                "Talktoo",
                 style: AppFontStyle.fontStyleKaushanW400(
                   font: FontWeight.w600,
                   fontSize: 32,
-                  fontColor: AppColors.black,
+                  fontColor: AppColors.white,
                 ),
               )).paddingOnly(bottom: Get.height * 0.02, top: Get.height * 0.06),
               SizedBox(
@@ -43,7 +45,7 @@ class OutgoingAudioCallView extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: AppFontStyle.fontStyleW600(
                   fontSize: 22,
-                  fontColor: AppColors.black,
+                  fontColor: AppColors.white,
                 ),
               ).paddingOnly(bottom: 15),
               Row(
@@ -56,7 +58,7 @@ class OutgoingAudioCallView extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: AppFontStyle.fontStyleW500(
                       fontSize: 13,
-                      fontColor: AppColors.black.withValues(alpha: 0.80),
+                      fontColor: AppColors.white.withValues(alpha: 0.80),
                     ),
                   ),
                 ],
@@ -69,12 +71,13 @@ class OutgoingAudioCallView extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: AppFontStyle.fontStyleW500(
                       fontSize: 22,
-                      fontColor: AppColors.black.withValues(alpha: 0.80),
+                      fontColor: AppColors.white.withValues(alpha: 0.80),
                     ),
                   ).paddingOnly(bottom: 15),
                   Lottie.asset(
                     AppAsset.callDotLoading,
                     height: 30,
+
                   ).paddingOnly(bottom: 8),
                 ],
               ),
@@ -141,8 +144,10 @@ class OutgoingAudioCallView extends StatelessWidget {
                                 callerRole: logic.callerRole ?? '',
                                 receiverRole: logic.receiverRole ?? '',
                               );
-                              Get.back();
-                            },
+
+                              debugPrint('Current routes: ${Get.rawRoute?.settings.name}');
+                              if (Get.isDialogOpen ?? false) Get.back();
+                              Get.until((route) => route.settings.name == AppRoutes.bottomBar);                            },
                           );
                         }),
                   ],

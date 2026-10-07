@@ -45,7 +45,6 @@ class CoinPurchaseTopView extends StatelessWidget {
     );
   }
 }
-
 class CoinPurchaseView extends StatelessWidget {
   const CoinPurchaseView({super.key});
 
@@ -57,7 +56,7 @@ class CoinPurchaseView extends StatelessWidget {
           return Container(
             padding: EdgeInsets.symmetric(horizontal: 14, vertical: 18),
             width: Get.width,
-            decoration: BoxDecoration(color: Colors.white),
+            decoration: BoxDecoration(color: AppColors.black),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -66,11 +65,11 @@ class CoinPurchaseView extends StatelessWidget {
                   children: [
                     Text(
                       EnumLocale.txtAmountCredited.name.tr,
-                      style: AppFontStyle.fontStyleW500(fontSize: 16, fontColor: Colors.black),
+                      style: AppFontStyle.fontStyleW500(fontSize: 16, fontColor: Colors.white),
                     ),
                     Text(
                       "${Database.settingApiModel?.data?.currency?.symbol}${controller.amountPaid ?? 0}",
-                      style: AppFontStyle.fontStyleW800(fontSize: 20, fontColor: Colors.black),
+                      style: AppFontStyle.fontStyleW800(fontSize: 20, fontColor: Colors.white),
                     ),
                   ],
                 ),
@@ -87,7 +86,7 @@ class CoinPurchaseView extends StatelessWidget {
           return Container(
             padding: EdgeInsets.symmetric(horizontal: 14, vertical: 18),
             width: Get.width,
-            decoration: BoxDecoration(color: Colors.white),
+            decoration: BoxDecoration(color: AppColors.black),
             child: Column(
               children: [
                 Row(
@@ -155,6 +154,7 @@ class CoinPurchaseDetailContainer extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
+          color: AppColors.black,
           border: Border.all(
             color: AppColors.grey,
           ),
@@ -182,14 +182,14 @@ class CoinPurchaseDetailContainer extends StatelessWidget {
                 title,
                 style: AppFontStyle.fontStyleW500(
                   fontSize: 11,
-                  fontColor: AppColors.profileText.withValues(alpha: 0.6),
+                  fontColor: Colors.white.withValues(alpha: 0.6),
                 ),
               ),
               Text(
                 subTitle,
                 style: AppFontStyle.fontStyleW500(
                   fontSize: 13,
-                  fontColor: AppColors.black,
+                  fontColor: Colors.white,
                 ),
               ),
             ],

@@ -55,6 +55,10 @@ class UserProfileInfoView extends StatelessWidget {
             ? (3.5 + (callCount % 15) / 10.0).clamp(3.5, 5.0)
             : 4.0;
 
+        // Coin rate for a private audio call, shown as "coins / sec".
+        final String callRate =
+            data?.ratePrivateAudioCall?.toString() ?? '0';
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -117,9 +121,9 @@ class UserProfileInfoView extends StatelessWidget {
                               onTap: () {
                                 if (!controller.isToastVisible) {
                                   Utils.copyText(Database
-                                          .fetchLoginUserProfileModel
-                                          ?.user
-                                          ?.uniqueId ??
+                                      .fetchLoginUserProfileModel
+                                      ?.user
+                                      ?.uniqueId ??
                                       "");
                                   Utils.showToast(context, "copied");
                                   controller.isToastVisible = true;
@@ -158,22 +162,25 @@ class UserProfileInfoView extends StatelessWidget {
                             ),
                             ClipRRect(
                               borderRadius:
-                                  BorderRadiusGeometry.all(Radius.circular(30)),
+                              BorderRadiusGeometry.all(Radius.circular(30)),
                               child: Container(
                                 height: 20,
-                                width: 60,
                                 color: AppColors.purple.withValues(alpha: .3),
-                                child: Row(
+                                child:Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     SizedBox(width: 8),
                                     Image.asset(AppAsset.starCoin, width: 14),
                                     const SizedBox(width: 3),
                                     Text(
-                                      "/Sec",
+                                      // callRate is the per-minute rate; divide by 60 to get the
+                                      // per-second coin cost shown here.
+                                      "${((num.tryParse(callRate) ?? 0) / 60).toStringAsFixed(2)}/sec",
                                       style: AppFontStyle.fontStyleW500(
                                           fontSize: 11,
                                           fontColor: AppColors.white),
                                     ),
+                                    SizedBox(width: 8),
                                   ],
                                 ),
                               ),
@@ -183,14 +190,7 @@ class UserProfileInfoView extends StatelessWidget {
 
                         const SizedBox(height: 10),
 
-                        // ── Rating + Talks count + Coin/min ──────────────
-                        Row(
-                          children: [
-                            // Star rating
 
-                            // Coin per minute
-                          ],
-                        ),
                       ],
                     ),
                   ),
@@ -281,7 +281,6 @@ class UserProfileInfoView extends StatelessWidget {
     );
   }
 }
-
 // ── Status Badge Widget ────────────────────────────────────────────────────────
 class _StatusBadge extends StatelessWidget {
   final String statusLabel;
@@ -372,12 +371,12 @@ class StatusView extends StatelessWidget {
                       Text(
                         item['title'].toString(),
                         style: AppFontStyle.fontStyleW500(
-                            fontSize: 11, fontColor: AppColors.profileLanguage),
+                            fontSize: 11, fontColor: AppColors.white),
                       ).paddingOnly(bottom: 5),
                       Text(
                         item['count'].toString(),
                         style: AppFontStyle.fontStyleW600(
-                            fontSize: 16, fontColor: AppColors.black),
+                            fontSize: 16, fontColor: AppColors.white.withValues(alpha: .5)),
                       ),
                     ],
                   ),
@@ -408,7 +407,7 @@ class ReviewShow extends StatelessWidget {
                       children: [
                         Text(EnumLocale.txtReviews.name.tr,
                                 style: AppFontStyle.fontStyleW600(
-                                    fontSize: 18, fontColor: AppColors.black))
+                                    fontSize: 18, fontColor: AppColors.white))
                             .paddingOnly(top: 26, bottom: 18),
                         InkWell(
                           onTap: () {
@@ -484,7 +483,7 @@ class ReviewShow extends StatelessWidget {
                                             '',
                                         style: AppFontStyle.fontStyleW600(
                                             fontSize: 15,
-                                            fontColor: AppColors.black),
+                                            fontColor: AppColors.white),
                                       ),
                                       StarRating(
                                         rating: controller

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -31,9 +32,15 @@ class ListenersScreenController extends GetxController {
 
   bool isLoading = false;
 
+  // ── Auto-refresh every 3 seconds ──────────────────────────────────────
+  Timer? _autoRefreshTimer;
+  bool _isAutoRefreshing = false;
+  static const Duration _autoRefreshInterval = Duration(seconds: 3);
+
   @override
   void onInit() {
     init();
+    _startAutoRefresh();
     super.onInit();
   }
 
@@ -291,6 +298,80 @@ class ListenersScreenController extends GetxController {
     update([Constant.idAllListener]);
 
     await allListeners();
+  }
+
+  // ── Auto-refresh every 3 seconds ──────────────────────────────────────
+  // Updates listener statuses/entries in place instead of clearing the
+  // list, so there's no flicker and the user's scroll position is never
+  // disturbed. Respects the current search/filter query instead of
+  // silently resetting it back to "All". Skips itself if a call is
+  // already in flight so requests never overlap/pile up.
+  void _startAutoRefresh() {
+    _autoRefreshTimer?.cancel();
+    _autoRefreshTimer = Timer.periodic(_autoRefreshInterval, (_) {
+      _autoRefreshSilently();
+    });
+  }
+
+  Future<void> _autoRefreshSilently() async {
+    if (_isAutoRefreshing) return;
+    _isAutoRefreshing = true;
+
+    final savedPagination = AllListenersApi.startPagination;
+    AllListenersApi.startPagination = 0;
+
+    try {
+      final freshData = await AllListenersApi.callApi(
+        searchString: isSearching ? searchQuery : "All",
+      );
+
+      if (freshData?.data == null) return;
+
+      final freshList = freshData!.data!;
+      bool didChange = false;
+
+      final freshById = {
+        for (final l in freshList)
+          if (l.id != null) l.id!: l,
+      };
+
+      // Update existing entries in place if anything about them changed.
+      for (int i = 0; i < allListener.length; i++) {
+        final current = allListener[i];
+        final updated = freshById[current.id];
+        if (updated != null && updated.statusLabel != current.statusLabel) {
+          allListener[i] = updated;
+          didChange = true;
+        }
+      }
+
+      // Add any brand-new listeners not yet in the list.
+      final existingIds = allListener.map((l) => l.id).toSet();
+      final newOnes = freshList.where((l) => l.id != null && !existingIds.contains(l.id)).toList();
+      if (newOnes.isNotEmpty) {
+        allListener.addAll(newOnes);
+        didChange = true;
+      }
+
+      if (didChange) {
+        update([Constant.idAllListener]);
+      }
+    } catch (e) {
+      log("Listeners auto-refresh error: $e");
+      // Silent failure — don't disrupt the UI for a background refresh issue.
+    } finally {
+      AllListenersApi.startPagination = savedPagination;
+      _isAutoRefreshing = false;
+    }
+  }
+
+  @override
+  void onClose() {
+    _autoRefreshTimer?.cancel();
+    scrollController.removeListener(onTopListenersPagination);
+    scrollController.dispose();
+    searchController.dispose();
+    super.onClose();
   }
 
 }

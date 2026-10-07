@@ -13,6 +13,8 @@ import 'package:talk_in/utils/enums.dart';
 import 'package:talk_in/utils/font_style.dart';
 import 'package:talk_in/utils/utils.dart';
 
+import '../../ui/user_flow/home_screen/controller/home_screen_controller.dart';
+
 class TalkNowButtonBottomSheet extends StatelessWidget {
   final String callerId;
   final String receiverId;
@@ -58,7 +60,7 @@ class TalkNowButtonBottomSheet extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 17, horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.lightPurple,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
@@ -74,7 +76,7 @@ class TalkNowButtonBottomSheet extends StatelessWidget {
                 EnumLocale.txtSelectCallType.name.tr,
                 style: AppFontStyle.fontStyleW700(
                   fontSize: 18,
-                  fontColor: AppColors.black,
+                  fontColor: AppColors.white,
                 ),
               ).paddingOnly(bottom: 26, left: Get.width * 0.03),
               Spacer(),
@@ -164,9 +166,11 @@ class TalkNowButtonBottomSheet extends StatelessWidget {
 
   Widget _buildAudioButton() {
     return PrimaryAppButton(
-      onTap: () {
+      onTap: ()async {
         Utils.showLog("audio call rate $audioCallRatePrivate video call rate $videoCallRatePrivate");
-
+        if (callerRole == "user" && Get.isRegistered<HomeScreenController>()) {
+          await Get.find<HomeScreenController>().fetchUserCoin();
+        }
         if (isFake == true) {
           Get.back();
           Utils.showLog("this is fake Listener>>>>>>>>>");
@@ -248,7 +252,11 @@ class TalkNowButtonBottomSheet extends StatelessWidget {
 
   Widget _buildVideoButton() {
     return PrimaryAppButton(
-      onTap: () {
+      onTap: ()async{
+
+        if (callerRole == "user" && Get.isRegistered<HomeScreenController>()) {
+          await Get.find<HomeScreenController>().fetchUserCoin();
+        }
         // SocketEmit.emitCallOutgoingRinging(
         //     callerId: callerId, receiverId: receiverId, callType: callType, callerRole: callerRole, receiverRole: receiverRole);
         Utils.showLog("audio call rate $audioCallRatePrivate video call rate $videoCallRatePrivate");

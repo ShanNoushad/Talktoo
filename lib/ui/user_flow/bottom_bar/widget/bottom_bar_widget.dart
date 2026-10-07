@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,15 +7,6 @@ import 'package:talk_in/utils/app_color.dart';
 import 'package:talk_in/utils/constant.dart';
 import 'package:talk_in/utils/enums.dart';
 
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:talk_in/ui/user_flow/bottom_bar/controller/bottom_bar_controller.dart';
-import 'package:talk_in/utils/app_asset.dart';
-import 'package:talk_in/utils/app_color.dart';
-import 'package:talk_in/utils/constant.dart';
-import 'package:talk_in/utils/enums.dart';
 
 class BottomBarView extends StatelessWidget {
   const BottomBarView({super.key});

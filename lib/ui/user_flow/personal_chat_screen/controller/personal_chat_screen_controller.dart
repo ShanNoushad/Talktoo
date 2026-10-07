@@ -321,7 +321,7 @@ class PersonalChatScreenController extends GetxController {
   /// show dialog image picker
   Future<void> showImagePickerDialog() async {
     Get.defaultDialog(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.black,
       title: EnumLocale.changeYourImage.name.tr,
       titlePadding: const EdgeInsets.only(top: 30),
       titleStyle: AppFontStyle.fontStyleW700(fontSize: 16, fontColor: AppColors.appColor),

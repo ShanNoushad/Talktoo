@@ -12,10 +12,10 @@ class FetchLoginUserProfileApi {
     required String loginUserId,
     required String token,
   }) async {
-    Utils.showLog("Get Login User Profile Api Calling...");
+    // Utils.showLog("Get Login User Profile Api Calling...");
 
     final uri = Uri.parse(Api.loginUserProfile);
-    Utils.showLog("Get Login User Profile uri => $uri");
+    // Utils.showLog("Get Login User Profile uri => $uri");
 
     final headers = {
       "key": Api.secretKey,
@@ -25,18 +25,17 @@ class FetchLoginUserProfileApi {
     };
 
     // ← ADD THESE TWO LINES
-    log("PROFILE API headers => $headers");
-    log("PROFILE API userId => $loginUserId");
+
 
     try {
       final response = await http.get(uri, headers: headers);
 
-      // ← ADD THIS LINE
-      log("PROFILE API statusCode => ${response.statusCode}");
-      log("PROFILE API response => ${response.body}");
+      // // ← ADD THIS LINE
+      // log("PROFILE API statusCode => ${response.statusCode}");
+      // log("PROFILE API response => ${response.body}");
 
-      Utils.showLog("Get Login User Profile StatusCode => ${response.statusCode}");
-      Utils.showLog("Get Login User Profile Response => ${response.body}");
+      // Utils.showLog("Get Login User Profile StatusCode => ${response.statusCode}");
+      // Utils.showLog("Get Login User Profile Response => ${response.body}");
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);

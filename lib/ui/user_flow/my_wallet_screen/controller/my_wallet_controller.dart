@@ -20,6 +20,12 @@ import 'package:talk_in/utils/database.dart';
 import 'package:talk_in/utils/enums.dart';
 import 'package:talk_in/utils/utils.dart';
 import '../../../../utils/api.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as fs;
+import 'dart:async';
+import '../../../../utils/skeliton_loading.dart';
+import '../../../host_flow/user_detail_profile_screen/api/user_profile_api.dart';
+import '../../coin_history_screen/api/purchase_coin_plan_api.dart';
+import '../../coin_purchase_screen/controller/coin_purchase_screen_controller.dart';
 
 class MyWalletController extends GetxController implements IAPCallback {
   FetchCoinPlan? fetchCoinPlan;
@@ -37,9 +43,27 @@ class MyWalletController extends GetxController implements IAPCallback {
     super.onInit();
   }
 
+
+
+
+  static const String firstCallProductId = 'com.example.app.coinpack_firstcall';
+
+  bool hasPurchaseHistory = false; // exposed so the UI can also react if needed
+
+
+
+  /// Checks the purchase history API — same source of truth FindMoreWidget uses.
+  Future<bool> _checkPurchaseHistory() async {
+    PurchaseCoinGetPlanApi.startPagination = 0;
+    final historyResult = await PurchaseCoinGetPlanApi.callApi(
+      startDate: "All",
+      endDate: "All",
+    );
+    return historyResult?.data?.isNotEmpty ?? false;
+  }
+
   /// fetch coin plan
   Future<void> fetchCoinPlanList() async {
-
     isLoading = true;
     update([Constant.idGetCoinPlan]);
 
@@ -47,17 +71,71 @@ class MyWalletController extends GetxController implements IAPCallback {
       uid: Database.loginUserId,
       token: Api.secretKey,
     );
+
+    hasPurchaseHistory = await _checkPurchaseHistory();
+
     coinPlan.clear();
-    coinPlan.addAll(fetchCoinPlan?.data ?? []);
+    final allPlans = fetchCoinPlan?.data ?? [];
+
+    if (hasPurchaseHistory) {
+      coinPlan.addAll(
+        allPlans.where((plan) => plan.productId != firstCallProductId),
+      );
+    } else {
+      coinPlan.addAll(allPlans);
+    }
 
     isLoading = false;
     update([Constant.idGetCoinPlan]);
   }
 
+
+
+
+
+
+
+
+
+  /// fetch coin plan
+  // Future<void> fetchCoinPlanList() async {
+  //   isLoading = true;
+  //   update([Constant.idGetCoinPlan]);
+  //
+  //   fetchCoinPlan = await FetchCoinPlanApi.callApi(
+  //     uid: Database.loginUserId,
+  //     token: Api.secretKey,
+  //   );
+  //   coinPlan.clear();
+  //   coinPlan.addAll(fetchCoinPlan?.data ?? []);
+  //
+  //   isLoading = false;
+  //   update([Constant.idGetCoinPlan]);
+  // }
+
   /// change payment method
   void onChangePaymentMethod(int index) async {
     selectedPaymentMethod = index;
     update([Constant.onChangePaymentMethod]);
+  }
+
+  /// Marks that the user has completed their first payment.
+  /// Persists locally (source of truth for UI) and optionally
+  /// syncs to Firestore so it survives reinstalls.
+  Future<void> _markFirstPaymentDone() async {
+    Database.onSetFirstPayDone(true);
+
+    try {
+      await Database.onSetFirstPayDone(true);
+      Utils.showLog("firstPayDone WRITE => ${Database.isFirstPayDone}");
+
+      await fs.FirebaseFirestore.instance
+          .collection('users')
+          .doc(Database.loginUserId)
+          .set({'firstPay': true}, fs.SetOptions(merge: true));
+    } catch (e) {
+      Utils.showLog("Failed to sync firstPay to Firestore: $e");
+    }
   }
 
   /// payment method condition
@@ -97,14 +175,81 @@ class MyWalletController extends GetxController implements IAPCallback {
     }
   }
 
+
+  Future<void> onClickRazorPay(num amount, String id) async {
+    Utils.showLog("RazorPay Payment Working....");
+
+    try {
+      // Navigate to the destination screen immediately, in a loading state.
+      Get.toNamed(
+        AppRoutes.coinPurchaseScreen,
+        arguments: {"isLoading": true},
+      );
+
+      RazorPayService().init(
+        razorKey: Database.settingApiModel?.data?.razorpayKeyId ?? '',
+        callback: () async {
+          final uid = Database.loginUserId;
+          Utils.showLog("RazorPay Payment Successfully");
+
+          purchaseCoinPlan = await PurchaseCoinPlanApi.callApi(
+            coinPlanId: id,
+            paymentGateway: "RazorPay",
+            token: Api.secretKey,
+            uid: uid,
+          );
+
+          if (purchaseCoinPlan?.status == true) {
+            await _markFirstPaymentDone();
+
+            Utils.showToast(Get.context!, EnumLocale.txtCoinRechargeSuccess.name.tr);
+
+            // Push the real data into the already-open coinPurchaseScreen.
+            if (Get.isRegistered<CoinPurchaseScreenController>()) {
+              Get.find<CoinPurchaseScreenController>().setLoaded(
+                date: purchaseCoinPlan?.historyRecord?.date,
+                amount: purchaseCoinPlan?.historyRecord?.amountPaid.toString(),
+                paymentMode: purchaseCoinPlan?.historyRecord?.paymentMode,
+                transactionId: purchaseCoinPlan?.historyRecord?.transactionId,
+              );
+            }
+
+            unawaited(_refreshCoinDataInBackground());
+          } else {
+            Get.back(); // pop coinPurchaseScreen, back to Home
+            Utils.showToast(Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
+          }
+        },
+        onError: (message) {
+          Get.back(); // pop coinPurchaseScreen on failure/cancel
+          Utils.showToast(Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
+        },
+      );
+
+      await Future.delayed(const Duration(milliseconds: 300));
+      RazorPayService().razorPayCheckout((amount * 100).toInt());
+    } catch (e) {
+      Utils.showLog("RazorPay Payment Failed => $e");
+    }
+  }
+
+  Future<void> _refreshCoinDataInBackground() async {
+    await fetchCoinPlanList();
+    if (Get.isRegistered<HomeScreenController>()) {
+      Get.find<HomeScreenController>().fetchUserCoin();
+    }
+  }
+
+
+
+
+
   /// flutter wave
   Future<void> onClickFlutterWave(num amount, String id) async {
     Utils.showLog("Flutter Wave Payment Working....");
     try {
-      Get.dialog(const LoadingWidget(),
-          barrierDismissible: false); // Start Loading...
+      Get.dialog(const LoadingWidget(), barrierDismissible: false);
       flutterWave(
-        // context: Get.context!,
         amount: amount,
         onPaymentSuccess: () async {
           final uid = Database.loginUserId;
@@ -115,13 +260,16 @@ class MyWalletController extends GetxController implements IAPCallback {
               barrierDismissible: false); // Start Loading...
 
           purchaseCoinPlan = await PurchaseCoinPlanApi.callApi(
-              coinPlanId: id, paymentGateway: "Stripe", token: Api.secretKey, uid: uid);
+              coinPlanId: id,
+              paymentGateway: "Stripe",
+              token: Api.secretKey,
+              uid: uid);
 
-          Get.back(); // Stop Loading...
-
+          Get.back();
           if (purchaseCoinPlan?.status == true) {
             fetchCoinPlanList();
             userCoinModel = await UserCoinApi.callApi();
+            await _markFirstPaymentDone();
             Database.onSetUserCoin(userCoinModel?.coin.toString() ?? "0");
             Get.find<HomeScreenController>().update([Constant.idCoinUpdate]);
             Get.find<RandomCallController>().update([Constant.idCoinUpdate]);
@@ -165,7 +313,10 @@ class MyWalletController extends GetxController implements IAPCallback {
               barrierDismissible: false); // Start Loading...
 
           purchaseCoinPlan = await PurchaseCoinPlanApi.callApi(
-              coinPlanId: id, paymentGateway: "Stripe", token: Api.secretKey, uid: uid);
+              coinPlanId: id,
+              paymentGateway: "Stripe",
+              token: Api.secretKey,
+              uid: uid);
 
           Get.back(); // Stop Loading...
 
@@ -182,6 +333,8 @@ class MyWalletController extends GetxController implements IAPCallback {
           } else {
             Utils.showToast(
                 Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
+
+
           }
         },
       ).then((value) async {
@@ -197,70 +350,11 @@ class MyWalletController extends GetxController implements IAPCallback {
   }
 
   /// razor pay
-  Future<void> onClickRazorPay(num amount, String id) async {
-    Utils.showLog("Razorpay Payment Working....");
-
-    try {
-      Get.dialog(const LoadingWidget(),
-          barrierDismissible: false); // Start Loading...
-      razorPay(
-        amount: amount,
-        // razorKey: Database.settingApiModel?.data?.razorpayKeySecret ?? '',
-        // razorKey: "rzp_test_SjZz9HC7RGCfCb",
-        onPaymentSuccess: () async {
-          final uid = Database.loginUserId;
-
-          Utils.showLog("RazorPay Payment Successfully");
-
-          Get.dialog(const LoadingWidget(),
-              barrierDismissible: false); // Start Loading...
-
-          purchaseCoinPlan = await PurchaseCoinPlanApi.callApi(
-              coinPlanId: id,
-              paymentGateway: "RazorPay",
-              token: Api.secretKey,
-              uid: uid);
-
-          Get.back(); // Stop Loading...
-
-          if (purchaseCoinPlan?.status == true) {
-            fetchCoinPlanList();
-            userCoinModel = await UserCoinApi.callApi();
-            Database.onSetUserCoin(userCoinModel?.coin.toString() ?? "0");
-            Get.find<HomeScreenController>().update([Constant.idCoinUpdate]);
-
-            Utils.showToast(
-                Get.context!, EnumLocale.txtCoinRechargeSuccess.name.tr);
-            Get.back(); // Close Bottom Sheet...
-            Get.toNamed(AppRoutes.coinPurchaseScreen, arguments: {
-              "date": purchaseCoinPlan?.historyRecord?.date,
-              "amount": purchaseCoinPlan?.historyRecord?.amountPaid,
-              "paymentMode": purchaseCoinPlan?.historyRecord?.paymentMode,
-              "transactionId": purchaseCoinPlan?.historyRecord?.transactionId,
-            });
-          } else {
-            Utils.showToast(
-                Get.context!, EnumLocale.txtSomeThingWentWrong.name.tr);
-          }
-        },
-      );
-      await 1.seconds.delay();
-      RazorPayService().razorPayCheckout((amount * 100).toInt());
-      Get.back(); // Stop Loading...
-    } catch (e) {
-      Get.back(); // Stop Loading...
-      Utils.showLog("RazorPay Payment Failed => $e");
-    }
-  }
-
-  ///in app purchase
   Future<void> onClickInAppPurchase(
       num amount, String id, String productKey) async {
     List<String> kProductIds = <String>[productKey];
 
     Utils.showLog("Starting IAP with product: $productKey");
-
-
 
     inAppPurchase(
       amount: amount,
@@ -288,6 +382,8 @@ class MyWalletController extends GetxController implements IAPCallback {
     }
   }
 
+  
+  
   ///cash free
   Future<void> onClickCashFree(num amount, String id) async {
     Utils.showLog("cash free Payment Working....");
@@ -366,6 +462,7 @@ class MyWalletController extends GetxController implements IAPCallback {
           if (purchaseCoinPlan?.status == true) {
             fetchCoinPlanList();
             userCoinModel = await UserCoinApi.callApi();
+            log("WALLET: UserCoinApi status=${userCoinModel?.status} coin=${userCoinModel?.coin} raw=$userCoinModel");
             Database.onSetUserCoin(userCoinModel?.coin.toString() ?? "0");
             Get.find<HomeScreenController>().update([Constant.idCoinUpdate]);
             Get.find<RandomCallController>().update([Constant.idCoinUpdate]);
@@ -482,6 +579,7 @@ class MyWalletController extends GetxController implements IAPCallback {
       Get.back();
 
       if (isSuccess?.status == true) {
+        await _markFirstPaymentDone();
         Utils.showToast(
             Get.context!, EnumLocale.txtCoinRechargeSuccess.name.tr);
         Get.close(2); // Close payment screens

@@ -1,5 +1,6 @@
 abstract class Api {
-  static const String baseUrl = "http://168.144.85.67:3000/";
+  static const String baseUrl = "https://api.talktoo.online/";
+  // static const String baseUrl = "http://10.0.2.2:3000/";
   static const secretKey = "mySecretKey123";
 
   static const checkUserExit = "${baseUrl}api/user/verifyUserExistence?";

@@ -36,13 +36,31 @@ class _OtpScreenState extends State<OtpScreen> {
       }
     });
   }
-
   void _fillOtp(String code) {
     for (int i = 0; i < 6; i++) {
       controller.otpControllers[i].text = code[i];
       controller.onOtpChanged(code[i], i);
     }
     setState(() {});
+    _tryAutoVerify();
+  }
+
+  bool _hasAutoVerified = false;
+
+  void _tryAutoVerify() {
+    final isComplete = controller.otpControllers
+        .every((c) => c.text.trim().isNotEmpty);
+
+    if (isComplete && !_hasAutoVerified) {
+      _hasAutoVerified = true;
+      FocusScope.of(context).unfocus(); // dismiss keyboard, nice touch
+      controller.onVerifyOtp();
+    }
+
+    // reset the guard if the user clears a box afterward
+    if (!isComplete && _hasAutoVerified) {
+      _hasAutoVerified = false;
+    }
   }
 
   void _startTimer() {
@@ -307,7 +325,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF9C27B0).withOpacity(0.5),
+                        color: const Color(0xFF9C27B0).withValues(alpha: 0.5),
                         blurRadius: 22,
                         spreadRadius: 1,
                         offset: const Offset(0, 5),
@@ -426,6 +444,7 @@ class _OtpScreenState extends State<OtpScreen> {
         onChanged: (value) {
           controller.onOtpChanged(value, index);
           setState(() {});
+          _tryAutoVerify();
         },
       ),
     );

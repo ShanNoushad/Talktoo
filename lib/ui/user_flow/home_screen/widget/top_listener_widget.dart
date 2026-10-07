@@ -14,7 +14,8 @@ import 'package:talk_in/utils/enums.dart';
 import 'package:talk_in/utils/font_style.dart';
 import 'package:talk_in/utils/utils.dart';
 
-// ── Dark Theme Configurations ─────────────────────────────────────────────
+import '../../../../custom/custom_profile/custom_profile_image.dart';
+
 class _DarkTheme {
   static const bg = Color(0xFF0F111A);          // Deep dark section backdrop
   static const card = Color(0xFF1E2235);        // Dark overlapping info card
@@ -31,7 +32,6 @@ class TopListenerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Card width calculated so exactly 2.5 cards are visible at once
     final double screenWidth = MediaQuery.of(context).size.width;
     final double horizontalPadding = 32; // 16 left + 16 right
     final double cardSpacing = 12;
@@ -90,14 +90,58 @@ class TopListenerWidget extends StatelessWidget {
             ],
           ).paddingOnly(top: 16, bottom: 12),
 
-          // Listener Cards
           GetBuilder<HomeScreenController>(
             id: Constant.idGetListener,
             builder: (controller) {
               if (controller.isLoading) return const TopListenerShimmer();
 
-              if (controller.topListenersModel?.data?.isEmpty == true) {
+              if (controller.topListeners.isEmpty) {
                 return const SizedBox.shrink();
+              }
+
+              // Keep, in this priority order:
+              //  1) Online (Available) listeners
+              //  2) On Call listeners
+              //  3) Offline listeners, but ONLY if they have private audio
+              //     or video call enabled — still reachable even though
+              //     not currently online.
+              // Everyone else (offline with no call feature enabled) is dropped.
+              final visibleListeners = controller.topListeners.where((listener) {
+                final statusLabel = listener.statusLabel ?? '';
+                final bool isAvailable = statusLabel == "Available";
+                final bool isOnCall = statusLabel == "On Call";
+                final bool hasCallEnabled =
+                    (listener.isAvailableForPrivateAudioCall ?? false) ||
+                        (listener.isAvailableForPrivateVideoCall ?? false);
+
+                return isAvailable || isOnCall || hasCallEnabled;
+              }).toList();
+
+              // Sort: Online first, then On Call, then offline-but-call-enabled.
+              visibleListeners.sort((a, b) {
+                int rank(dynamic listener) {
+                  final statusLabel = listener.statusLabel ?? '';
+                  if (statusLabel == "Available") return 0;
+                  if (statusLabel == "On Call") return 1;
+                  return 2; // offline but audio/video call enabled
+                }
+
+                return rank(a).compareTo(rank(b));
+              });
+
+              if (visibleListeners.isEmpty) {
+                return SizedBox(
+                  height: 120,
+                  child: Center(
+                    child: Text(
+                      'No one is online right now',
+                      style: AppFontStyle.fontStyleW600(
+                        fontSize: 14,
+                        fontColor: _DarkTheme.subtitle,
+                      ),
+                    ),
+                  ),
+                );
               }
 
               return SizedBox(
@@ -105,13 +149,20 @@ class TopListenerWidget extends StatelessWidget {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   padding: EdgeInsets.zero,
-                  itemCount: controller.topListeners.take(4).length,
+                  itemCount: visibleListeners.take(4).length,
                   itemBuilder: (context, index) {
-                    final listener = controller.topListeners[index];
+                    final listener = visibleListeners[index];
                     final statusLabel = listener.statusLabel ?? '';
                     final isAvailable = statusLabel == "Available";
                     final isOnCall = statusLabel == "On Call";
                     final isOffline = statusLabel == "Offline" || (!isAvailable && !isOnCall);
+                    // The list is already filtered so any offline listener here
+                    // has at least one call type enabled — show the call button
+                    // for them too instead of hiding it just because they're offline.
+                    final bool hasCallEnabled =
+                        (listener.isAvailableForPrivateAudioCall ?? false) ||
+                            (listener.isAvailableForPrivateVideoCall ?? false);
+                    final bool showCallButton = !isOffline || hasCallEnabled;
 
                     final Color statusColor = isAvailable
                         ? const Color(0xFF4CD964)
@@ -161,17 +212,9 @@ class TopListenerWidget extends StatelessWidget {
                                     fit: StackFit.expand,
                                     children: [
                                       listener.image != null && listener.image!.isNotEmpty
-                                          ? Image.network(
-                                        listener.image!,
+                                          ? CustomListenerProfileImage(
+                                        image: listener.image!,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) => Container(
-                                          color: const Color(0xFF25293C),
-                                          child: const Icon(
-                                            Icons.person,
-                                            size: 40,
-                                            color: Color(0xFF4E4F66),
-                                          ),
-                                        ),
                                       )
                                           : Container(
                                         color: const Color(0xFF25293C),
@@ -299,8 +342,11 @@ class TopListenerWidget extends StatelessWidget {
                                       ),
                                     ),
 
-                                    // --- Call Button: hidden when Offline ---
-                                    if (!isOffline) ...[
+                                    // --- Call Button: hidden only if listener has
+                                    // no call type enabled at all (offline with
+                                    // audio/video both off never reaches this list
+                                    // anymore, but this keeps it safe) ---
+                                    if (showCallButton) ...[
                                       const SizedBox(width: 6),
                                       GestureDetector(
                                         onTap: () {
@@ -314,26 +360,26 @@ class TopListenerWidget extends StatelessWidget {
                                                 Get.toNamed(
                                                   AppRoutes.personalChatScreen,
                                                   arguments: [
-                                                    controller.topListenersModel?.data?[index].id,
-                                                    controller.topListenersModel?.data?[index].name,
-                                                    controller.topListenersModel?.data?[index].statusLabel,
-                                                    controller.topListenersModel?.data?[index].image,
-                                                    controller.topListenersModel?.data?[index].ratePrivateAudioCall,
-                                                    controller.topListenersModel?.data?[index].ratePrivateVideoCall,
-                                                    controller.topListenersModel?.data?[index].isFake,
-                                                    controller.topListenersModel?.data?[index].video,
-                                                    controller.topListenersModel?.data?[index].isAvailableForPrivateVideoCall,
-                                                    controller.topListenersModel?.data?[index].isAvailableForPrivateAudioCall,
+                                                    listener.id,
+                                                    listener.name,
+                                                    listener.statusLabel,
+                                                    listener.image,
+                                                    listener.ratePrivateAudioCall,
+                                                    listener.ratePrivateVideoCall,
+                                                    listener.isFake,
+                                                    listener.video,
+                                                    listener.isAvailableForPrivateVideoCall,
+                                                    listener.isAvailableForPrivateAudioCall,
                                                   ],
                                                 );
                                               },
-                                              availableForPrivateAudioCall: controller.topListenersModel?.data?[index].isAvailableForPrivateAudioCall ?? false,
-                                              availableForPrivateVideoCall: controller.topListenersModel?.data?[index].isAvailableForPrivateVideoCall ?? false,
-                                              fakeVideo: controller.topListenersModel?.data?[index].video ?? [],
-                                              fakeAudio: controller.topListenersModel?.data?[index].audio ?? "",
-                                              isFake: controller.topListenersModel?.data?[index].isFake ?? false,
-                                              videoCallRatePrivate: controller.topListenersModel?.data?[index].ratePrivateVideoCall.toString() ?? '',
-                                              audioCallRatePrivate: controller.topListenersModel?.data?[index].ratePrivateAudioCall.toString() ?? '',
+                                              availableForPrivateAudioCall: listener.isAvailableForPrivateAudioCall ?? false,
+                                              availableForPrivateVideoCall: listener.isAvailableForPrivateVideoCall ?? false,
+                                              fakeVideo: listener.video ?? [],
+                                              fakeAudio: listener.audio ?? "",
+                                              isFake: listener.isFake ?? false,
+                                              videoCallRatePrivate: listener.ratePrivateVideoCall.toString(),
+                                              audioCallRatePrivate: listener.ratePrivateAudioCall.toString(),
                                               callerId: Database.fetchLoginUserProfileModel?.user?.isListener == false
                                                   ? Database.fetchLoginUserProfileModel?.user?.id ?? ''
                                                   : Database.fetchLoginUserProfileModel?.user?.listenerId ?? '',

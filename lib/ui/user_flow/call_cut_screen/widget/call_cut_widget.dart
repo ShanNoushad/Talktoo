@@ -12,6 +12,23 @@ import 'package:talk_in/utils/enums.dart';
 import 'package:talk_in/utils/font_style.dart';
 import 'package:talk_in/utils/utils.dart';
 
+import '../../home_screen/controller/home_screen_controller.dart';
+
+// Dark theme palette — matches the colors already used on the home screen
+// (see home_screen.dart: 0xFF0D0D14 background, 0xFF1A1A2E surfaces,
+// 0xFF6B46F6 purple accent) so this screen looks consistent with the
+// rest of the dark-themed app rather than introducing a new palette.
+class _DarkPalette {
+  static const surface = Color(0xFF1A1A2E);
+  static const scaffold = Color(0xFF0D0D14);
+  static const border = Color(0xFF3A3A50);
+  static const primaryText = Colors.white;
+  static const mutedText = Color(0xFFB8B8C8);
+  static const avatarPlaceholder = Color(0xFF2A2A40);
+  static const accent = Color(0xFF6B46F6);
+  static const shadow = Color(0x66000000); // black @ 40% alpha
+}
+
 class CallCutView extends StatelessWidget {
   const CallCutView({super.key});
 
@@ -28,6 +45,10 @@ class CallCutView extends StatelessWidget {
                   AppAsset.callCutBg,
                 ),
                 fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                  Colors.black.withValues(alpha: 0.25),
+                  BlendMode.darken,
+                ),
               ),
             ),
             child: Row(
@@ -38,28 +59,28 @@ class CallCutView extends StatelessWidget {
                     "${EnumLocale.txtCompleteTrailCall.name.tr} ${controller.receiverName ?? ''} ${EnumLocale.txtCompleteTrailCall1.name.tr}",
                     style: AppFontStyle.fontStyleW700(
                       fontSize: 22,
-                      fontColor: AppColors.white,
+                      fontColor: _DarkPalette.primaryText,
                     ),
                   ),
                 ),
                 Image.asset(
                   AppAsset.callIcon,
                   height: 68,
-                  color: Colors.white,
+                  color: _DarkPalette.primaryText,
                 )
               ],
             ).paddingOnly(left: 16, right: 16, top: 74, bottom: 34),
           ).paddingOnly(bottom: 8),
           Container(
             padding: EdgeInsets.symmetric(vertical: 21, horizontal: 20),
-            color: AppColors.white,
+            color: _DarkPalette.surface,
             child: Column(
               children: [
                 Row(
                   children: [
                     DottedBorder(
                       options: CircularDottedBorderOptions(
-                        color: AppColors.black,
+                        color: _DarkPalette.primaryText,
                         dashPattern: [3, 2],
                         strokeWidth: 1,
                       ),
@@ -68,10 +89,12 @@ class CallCutView extends StatelessWidget {
                         height: Get.height * 0.06,
                         width: Get.height * 0.06,
                         decoration: BoxDecoration(
-                          color: AppColors.lightGrey,
+                          color: _DarkPalette.avatarPlaceholder,
                           shape: BoxShape.circle,
                         ),
-                        child: CustomProfileImage(image: controller.receiverImage ?? '', fit: BoxFit.cover),
+                        child: CustomProfileImage(
+                            image: controller.receiverImage ?? '',
+                            fit: BoxFit.cover),
                       ),
                     ).paddingOnly(right: 12),
                     Column(
@@ -79,11 +102,14 @@ class CallCutView extends StatelessWidget {
                       children: [
                         Text(
                           "Listener",
-                          style: AppFontStyle.fontStyleW500(fontSize: 15, fontColor: AppColors.darkGrey.withValues(alpha: 0.8)),
+                          style: AppFontStyle.fontStyleW500(
+                              fontSize: 15, fontColor: _DarkPalette.mutedText),
                         ).paddingOnly(bottom: 4),
                         Text(
                           controller.receiverName ?? '',
-                          style: AppFontStyle.fontStyleW700(fontSize: 17, fontColor: AppColors.black),
+                          style: AppFontStyle.fontStyleW700(
+                              fontSize: 17,
+                              fontColor: _DarkPalette.primaryText),
                         )
                       ],
                     ),
@@ -134,13 +160,14 @@ class CallCutView extends StatelessWidget {
           ).paddingOnly(bottom: 8),
           Container(
             padding: EdgeInsets.symmetric(vertical: 21, horizontal: 20),
-            color: AppColors.white,
+            color: _DarkPalette.surface,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   EnumLocale.txtDidYouLikeService.name.tr,
-                  style: AppFontStyle.fontStyleW500(fontSize: 15, fontColor: AppColors.black),
+                  style: AppFontStyle.fontStyleW500(
+                      fontSize: 15, fontColor: _DarkPalette.primaryText),
                 ).paddingOnly(bottom: 18),
                 GetBuilder<CallCutController>(
                   builder: (controller) {
@@ -150,11 +177,15 @@ class CallCutView extends StatelessWidget {
                           width: Get.width * 0.2,
                           height: Get.height * 0.045,
                           color: AppColors.transparent,
-                          borderColor: controller.listenerService == 'yes' ? AppColors.black : AppColors.lightGrey,
+                          borderColor: controller.listenerService == 'yes'
+                              ? _DarkPalette.primaryText
+                              : _DarkPalette.border,
                           text: EnumLocale.txtYes.name.tr,
                           textStyle: AppFontStyle.fontStyleW500(
                             fontSize: 14,
-                            fontColor: controller.favListener == 'yes' ? AppColors.black : AppColors.profileMail,
+                            fontColor: controller.favListener == 'yes'
+                                ? _DarkPalette.primaryText
+                                : _DarkPalette.mutedText,
                           ),
                           onTap: () => controller.listenerServiceSelect('yes'),
                         ).paddingOnly(right: 16),
@@ -162,11 +193,15 @@ class CallCutView extends StatelessWidget {
                           width: Get.width * 0.2,
                           height: Get.height * 0.045,
                           color: AppColors.transparent,
-                          borderColor: controller.listenerService == 'no' ? AppColors.black : AppColors.lightGrey,
+                          borderColor: controller.listenerService == 'no'
+                              ? _DarkPalette.primaryText
+                              : _DarkPalette.border,
                           text: EnumLocale.txtNo.name.tr,
                           textStyle: AppFontStyle.fontStyleW500(
                             fontSize: 14,
-                            fontColor: controller.favListener == 'no' ? AppColors.black : AppColors.profileMail,
+                            fontColor: controller.favListener == 'no'
+                                ? _DarkPalette.primaryText
+                                : _DarkPalette.mutedText,
                           ),
                           onTap: () => controller.listenerServiceSelect('no'),
                         ),
@@ -179,13 +214,14 @@ class CallCutView extends StatelessWidget {
           ).paddingOnly(bottom: 8),
           Container(
             padding: EdgeInsets.symmetric(vertical: 21, horizontal: 20),
-            color: AppColors.white,
+            color: _DarkPalette.surface,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "Add ${controller.receiverName} to your Favourite Listeners?",
-                  style: AppFontStyle.fontStyleW500(fontSize: 15, fontColor: AppColors.black),
+                  style: AppFontStyle.fontStyleW500(
+                      fontSize: 15, fontColor: _DarkPalette.primaryText),
                 ).paddingOnly(bottom: 18),
                 GetBuilder<CallCutController>(
                   builder: (controller) {
@@ -195,11 +231,15 @@ class CallCutView extends StatelessWidget {
                           width: Get.width * 0.2,
                           height: Get.height * 0.045,
                           color: AppColors.transparent,
-                          borderColor: controller.favListener == 'yes' ? AppColors.black : AppColors.lightGrey,
+                          borderColor: controller.favListener == 'yes'
+                              ? _DarkPalette.primaryText
+                              : _DarkPalette.border,
                           text: EnumLocale.txtYes.name.tr,
                           textStyle: AppFontStyle.fontStyleW500(
                             fontSize: 14,
-                            fontColor: controller.favListener == 'yes' ? AppColors.black : AppColors.profileMail,
+                            fontColor: controller.favListener == 'yes'
+                                ? _DarkPalette.primaryText
+                                : _DarkPalette.mutedText,
                           ),
                           onTap: () => controller.favListenerSelect('yes'),
                         ).paddingOnly(right: 16),
@@ -207,11 +247,15 @@ class CallCutView extends StatelessWidget {
                           width: Get.width * 0.2,
                           height: Get.height * 0.045,
                           color: AppColors.transparent,
-                          borderColor: controller.favListener == 'no' ? AppColors.black : AppColors.lightGrey,
+                          borderColor: controller.favListener == 'no'
+                              ? _DarkPalette.primaryText
+                              : _DarkPalette.border,
                           text: EnumLocale.txtNo.name.tr,
                           textStyle: AppFontStyle.fontStyleW500(
                             fontSize: 14,
-                            fontColor: controller.favListener == 'no' ? AppColors.black : AppColors.profileMail,
+                            fontColor: controller.favListener == 'no'
+                                ? _DarkPalette.primaryText
+                                : _DarkPalette.mutedText,
                           ),
                           onTap: () => controller.favListenerSelect('no'),
                         ),
@@ -224,7 +268,7 @@ class CallCutView extends StatelessWidget {
           ).paddingOnly(bottom: 8),
           Container(
             padding: EdgeInsets.symmetric(vertical: 21, horizontal: 20),
-            color: AppColors.white,
+            color: _DarkPalette.surface,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -235,11 +279,13 @@ class CallCutView extends StatelessWidget {
                     children: [
                       Text(
                         EnumLocale.txtShareListenersApp.name.tr,
-                        style: AppFontStyle.fontStyleW700(fontSize: 18, fontColor: AppColors.black),
+                        style: AppFontStyle.fontStyleW700(
+                            fontSize: 18, fontColor: _DarkPalette.primaryText),
                       ).paddingOnly(bottom: 4),
                       Text(
                         EnumLocale.txtShareListenersAppDescription.name.tr,
-                        style: AppFontStyle.fontStyleW500(fontSize: 14, fontColor: AppColors.darkGrey.withValues(alpha: 0.8)),
+                        style: AppFontStyle.fontStyleW500(
+                            fontSize: 14, fontColor: _DarkPalette.mutedText),
                       ).paddingOnly(bottom: 14),
                       PrimaryAppButton(
                         onTap: () {
@@ -250,7 +296,8 @@ class CallCutView extends StatelessWidget {
                         color: AppColors.orange200,
                         borderColor: AppColors.transparent,
                         text: EnumLocale.txtShareAppNow.name.tr,
-                        textStyle: AppFontStyle.fontStyleW600(fontSize: 14, fontColor: AppColors.white),
+                        textStyle: AppFontStyle.fontStyleW600(
+                            fontSize: 14, fontColor: _DarkPalette.primaryText),
                       ).paddingOnly(bottom: 6),
                     ],
                   ),
@@ -277,10 +324,10 @@ class BottomView extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: _DarkPalette.surface,
         boxShadow: [
           BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.10),
+            color: _DarkPalette.shadow,
             blurRadius: 18,
             offset: Offset(0, 0),
             spreadRadius: 0,
@@ -295,14 +342,19 @@ class BottomView extends StatelessWidget {
               Expanded(
                 child: PrimaryAppButton(
                   onTap: () {
-                    Get.toNamed(AppRoutes.bottomBar);
+                    // Coin balance changed during the call — explicitly refresh it
+                    // since HomeScreenController is persistent and won't re-run onInit.
+                    if (Get.isRegistered<HomeScreenController>()) {
+                      Get.find<HomeScreenController>().fetchUserCoin();
+                    }
+                    Get.offNamed(AppRoutes.bottomBar);
                   },
                   height: 50,
-                  color: AppColors.white,
+                  color: AppColors.transparent,
                   borderColor: AppColors.appColor,
-                  // borderRadius: 30,
                   text: EnumLocale.txtSkip.name.tr,
-                  textStyle: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.appColor),
+                  textStyle: AppFontStyle.fontStyleW600(
+                      fontSize: 16, fontColor: AppColors.appColor),
                 ),
               ),
               8.width,
@@ -321,7 +373,8 @@ class BottomView extends StatelessWidget {
                   height: 50,
                   // borderRadius: 30,
                   text: EnumLocale.txtFeedBack.name.tr,
-                  textStyle: AppFontStyle.fontStyleW600(fontSize: 16, fontColor: AppColors.white),
+                  textStyle: AppFontStyle.fontStyleW600(
+                      fontSize: 16, fontColor: _DarkPalette.primaryText),
                 ),
               ),
             ],
@@ -352,7 +405,7 @@ class CallDetailContainer extends StatelessWidget {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.grey),
+          border: Border.all(color: _DarkPalette.border),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
@@ -360,7 +413,7 @@ class CallDetailContainer extends StatelessWidget {
             if (icon != null)
               Icon(
                 icon,
-                color: AppColors.appColor,
+                color: _DarkPalette.accent,
                 size: 20,
               ),
             if (image != null)
@@ -369,6 +422,7 @@ class CallDetailContainer extends StatelessWidget {
                 height: 24,
                 width: 24,
                 fit: BoxFit.contain,
+                color: _DarkPalette.primaryText,
               ),
             8.width,
             Column(
@@ -378,14 +432,14 @@ class CallDetailContainer extends StatelessWidget {
                   title,
                   style: AppFontStyle.fontStyleW500(
                     fontSize: 13,
-                    fontColor: AppColors.profileText,
+                    fontColor: _DarkPalette.mutedText,
                   ),
                 ),
                 Text(
                   subTitle,
                   style: AppFontStyle.fontStyleW500(
                     fontSize: 15,
-                    fontColor: AppColors.black,
+                    fontColor: _DarkPalette.primaryText,
                   ),
                 ),
               ],

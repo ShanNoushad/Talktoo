@@ -17,24 +17,23 @@ import '../../../../utils/twillio_api.dart';
 class OtpController extends GetxController {
   final List<TextEditingController> otpControllers =
   List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> focusNodes =
-  List.generate(6, (_) => FocusNode());
+  final List<FocusNode> focusNodes = List.generate(6, (_) => FocusNode());
 
   late final String phoneNumber;
   late final String dialCode;
   late final String fullPhoneNumber;
 
   // ✅ Bypass config (debug only)
-  static const String _bypassNumber    = '2233344444';
-  static const String _bypassOtp       = '123456';
-  static const String _bypassUserId    = '6a2fc2e86413f46b43bcd69a';
+  static const String _bypassNumber = '2233344444';
+  static const String _bypassOtp = '123456';
+  static const String _bypassUserId = '6a2fc2e86413f46b43bcd69a';
 
   @override
   void onInit() {
     super.onInit();
     final args = Get.arguments as List?;
-    phoneNumber     = args?[0] ?? '';
-    dialCode        = args?[1] ?? '+91';
+    phoneNumber = args?[0] ?? '';
+    dialCode = args?[1] ?? '+91';
     fullPhoneNumber = args?[2] ?? '';
 
     if (fullPhoneNumber.isEmpty) {
@@ -69,7 +68,6 @@ class OtpController extends GetxController {
 
   Future<void> onVerifyOtp() async {
     final otp = otpControllers.map((c) => c.text).join();
-    Database.onSetIsNewUser(false);
 
     if (otp.length != 6) {
       Utils.showToast(Get.context!, 'Enter the 6-digit OTP');
@@ -102,8 +100,8 @@ class OtpController extends GetxController {
       final identity = (await MobileDeviceIdentifier().getDeviceId()) ?? '';
       final fcmToken = (await FirebaseMessaging.instance.getToken()) ?? '';
 
-      Database.onSetIdentity(identity);
-      Database.onSetFcmToken(fcmToken);
+      await Database.onSetIdentity(identity);
+      await Database.onSetFcmToken(fcmToken);
 
       // Step 3 — call login API
       final loginModel = await LoginApi.callApi(
@@ -116,43 +114,50 @@ class OtpController extends GetxController {
 
       if (loginModel?.status != true) {
         if (Get.isDialogOpen ?? false) Get.back();
-        Utils.showToast(Get.context!, loginModel?.message ?? 'Login failed. Try again.');
+        Utils.showToast(
+            Get.context!, loginModel?.message ?? 'Login failed. Try again.');
         return;
       }
 
       // Step 4 — persist login state
-      Database.onSetIsLogin(true);
-      Database.onSetLoginType(loginModel?.user?.loginType ?? 0);
-      Database.onSetSeenOnboarding(true);
+      await Database.onSetIsLogin(true);
+      await Database.onSetLoginType(loginModel?.user?.loginType ?? 0);
+      await Database.onSetSeenOnboarding(true);
+      await Database.onSetIsNewUser(false);
+
+      // ✅ FIX 1: Save UID immediately from login response
+      // so all APIs get correct UID even if profile fetch fails (new user)
+      final userId = loginModel?.user?.id ?? '';
+      await Database.onSetLoginUserId(userId);
+      log("✅ UID saved from login response: ${Database.loginUserId}");
 
       // Step 5 — fetch and store full profile
-      await _fetchAndStoreProfile(
-        loginModel?.user?.id ?? '',
-        Api.secretKey,
-      );
+      await _fetchAndStoreProfile(userId, Api.secretKey);
 
-      // Step 6 — set profile fill flag
+      // Step 6 — handle new user vs existing user
       if (loginModel?.signUp == true) {
-        Database.onSetFillProfile(false);
-      } else {
-        Database.onSetFillProfile(true);
+        // ✅ FIX 2: New users → go to edit profile to complete setup
+        await Database.onSetFillProfile(false);
+        Get.offAllNamed(AppRoutes.homeScreen);
+        return;
       }
 
-      // Step 7 — navigate based on user type
+      // Step 7 — existing users navigate based on user type
+      await Database.onSetFillProfile(true);
       if (Database.fetchLoginUserProfileModel?.user?.isListener == true) {
         Get.offAllNamed(AppRoutes.hostBottomBar);
       } else {
         Get.offAllNamed(AppRoutes.bottomBar);
       }
-
     } catch (e) {
+      log("onVerifyOtp error: $e");
       Utils.showToast(Get.context!, 'Something went wrong. Try again.');
     } finally {
       if (Get.isDialogOpen ?? false) Get.back();
     }
   }
 
-  // ✅ Full bypass login — mirrors the commented Dev Login button exactly
+  // ✅ Full bypass login
   Future<void> _runBypassLogin() async {
     Get.dialog(const LoadingWidget(), barrierDismissible: false);
 
@@ -171,31 +176,32 @@ class OtpController extends GetxController {
 
       final user = profile!.user!;
 
-      Database.onSetIsNewUser(false);
-      Database.onSetUserCoin("100");
-      Database.onSetIsLogin(true);
-      Database.onSetFillProfile(true);
-      Database.onSetSeenOnboarding(true);
-      Database.onSetLoginType(user.loginType ?? 3);
-      Database.onSetLoginUserId(user.id ?? '');
-      Database.onSetLoginUserFirebaseId(user.firebaseId ?? '');
-      Database.onSetLoginUserName(user.fullName ?? '');
-      Database.onSetLoginUserNickName(user.nickName ?? '');
-      Database.onSetLoginUserEmail(user.email ?? '');
-      Database.onSetLoginUserProfilePic(user.profilePic ?? '');
-      Database.onSetLoginUserCountry(user.country ?? '');
-      Database.onSetLoginUserCountryFlag(user.countryFlag ?? '');
-      Database.onSetLoginUserBirthDate(user.birthDate ?? '');
-      Database.onSetLoginUserGender(user.gender ?? 'Male');
-      Database.onSetLoginUserPhoneNumber(user.phoneNumber ?? '');
-      Database.onSetUserCoin(user.coins?.toString() ?? '0');
+      await Database.onSetIsNewUser(false);
+      await Database.onSetIsLogin(true);
+      await Database.onSetFillProfile(true);
+      await Database.onSetSeenOnboarding(true);
+      await Database.onSetLoginType(user.loginType ?? 3);
+      await Database.onSetLoginUserId(user.id ?? '');
+      await Database.onSetLoginUserFirebaseId(user.firebaseId ?? '');
+      await Database.onSetLoginUserName(user.fullName ?? '');
+      await Database.onSetLoginUserNickName(user.nickName ?? '');
+      await Database.onSetLoginUserEmail(user.email ?? '');
+      await Database.onSetLoginUserProfilePic(user.profilePic ?? '');
+      await Database.onSetLoginUserCountry(user.country ?? '');
+      await Database.onSetLoginUserCountryFlag(user.countryFlag ?? '');
+      await Database.onSetLoginUserBirthDate(user.birthDate ?? '');
+      await Database.onSetLoginUserGender(user.gender ?? 'Male');
+      await Database.onSetLoginUserPhoneNumber(user.phoneNumber ?? '');
+      await Database.onSetUserCoin(user.coins?.toString() ?? '0');
+
+      log("✅ Bypass UID saved: ${Database.loginUserId}");
 
       // FCM token sync
       try {
         final fcmToken = await FirebaseMessaging.instance.getToken();
         Utils.showLog("Bypass Login - FCM token: $fcmToken");
         if (fcmToken != null) {
-          Database.onSetFcmToken(fcmToken);
+          await Database.onSetFcmToken(fcmToken);
         }
       } catch (e) {
         Utils.showLog("Bypass Login - FCM sync failed: $e");
@@ -207,7 +213,6 @@ class OtpController extends GetxController {
       } else {
         Get.offAllNamed(AppRoutes.bottomBar);
       }
-
     } catch (e) {
       log('_runBypassLogin error: $e');
       Utils.showToast(Get.context!, "Bypass failed: $e");
@@ -224,21 +229,32 @@ class OtpController extends GetxController {
 
     Database.fetchLoginUserProfileModel = profile;
     log("profile response => ${profile?.user?.id}");
-    if (profile?.user == null) return;
+
+    // For new users profile will be null — that's okay,
+    // UID is already saved from login response above
+    if (profile?.user == null) {
+      log("⚠️ Profile null for userId: $userId — likely a new user");
+      return;
+    }
 
     final user = profile!.user!;
-    Database.onSetLoginUserId(user.id ?? '');
-    Database.onSetLoginUserFirebaseId(user.firebaseId ?? '');
-    Database.onSetLoginUserName(user.fullName ?? '');
-    Database.onSetLoginUserNickName(user.nickName ?? '');
-    Database.onSetLoginUserEmail(user.email ?? '');
-    Database.onSetLoginUserProfilePic(user.profilePic ?? '');
-    Database.onSetLoginUserCountry(user.country ?? '');
-    Database.onSetLoginUserCountryFlag(user.countryFlag ?? '');
-    Database.onSetLoginUserBirthDate(user.birthDate ?? '');
-    Database.onSetLoginUserGender(user.gender ?? 'Male');
-    Database.onSetLoginUserPhoneNumber(user.phoneNumber ?? '');
-    Database.onSetIsNewUser(false);
+
+    // ✅ Update all fields from profile
+    await Database.onSetLoginUserId(user.id ?? '');
+    await Database.onSetLoginUserFirebaseId(user.firebaseId ?? '');
+    await Database.onSetLoginUserName(user.fullName ?? '');
+    await Database.onSetLoginUserNickName(user.nickName ?? '');
+    await Database.onSetLoginUserEmail(user.email ?? '');
+    await Database.onSetLoginUserProfilePic(user.profilePic ?? '');
+    await Database.onSetLoginUserCountry(user.country ?? '');
+    await Database.onSetLoginUserCountryFlag(user.countryFlag ?? '');
+    await Database.onSetLoginUserBirthDate(user.birthDate ?? '');
+    await Database.onSetLoginUserGender(user.gender ?? 'Male');
+    await Database.onSetLoginUserPhoneNumber(user.phoneNumber ?? '');
+    await Database.onSetUserCoin(user.coins?.toString() ?? '0');
+    await Database.onSetIsNewUser(false);
+
+    log("✅ Profile stored — UID: ${Database.loginUserId}");
 
     if (user.isListener == true) {
       final listenerProfile = await FetchListenerProfileAPi.callApi(
@@ -247,7 +263,7 @@ class OtpController extends GetxController {
       Database.fetchListenerProfileModel = listenerProfile;
 
       if (listenerProfile?.data?.id != null) {
-        Database.onSetLoginListenerId(listenerProfile!.data!.id!);
+        await Database.onSetLoginListenerId(listenerProfile!.data!.id!);
       }
     }
   }
@@ -263,7 +279,8 @@ class OtpController extends GetxController {
       if (success) {
         Utils.showToast(Get.context!, 'OTP resent successfully');
       } else {
-        Utils.showToast(Get.context!, 'Failed to resend OTP. Please try again.');
+        Utils.showToast(
+            Get.context!, 'Failed to resend OTP. Please try again.');
       }
     } catch (e) {
       if (Get.isDialogOpen ?? false) Get.back();
